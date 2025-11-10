@@ -1,0 +1,9 @@
+# robots.txt para Mueblería Plaza Reforma
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+# Sitemap (actualiza con tu dominio real)
+Sitemap: https://www.muebleriaplazareforma.com/sitemap.xml
+

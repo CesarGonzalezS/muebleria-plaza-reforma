@@ -1,0 +1,186 @@
+/*
+ * Utilidades CSS con prefijos de compatibilidad para navegadores
+ * Incluye soporte para Safari, Firefox y navegadores antiguos
+ */
+
+/* Backdrop filter con prefijo para Safari */
+.backdrop-blur {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-lg {
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+/* User select con prefijo para Safari */
+.user-select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.user-select-all {
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+}
+
+.user-select-text {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Background clip con orden correcto - PREFIJO PRIMERO */
+.bg-clip-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Filter con soporte completo */
+.filter-blur {
+  -webkit-filter: blur(10px);
+  filter: blur(10px);
+}
+
+.filter-brightness {
+  -webkit-filter: brightness(1.2);
+  filter: brightness(1.2);
+}
+
+/* Scrollbar width (no soportado en Safari, fallback incluido) */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Optimización de animaciones - evitar propiedades costosas */
+/* Usar transform y opacity en lugar de left, top, width, margin */
+
+/* Animación optimizada para slide */
+@keyframes slideInOptimized {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animación optimizada para fade */
+@keyframes fadeInOptimized {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animación optimizada para bounce (sin cambiar margin-top) */
+@keyframes bounceOptimized {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Utilidad para will-change en animaciones */
+.will-change-transform {
+  will-change: transform, opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* Firefox theme-color fallback (Firefox no soporta meta theme-color) */
+@-moz-document url-prefix() {
+  body {
+    background-color: #860734;
+  }
+}
+
+/* Soporte para contenido 3D con prefijos */
+.transform-3d {
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+}
+
+/* Smooth scrolling con fallback */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+@supports not (scroll-behavior: smooth) {
+  .smooth-scroll {
+    /* Fallback para navegadores antiguos */
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Optimización de rendering */
+.gpu-accelerated {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Clases utilitarias para mejorar performance */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+/* Content visibility para lazy rendering */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+

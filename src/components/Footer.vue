@@ -3,18 +3,17 @@
     <div class="container footer-row">
       <!-- Dirección y descripción breve -->
       <div class="footer-col footer-brand">
-        <h4><i class="fas fa-couch"></i> Tetecala, Morelos</h4>
-        <p><i class="fas fa-map-marker-alt"></i> Mueblería Plaza Reforma, tu mejor opción en la zona sur.</p>
-        <p><i class="fas fa-phone"></i> 734 153 2692</p>
-        <p><i class="fas fa-clock"></i> Lunes a Sábado <span class="footer-horario">(9:00 AM - 8:00 PM)</span></p>
+        <h4><i class="fas fa-couch"></i> No Reelección Sn, Tetecala, 62620 Tetecala, Mor.</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Mueblería Plaza Reforma S.A. de C.V.</p>
+        <p><i class="fas fa-phone"></i>751 396 0035</p>
+        <p><i class="fas fa-clock"></i> Lunes a Domingo <span class="footer-horario">(8:00 AM - 8:00 PM)</span></p>
       </div>
       <!-- Beneficios y Métodos de pago -->
       <div class="footer-col footer-benefits">
         <h4><i class="fas fa-star"></i> Beneficios</h4>
         <ul>
           <li><i class="fas fa-couch"></i> Cobertura de entrega</li>
-          <li><i class="fas fa-award"></i> Devolución sin costo los primeros 7 días</li>
-          <li><i class="fas fa-truck"></i> Entrega a domicilio</li>
+          <li><i class="fas fa-truck"></i> Entrega a domicilio programada</li>
           <li><i class="fas fa-credit-card"></i> Tarjeta, efectivo y meses sin intereses</li>
           <li><i class="fas fa-hand-holding-heart"></i> Garantía de satisfacción</li>
         </ul>
@@ -28,12 +27,16 @@
       </div>
       <!-- Descripción -->
       <div class="footer-col footer-description">
-        <h4><i class="fas fa-lightbulb"></i> Diseña la vida que tú quieras</h4>
-        <p>
-          La muebleria de la reforma es la marca mexicana de muebles y accesorios de diseño.<br>
+        <h4 class="footer-title">
+          <i class="fas fa-lightbulb"></i> Diseña la vida que tú quieras
+        </h4>
+        <p class="footer-text">
+          La mueblería de la reforma es la marca mexicana de muebles y accesorios de diseño.<br>
           Compra rápido, fácil y seguro. Sofás, sillas, mesas, escritorios, cómodas, burós, camas, colchones, lámparas y accesorios en diferentes estilos.<br>
-          Proponemos diseños simples y modernos adaptados a tu espacio.<br>
-          <span class="footer-mision">Nuestra misión: empoderarte a seguir soñando y diseñar la vida que tú quieras.</span>
+          Proponemos diseños simples y modernos adaptados a tu espacio.
+        </p>
+        <p class="footer-mision">
+          <strong>Nuestra misión:</strong> Empoderarte a seguir soñando y diseñar la vida que tú quieras.
         </p>
       </div>
       <!-- Redes sociales -->
@@ -46,8 +49,7 @@
         </div>
         <div class="footer-ayuda">
           <h4><i class="fas fa-question-circle"></i> Ayuda</h4>
-          <a href="tel:7341532692"><i class="fas fa-phone"></i> 734 153 2692</a>
-          <a href="tel:5585250137"><i class="fas fa-phone"></i> 55 8525 0137</a>
+          <a href="tel:751 396 0035"><i class="fas fa-phone"></i> 751 396 0035</a>
         </div>
       </div>
     </div>
@@ -107,6 +109,32 @@
   color: #ffe6f0;
 }
 
+.footer-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-title i {
+  color: #ffd700;
+  margin-right: 0.4rem;
+}
+
+.footer-text {
+  margin-bottom: 0.5rem;
+}
+
+.footer-mision {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #ffe6f0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+}
+
 .payment-icons {
   display: flex;
   align-items: center;
@@ -161,6 +189,72 @@
     width: 100%;
     max-width: 99vw;
     font-size: 0.99rem;
+  }
+}
+@media (max-width: 480px) {
+  .footer-section {
+    padding: 1.2rem 0 0.5rem 0;
+    border-radius: 1rem 1rem 0 0;
+    font-size: 0.97rem;
+  }
+  .footer-row {
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: stretch;
+    padding: 0 0.2rem;
+  }
+  .footer-col {
+    min-width: 0;
+    max-width: 100vw;
+    width: 100%;
+    padding: 0.8rem 0.5rem 0.5rem 0.5rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.97rem;
+    border-radius: 12px;
+    text-align: left;
+  }
+  .footer-description {
+    min-width: 0;
+    max-width: 100vw;
+    font-size: 0.95rem;
+    padding: 0.8rem 0.5rem 0.5rem 0.5rem;
+  }
+  .footer-col h4 {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+  .footer-col p,
+  .footer-col li,
+  .footer-col span,
+  .footer-col a {
+    font-size: 0.95rem;
+  }
+  .payment-icons img {
+    height: 28px;
+    max-width: 50px;
+    padding: 2px 5px;
+  }
+  .footer-social-links {
+    justify-content: flex-start;
+    gap: 0.7rem;
+  }
+  .footer-social-links a {
+    font-size: 1.25rem;
+    padding: 0.2rem;
+  }
+  .footer-ayuda h4 {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+  .footer-ayuda a {
+    font-size: 0.93rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .footer-copyright {
+    font-size: 0.89rem;
+    margin-top: 1.1rem;
+    padding: 0 0.2rem;
   }
 }
 

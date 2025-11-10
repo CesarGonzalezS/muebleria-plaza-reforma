@@ -1,14 +1,60 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="es">
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <meta name="description" content="Mueblería Plaza Reforma - Los mejores muebles para tu hogar. Catálogo completo de salas, recámaras, comedores y más. Calidad y estilo al mejor precio.">
+    <meta name="theme-color" content="#860734">
+    <meta name="keywords" content="muebles, mueblería, hogar, salas, recámaras, comedores, plaza reforma">
+    <meta name="author" content="Mueblería Plaza Reforma">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mueblería Plaza Reforma - Muebles de Calidad">
+    <meta property="og:description" content="Los mejores muebles para tu hogar. Calidad y estilo al mejor precio.">
+    <meta property="og:image" content="/img/logo.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mueblería Plaza Reforma">
+    <meta name="twitter:description" content="Los mejores muebles para tu hogar">
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Plaza Reforma">
+    <link rel="apple-touch-icon" href="/img/logo.png">
+
+    <title>Mueblería Plaza Reforma - Muebles de Calidad para tu Hogar</title>
+
+    <!-- Preconnect a dominios externos para mejorar performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Cargar fuentes/iconos con display swap para evitar FOIT -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" media="print" onload="this.media='all'; this.onload=null;">
+
+    <!-- Fallback para navegadores sin JS -->
+    <noscript>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </noscript>
+
+    <!-- Preload recursos críticos -->
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   </head>
   <body>
+    <noscript>
+      <strong>Esta aplicación requiere JavaScript para funcionar correctamente. Por favor, habilita JavaScript en tu navegador.</strong>
+    </noscript>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>

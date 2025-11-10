@@ -1,243 +1,626 @@
 <template>
-  <header class="header" :class="{ shadow: scrolled }">
-    <div class="container">
-      <router-link to="/" class="logo-link">
-      </router-link>
-      <button class="menu-toggle" @click="toggleMenu" :aria-expanded="isMenuOpen" aria-label="Menú">
-        <span :class="{ open: isMenuOpen }"></span>
-        <span :class="{ open: isMenuOpen }"></span>
-        <span :class="{ open: isMenuOpen }"></span>
-      </button>
-      <nav :class="['nav', { 'active': isMenuOpen }]">
-        <router-link
-          v-for="item in navItems"
-          :key="item.name"
-          :to="item.to"
-          class="nav-link"
-          @click="closeMenu"
-          active-class="active-link"
-        >
-          {{ item.name }}
-        </router-link>
-        <router-link
-          v-for="cat in categories"
-          :key="cat.value"
-          :to="`/productos/${cat.value}`"
-          class="nav-link"
-          @click="closeMenu"
-          active-class="active-link"
-        >
-          {{ cat.label }}
-        </router-link>
-      </nav>
+
+  <header class="navbar">
+    <!-- Barra principal de navegación -->
+    <div class="navbar__main">
+      <div class="navbar__inner">
+        <div class="navbar__brand-wrap">
+          <router-link to="/" class="navbar__brand">
+            <span class="navbar__logo">
+              <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_6_330)">
+                  <path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="#860734" fill-rule="evenodd"/>
+                </g>
+                <defs><clipPath id="clip0_6_330"><rect fill="white" height="48" width="48"></rect></clipPath></defs>
+              </svg>
+            </span>
+            <div class="brand-text">
+              <span class="navbar__title">Mueblería Plaza Reforma</span>
+              <span class="navbar__subtitle">Calidad y estilo para tu hogar</span>
+            </div>
+          </router-link>
+        </div>
+
+        <nav class="navbar__nav" :class="{ 'nav-open': mobileMenuOpen }">
+          <button class="nav-close" @click="mobileMenuOpen = false" aria-label="Cerrar menú">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <router-link
+              v-for="item in nav"
+              :key="item.label"
+              :to="item.to"
+              class="navbar__link"
+              :class="{ active: isActive(item) }"
+              @click="mobileMenuOpen = false"
+          >
+            <i v-if="item.icon" :class="item.icon"></i>
+            {{ item.label }}
+          </router-link>
+        </nav>
+
+        <div class="navbar__actions">
+          <form @submit.prevent="handleSearch" class="navbar__search">
+            <button type="submit" class="search-submit" aria-label="Buscar">
+              <i class="bi bi-search"></i>
+            </button>
+            <input
+                type="search"
+                id="search-input"
+                name="search"
+                class="navbar__search-input"
+                placeholder="Buscar productos..."
+                title="Buscar productos"
+                aria-label="Buscar productos"
+                v-model="searchQuery"
+                @focus="searchFocused = true"
+                @blur="searchFocused = false"
+            />
+            <button
+                v-if="searchQuery"
+                type="button"
+                class="navbar__search-clear"
+                @click="clearSearch"
+                title="Limpiar búsqueda"
+            >
+              <i class="bi bi-x-circle-fill"></i>
+            </button>
+          </form>
+
+          <button class="mobile-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Abrir menú">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Overlay para menú móvil -->
+    <Transition name="overlay">
+      <div v-if="mobileMenuOpen" class="nav-overlay" @click="mobileMenuOpen = false"></div>
+    </Transition>
   </header>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const isMenuOpen = ref(false);
-const scrolled = ref(false);
+const route = useRoute();
+const router = useRouter();
+const searchQuery = ref('');
+const mobileMenuOpen = ref(false);
+const searchFocused = ref(false);
 
-function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen.value;
-}
-function closeMenu() {
-  isMenuOpen.value = false;
-}
+// Sincronizar el input con el query param de la URL
+watch(() => route.query.buscar, (newSearch) => {
+  if (newSearch) {
+    searchQuery.value = newSearch;
+  } else if (route.name !== 'ProductosList' && route.name !== 'Productos') {
+    searchQuery.value = '';
+  }
+}, { immediate: true });
 
-const navItems = [
-  { name: "Inicio", to: "/" },
-  { name: "Todos los productos", to: "/productos" },
-  { name: "Contacto", to: "/contacto" }
+// Cerrar menú móvil al cambiar de ruta
+watch(() => route.path, () => {
+  mobileMenuOpen.value = false;
+});
+
+const nav = [
+  { label: 'Inicio', to: '/', icon: 'bi bi-house-door-fill' },
+  { label: 'Sala de estar', to: { name: 'Productos', params: { categoria: 'sala de estar' } }, icon: 'bi bi-flower1' },
+  { label: 'Dormitorio', to: { name: 'Productos', params: { categoria: 'dormitorio' } }, icon: 'bi bi-moon-stars-fill' },
+  { label: 'Comedor', to: { name: 'Productos', params: { categoria: 'comedor' } }, icon: 'bi bi-cup-hot-fill' },
+  { label: 'Oficiona', to: { name: 'Productos', params: { categoria: 'oficina' } }, icon: 'bi bi-briefcase-fill' },
+  { label: 'Productos', to: { name: 'ProductosList' }, icon: 'bi bi-grid-3x3-gap-fill' },
+  { label: 'Contacto', to: '/contacto', icon: 'bi bi-envelope-fill' },
 ];
 
-const categories = [
-  { label: "Sala", value: "sala" },
-  { label: "Oficina", value: "oficina" },
-  { label: "Camas y colchones", value: "camas-y-colchones" },
-  { label: "Comedor", value: "comedor" },
-  { label: "Cocinas", value: "cocinas" },
-  { label: "Electrodomésticos pequeños", value: "electrodomesticos-pequenos" },
-  { label: "Bicicletas", value: "bicicletas" },
-  { label: "Refrigeradores", value: "refrigeradores" },
-];
-
-function handleScroll() {
-  scrolled.value = window.scrollY > 8;
+function handleSearch() {
+  if (searchQuery.value.trim()) {
+    router.push({
+      name: 'ProductosList',
+      query: { buscar: searchQuery.value.trim() }
+    });
+    searchQuery.value = '';
+  }
 }
 
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
-});
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+function clearSearch() {
+  searchQuery.value = '';
+  if (route.name === 'ProductosList' || route.name === 'Productos') {
+    router.push({ name: 'ProductosList' });
+  }
+}
+
+function isActive(item) {
+  if (!route || !route.path) return false;
+  if (typeof item.to === 'string') {
+    if (item.to === '/') return route.path === '/';
+    return route.path === item.to || route.path.startsWith(item.to + '/');
+  }
+  if (typeof item.to === 'object' && item.to.name) {
+    if (route.name !== item.to.name) return false;
+    if (item.to.params && item.to.params.categoria) {
+      return String(route.params.categoria || '').toLowerCase() === String(item.to.params.categoria).toLowerCase();
+    }
+    return true;
+  }
+  return false;
+}
 </script>
 
 <style scoped>
-.header {
-  background-color: #860734;
-  padding: 1rem 0;
+/* Variables mejoradas */
+:root {
+  --nav-primary: #860734;
+  --nav-primary-dark: #6a0529;
+  --nav-primary-light: #a91d4d;
+  --nav-bg: #ffffff;
+  --nav-text: #1f2937;
+  --nav-text-light: #6b7280;
+  --nav-border: #e5e7eb;
+  --nav-hover: #f9fafb;
+  --nav-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Top Bar - Barra superior elegante */
+.navbar__top-bar {
+  background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-primary-dark) 100%);
+  color: white;
+  font-size: 0.875rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar__top-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contact-info {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s;
+  opacity: 0.9;
+}
+
+.contact-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.contact-link i {
+  font-size: 0.9rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.social-link {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.social-link:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.social-link.whatsapp:hover {
+  background: #25d366;
+}
+
+/* Main Navbar - Barra principal mejorada */
+.navbar {
   position: sticky;
   top: 0;
-  z-index: 30;
-  transition: box-shadow 0.18s;
+  z-index: 1000;
+  box-shadow: var(--nav-shadow);
 }
-.header.shadow {
-  box-shadow: 0 2px 22px rgba(134, 7, 52, 0.2);
+
+.navbar__main {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
 }
-.container {
-  max-width: 1250px;
+
+.navbar__inner {
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0 1.5rem;
   display: flex;
-  justify-content: space-between; /* Separar logo/nombre del menú */
   align-items: center;
-  gap: 3rem; /* Incrementar espacio entre elementos */
-  padding: 0 2rem;
+  gap: 2rem;
+  min-height: 80px;
 }
-.logo-link {
+
+/* Brand mejorado */
+.navbar__brand-wrap {
+  flex-shrink: 0;
+}
+
+.navbar__brand {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Incrementar espacio entre logo y nombre */
+  gap: 1rem;
   text-decoration: none;
+  transition: transform 0.3s;
 }
-.logo {
-  height: 90px;
-  width: auto;
-  object-fit: contain;
-  transition: filter 0.2s;
-  filter: drop-shadow(0 3px 8px rgba(134, 7, 52, 0.1));
+
+.navbar__brand:hover {
+  transform: scale(1.02);
 }
-.brand-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #ffd700;
-  text-shadow: 0 1px 4px rgba(255, 215, 0, 0.5);
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(134, 7, 52, 0.1) 0%, rgba(134, 7, 52, 0.05) 100%);
+  border-radius: 12px;
+  transition: all 0.3s;
 }
-.menu-toggle {
+
+.navbar__brand:hover .navbar__logo {
+  background: linear-gradient(135deg, rgba(134, 7, 52, 0.15) 0%, rgba(134, 7, 52, 0.1) 100%);
+  box-shadow: 0 4px 12px rgba(134, 7, 52, 0.2);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.navbar__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--nav-primary);
+  line-height: 1.2;
+}
+
+.navbar__subtitle {
+  font-size: 0.75rem;
+  color: var(--nav-text-light);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Navigation mejorada */
+.navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.nav-close {
   display: none;
-  background: rgba(255, 255, 255, 0.13);
+}
+
+.navbar__link {
+  padding: 0.625rem 1.25rem;
+  border-radius: 10px;
+  color: var(--nav-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.navbar__link i {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.navbar__link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 80%;
+  height: 3px;
+  background: var(--nav-primary);
+  border-radius: 10px 10px 0 0;
+  transition: transform 0.3s;
+}
+
+.navbar__link:hover {
+  background: var(--nav-hover);
+  color: var(--nav-primary);
+}
+
+.navbar__link:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.navbar__link.active {
+  background: linear-gradient(135deg, rgba(134, 7, 52, 0.12) 0%, rgba(134, 7, 52, 0.08) 100%);
+  color: var(--nav-primary);
+}
+
+.navbar__link.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Search mejorado */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.navbar__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--nav-hover);
+  border: 2px solid var(--nav-border);
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s;
+  min-width: 280px;
+}
+
+.navbar__search:focus-within {
+  border-color: var(--nav-primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
+  transform: translateY(-2px);
+}
+
+.search-submit {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--nav-text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.search-submit:hover {
+  color: var(--nav-primary);
+  transform: scale(1.1);
+}
+
+.navbar__search-input {
+  flex: 1;
   border: none;
   outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  color: var(--nav-text);
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.navbar__search-input::placeholder {
+  color: var(--nav-text-light);
+  font-weight: 400;
+}
+
+.navbar__search-clear {
+  background: transparent;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  flex-direction: column;
-  gap: 4px;
-  width: 35px;
-  height: 32px;
-  margin-left: auto;
-  z-index: 200;
-  justify-content: center;
+  color: var(--nav-text-light);
+  display: flex;
   align-items: center;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(134, 7, 52, 0.2);
-  transition: background 0.18s;
+  justify-content: center;
+  margin-left: 0.5rem;
+  font-size: 1.1rem;
+  transition: all 0.3s;
 }
-.menu-toggle:hover {
-  background: rgba(255, 215, 0, 0.2);
+
+.navbar__search-clear:hover {
+  color: #ef4444;
+  transform: rotate(90deg);
 }
-.menu-toggle span {
-  display: block;
-  height: 3px;
-  width: 27px;
-  margin: 3px 0;
-  border-radius: 4px;
-  background: #fff;
-  transition: all 0.33s cubic-bezier(0.55, 0.06, 0.68, 0.19);
-  box-shadow: 0 1px 4px rgba(134, 7, 52, 0.2);
+
+.mobile-menu-toggle {
+  display: none;
+  background: var(--nav-primary);
+  color: #040404;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.3s;
+  align-items: center;
+  justify-content: center;
 }
-.menu-toggle span.open:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
+
+.mobile-menu-toggle:hover {
+  background: var(--nav-primary-dark);
+  transform: scale(1.05);
 }
-.menu-toggle span.open:nth-child(2) {
+
+.nav-overlay {
+  display: none;
+}
+
+/* Animaciones */
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: opacity 0.3s;
+}
+
+.overlay-enter-from,
+.overlay-leave-to {
   opacity: 0;
 }
-.menu-toggle span.open:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
-}
 
-.nav {
-  display: flex;
-  gap: 2rem; /* Incrementar espacio entre enlaces del menú */
-  align-items: center;
-  justify-content: center;
-  transition: all 0.24s;
-}
-.nav-link {
-  color: #fff;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  font-size: 1.1rem;
-  text-decoration: none;
-  position: relative;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: color 0.16s, background 0.16s;
-}
-.nav-link::after {
-  content: '';
-  display: block;
-  height: 3px;
-  border-radius: 2px;
-  width: 0;
-  background: #ffd700;
-  position: absolute;
-  left: 20%;
-  bottom: 2px;
-  transition: width 0.23s;
-}
-.nav-link:hover,
-.nav-link.active-link {
-  color: #ffd700;
-  background: rgba(255, 255, 255, 0.1);
-}
-.nav-link:hover::after,
-.nav-link.active-link::after {
-  width: 60%;
-}
-
-@media (max-width: 950px) {
-  .container {
+/* Responsive mejorado */
+@media (max-width: 1024px) {
+  .navbar__inner {
     gap: 1rem;
+  }
+
+  .navbar__nav {
+    gap: 0.25rem;
+  }
+
+  .navbar__link {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .navbar__search {
+    min-width: 220px;
+  }
+
+  .brand-text {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar__top-bar {
+    display: none;
+  }
+
+  .navbar__inner {
+    min-height: 70px;
     padding: 0 1rem;
   }
-  .logo {
-    height: 40px;
+
+  .navbar__logo {
+    width: 45px;
+    height: 45px;
   }
-  .nav {
-    gap: 1rem;
-  }
-}
-@media (max-width: 650px) {
-  .menu-toggle {
+
+  .mobile-menu-toggle {
     display: flex;
+
   }
-  .nav {
-    flex-direction: column;
-    align-items: flex-start;
-    background: #860734;
+
+  .navbar__nav {
     position: fixed;
     top: 0;
-    right: 0;
-    width: 85vw;
+    right: -100%;
+    width: 280px;
     height: 100vh;
-    padding: 4.5rem 2rem;
-    gap: 1.5rem;
-    z-index: 99;
-    transform: translateX(110%);
-    box-shadow: -7px 0 20px rgba(134, 7, 52, 0.2);
-    transition: transform 0.36s cubic-bezier(0.78, -0.02, 0.61, 0.97);
+    background: white;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 1.5rem;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    z-index: 1001;
   }
-  .nav.active {
-    transform: translateX(0);
+
+  .navbar__nav.nav-open {
+    right: 0;
   }
-  .nav-link {
-    font-size: 1rem;
-    width: 100%;
-    border-radius: 12px;
-    padding: 0.8rem 1rem;
-    margin: 0.1rem 0;
+
+  .nav-close {
+    display: flex;
+    align-self: flex-end;
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: var(--nav-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+
+  .nav-close:hover {
+    background: var(--nav-hover);
+    color: var(--nav-primary);
+  }
+
+  .navbar__link {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .navbar__link::after {
+    display: none;
+  }
+
+  .nav-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+  }
+
+  .navbar__search {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar__inner {
+    padding: 0 0.75rem;
+  }
+
+  .contact-info span {
+    display: none;
+  }
+
+  .navbar__search {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .navbar__search-input {
+    font-size: 0.875rem;
   }
 }
 </style>

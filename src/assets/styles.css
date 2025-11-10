@@ -14,3 +14,48 @@ html, body {
   max-height: 100vh;
   overflow-y: auto;
 }
+
+/* Defensive rules to avoid horizontal scroll due to elements exceeding viewport */
+html, body, #app {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* Make sure images and media never overflow the viewport */
+img, picture, video, iframe {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
+/* Force main layout containers to respect viewport width */
+main, .detail-page, .product-detail, .container {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* Prevent large grid items producing horizontal overflow */
+.related-products-grid, .thumbnails {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Utility: hide accidental horizontal overflow on small devices */
+@media (max-width: 480px) {
+  body {
+    position: relative;
+    left: 0;
+    right: 0;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Ajustar espaciado entre inputs */
+.form-group {
+  margin-bottom: 2.5rem; /* Incrementar aún más el margen inferior entre inputs */
+}
+
+.form-row {
+  gap: 2.5rem; /* Incrementar el espacio entre columnas en una fila */
+}

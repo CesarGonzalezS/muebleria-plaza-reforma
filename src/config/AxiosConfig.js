@@ -17,12 +17,25 @@ const ToastError = (title, message) => {
   });
 };
 
+
+
 // Función para mostrar mensajes de advertencia
 const ToastWarning = (title, message) => {
   Swal.fire({
     icon: "warning",
     title: title,
     text: message,
+  });
+};
+
+// Función para mostrar mensajes de éxito
+const ToastSuccess = (title, message) => {
+  Swal.fire({
+    icon: "success",
+    title: title,
+    text: message,
+    timer: 2000,
+    showConfirmButton: false,
   });
 };
 
@@ -42,19 +55,57 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status !== 500) {
-      ToastError("Vaya...", "Algo salió mal. Por favor, inténtalo más tarde.");
+    // Si no hay respuesta del servidor
+    if (!error.response) {
+      ToastError("Error de conexión", "No se pudo conectar con el servidor. Verifica tu conexión.");
+      return Promise.reject(error);
     }
 
-    if (error.response && error.response.status === 400) {
+    const status = error.response.status;
+
+    // Error 401 - No autorizado (token inválido o expirado)
+    if (status === 401) {
+      ToastWarning("Sesión expirada", "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
+    // Error 403 - Prohibido (sin permisos)
+    if (status === 403) {
+      ToastWarning("Acceso denegado", "No tienes permisos para realizar esta acción.");
+      return Promise.reject(error);
+    }
+
+    // Error 400 - Bad Request
+    if (status === 400) {
       console.error("Bad Request:", error.response);
       const errorData = error.response.data;
-      const firstKey = Object.keys(errorData)[0];
-      const firstValue = errorData[firstKey];
 
-      ToastWarning("¡Ups!", firstValue);
+      if (errorData && typeof errorData === 'object') {
+        const firstKey = Object.keys(errorData)[0];
+        const firstValue = errorData[firstKey];
+        ToastWarning("¡Ups!", Array.isArray(firstValue) ? firstValue[0] : firstValue);
+      } else {
+        ToastWarning("¡Ups!", "Datos incorrectos. Verifica la información ingresada.");
+      }
+      return Promise.reject(error);
     }
 
+    // Error 404 - No encontrado
+    if (status === 404) {
+      ToastWarning("No encontrado", "El recurso solicitado no existe.");
+      return Promise.reject(error);
+    }
+
+    // Error 500 - Error del servidor
+    if (status === 500) {
+      ToastError("Error del servidor", "Ocurrió un error en el servidor. Por favor, inténtalo más tarde.");
+      return Promise.reject(error);
+    }
+
+    // Otros errores
+    ToastError("Vaya...", "Algo salió mal. Por favor, inténtalo más tarde.");
     return Promise.reject(error);
   }
 );
@@ -82,4 +133,7 @@ export default {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
+  ToastSuccess,
+  ToastError,
+  ToastWarning,
 };

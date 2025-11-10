@@ -1,0 +1,28 @@
+{
+  "name": "Mueblería Plaza Reforma",
+  "short_name": "Plaza Reforma",
+  "description": "Los mejores muebles para tu hogar. Catálogo completo de salas, recámaras, comedores y más.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#860734",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/img/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "lang": "es-MX",
+  "dir": "ltr"
+}
+
