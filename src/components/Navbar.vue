@@ -66,6 +66,29 @@
             </button>
           </form>
 
+          <!-- Botón de Logout si está autenticado -->
+          <button
+            v-if="isAuthenticated"
+            @click="handleLogout"
+            class="logout-btn"
+            title="Cerrar sesión"
+            aria-label="Cerrar sesión"
+          >
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+          </button>
+
+          <!-- Link de Login si no está autenticado -->
+          <router-link
+            v-else
+            to="/login"
+            class="login-btn"
+            title="Iniciar sesión"
+          >
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>Login</span>
+          </router-link>
+
           <button class="mobile-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Abrir menú">
             <i class="bi bi-list"></i>
           </button>
@@ -81,14 +104,18 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { authService } from '../services/auth';
 
 const route = useRoute();
 const router = useRouter();
 const searchQuery = ref('');
 const mobileMenuOpen = ref(false);
 const searchFocused = ref(false);
+
+// Verificar si el usuario está autenticado
+const isAuthenticated = computed(() => authService.isAuthenticated());
 
 // Sincronizar el input con el query param de la URL
 watch(() => route.query.buscar, (newSearch) => {
@@ -145,6 +172,18 @@ function isActive(item) {
     return true;
   }
   return false;
+}
+
+async function handleLogout() {
+  try {
+    const { accessToken, refreshToken } = authService.getTokens();
+    await authService.logout(accessToken, refreshToken);
+  } catch (err) {
+    console.error('Error en logout:', err);
+  } finally {
+    authService.clearTokens();
+    router.push('/login');
+  }
 }
 </script>
 
@@ -603,6 +642,60 @@ function isActive(item) {
   .navbar__search {
     min-width: 0;
     flex: 1;
+  }
+}
+
+/* Botones de Login/Logout */
+.login-btn,
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, var(--nav-primary), var(--nav-primary-light));
+  color: white;
+  border: 2px solid transparent;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(134, 7, 52, 0.3);
+}
+
+.logout-btn {
+  background: transparent;
+  color: var(--nav-primary);
+  border: 2px solid var(--nav-primary);
+}
+
+.logout-btn:hover {
+  background: var(--nav-primary);
+  color: white;
+}
+
+.logout-btn span {
+  display: none;
+}
+
+.login-btn span {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .logout-btn span,
+  .login-btn span {
+    display: inline;
   }
 }
 

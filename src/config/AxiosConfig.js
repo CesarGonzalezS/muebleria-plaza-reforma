@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 // Cargar la URL del backend desde el entorno
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 
 axios.defaults.baseURL = API_URL;
@@ -42,7 +42,7 @@ const ToastSuccess = (title, message) => {
 // Interceptores de solicitud
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -66,7 +66,10 @@ axios.interceptors.response.use(
     // Error 401 - No autorizado (token inválido o expirado)
     if (status === 401) {
       ToastWarning("Sesión expirada", "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
       window.location.href = "/login";
       return Promise.reject(error);
     }

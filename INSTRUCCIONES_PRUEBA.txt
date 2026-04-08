@@ -1,0 +1,131 @@
+INSTRUCCIONES RÁPIDAS DE PRUEBA
+═══════════════════════════════════════════════════════════════
+
+1️⃣ PANTALLA DE TEST (Para ver estado actual):
+   URL: http://localhost:5173/auth-test
+   └─ Muestra estado de autenticación
+   └─ Tokens guardados
+   └─ Enlaces rápidos a todas las vistas
+
+2️⃣ REGISTRO (Crear cuenta):
+   URL: http://localhost:5173/register
+   └─ Llena el formulario
+   └─ Se guarda en backend
+   └─ Redirige a /login
+
+3️⃣ INICIAR SESIÓN (Login):
+   URL: http://localhost:5173/login
+   └─ Usa credenciales registradas
+   └─ Guarda accessToken y refreshToken
+   └─ Redirige a /admin
+
+4️⃣ RECUPERAR CONTRASEÑA (Si olvidaste):
+   URL: http://localhost:5173/forgot-password
+   └─ Step 1: Envía email
+   └─ Step 2: Valida token recibido
+   └─ Step 3: Crea nueva contraseña
+   └─ Step 4: Confirma éxito
+
+5️⃣ PERFIL (Ver información):
+   URL: http://localhost:5173/profile
+   └─ Requiere estar autenticado
+   └─ Muestra datos del usuario
+   └─ Muestra estado de contraseña
+   └─ Link a cambiar contraseña
+
+6️⃣ CAMBIAR CONTRASEÑA:
+   URL: http://localhost:5173/change-password
+   └─ Requiere estar autenticado
+   └─ Validación de contraseña actual
+   └─ Indicador de fortaleza
+   └─ Confirmación de nueva contraseña
+
+═══════════════════════════════════════════════════════════════
+
+🔧 CONFIGURACIÓN:
+
+1. Asegúrate que tu backend está disponible
+2. Configura VITE_API_URL en .env si es diferente a http://localhost:8000
+3. Las APIs deben responder en el siguiente formato:
+
+   SUCCESS (200/201):
+   {
+     "success": true,
+     "data": { ... },
+     "message": "..."
+   }
+
+   ERROR:
+   {
+     "success": false,
+     "data": null,
+     "message": "...",
+     "errorCode": 400
+   }
+
+═══════════════════════════════════════════════════════════════
+
+📱 FLUJO COMPLETO DE PRUEBA:
+
+1. Ve a /auth-test
+   → Verás que NO ESTÁS AUTENTICADO
+
+2. Click en "Registro"
+   → Llena: nombre, email, teléfono, contraseña
+   → Se redirige a /login
+
+3. Click en "Login"
+   → Usa las credenciales del registro
+   → Se guardan tokens
+   → Se redirige a /admin
+
+4. Ve a /auth-test nuevamente
+   → Verás que ESTÁS AUTENTICADO
+   → Verás los tokens almacenados
+
+5. Click en "Perfil" en /auth-test
+   → Ve tu información
+   → Ve estado de contraseña
+
+6. Click en "Cambiar Contraseña"
+   → Ingresa contraseña actual
+   → Ingresa nueva contraseña
+   → Confirma cambio
+
+7. En Navbar, click en "Logout"
+   → Se limpian tokens
+   → Se redirige a /login
+
+═══════════════════════════════════════════════════════════════
+
+✅ CHECKLIST DE FUNCIONAMIENTO:
+
+[ ] /auth-test - Muestra estado correcto
+[ ] /register - Registro funciona
+[ ] /login - Login funciona y guarda tokens
+[ ] /profile - Carga información del usuario
+[ ] /change-password - Permite cambiar contraseña
+[ ] /forgot-password - Flujo de recuperación completo
+[ ] Navbar - Botones Login/Logout funcionan
+[ ] Protección - Rutas protegidas redirigen a /login si no está autenticado
+[ ] Logout - Limpia todos los tokens correctamente
+
+═══════════════════════════════════════════════════════════════
+
+🐛 TROUBLESHOOTING:
+
+Si las APIs no responden:
+→ Verifica que VITE_API_URL está correctamente configurada
+→ Verifica que el backend está corriendo
+→ Abre la consola del navegador (F12) para ver errores
+
+Si los tokens no se guardan:
+→ Verifica que localStorage está habilitado
+→ Comprueba que la respuesta del login incluye accessToken y refreshToken
+
+Si las rutas protegidas no funcionan:
+→ Verifica que estés autenticado en /auth-test
+→ Comprueba que accessToken está en localStorage
+
+═══════════════════════════════════════════════════════════════
+

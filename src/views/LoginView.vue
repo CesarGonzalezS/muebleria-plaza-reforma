@@ -85,6 +85,10 @@
           <i class="bi bi-question-circle"></i>
           ¿Olvidaste tu contraseña?
         </button>
+
+        <div class="register-link">
+          ¿No tienes cuenta? <router-link to="/register">Regístrate aquí</router-link>
+        </div>
       </div>
     </form>
 
@@ -245,8 +249,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from '../config/AxiosConfig';
 import { useRouter } from 'vue-router';
+import { authService } from '../services/auth';
 
 const email = ref('');
 const password = ref('');
@@ -262,24 +266,25 @@ async function handleLogin() {
   error.value = '';
   loading.value = true;
   try {
-    const res = await axios.doPost('/login', { email: email.value, password: password.value });
-    if (res.data && (res.data.token || res.data.access_token)) {
-      localStorage.setItem('token', res.data.token || res.data.access_token);
-      localStorage.setItem('role', 'admin'); // Simulate admin role for testing
+    const res = await authService.login(email.value, password.value);
+    if (res.data.success && res.data.data) {
+      const { accessToken, refreshToken } = res.data.data;
+      authService.setTokens(accessToken, refreshToken);
 
-      if ('admin' === 'admin') {
-        router.push('/admin'); // Redirect admin users to admin dashboard
-      } else {
-        router.push('/'); // Redirect other users to home page
-      }
+      // Redirigir a admin o home
+      router.push('/admin');
     } else {
       error.value = 'Credenciales incorrectas';
     }
   } catch (e) {
-    error.value = 'Usuario o contraseña incorrectos';
+    error.value = e.response?.data?.message || 'Usuario o contraseña incorrectos';
   } finally {
     loading.value = false;
   }
+}
+
+function handleForgotPassword() {
+  router.push('/forgot-password');
 }
 
 function startResetPassword() {
@@ -728,6 +733,25 @@ async function resetPassword() {
 
 .reset-password-btn:hover {
   background: rgba(134, 7, 52, 0.05);
+  color: var(--primary-dark);
+}
+
+/* Link de registro */
+.register-link {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.register-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.register-link a:hover {
   color: var(--primary-dark);
 }
 
