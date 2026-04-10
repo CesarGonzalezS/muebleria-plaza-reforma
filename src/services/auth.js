@@ -57,7 +57,7 @@ export const authService = {
 
   // Cambiar contraseña
   changePassword(userId, currentPassword, newPassword) {
-    return axios.doPut(`/api/auth/change-password?userId=${userId}`, {
+    return axios.doPost(`/api/auth/change-password?userId=${userId}`, {
       currentPassword,
       newPassword,
       confirmPassword: newPassword
@@ -71,7 +71,7 @@ export const authService = {
 
   // Solicitar reset de contraseña
   forgotPassword(email) {
-    return axios.doPost(`/api/auth/forgot-password?email=${encodeURIComponent(email)}`);
+    return axios.doGet(`/api/auth/forgot-password?email=${encodeURIComponent(email)}`);
   },
 
   // Validar token de reset

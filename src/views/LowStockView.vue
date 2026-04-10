@@ -94,7 +94,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { productService } from '../services/products';
+import { productsService } from '../services/products';
 import { authService } from '../services/auth';
 
 const router = useRouter();
@@ -117,7 +117,7 @@ async function fetchProducts() {
   error.value = '';
 
   try {
-    const response = await productService.getLowStockProducts();
+    const response = await productsService.getLowStock();
     if (response.data.success) {
       products.value = response.data.data || [];
     } else {

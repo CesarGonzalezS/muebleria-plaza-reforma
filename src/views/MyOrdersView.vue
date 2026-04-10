@@ -91,7 +91,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { orderService } from '../services/orders';
+import { ordersService } from '../services/orders';
 
 const orders = ref([]);
 const loading = ref(false);
@@ -106,7 +106,7 @@ async function fetchOrders() {
   error.value = '';
 
   try {
-    const response = await orderService.listOrders();
+    const response = await ordersService.getAll();
     if (response.data.success) {
       orders.value = response.data.data || [];
     }

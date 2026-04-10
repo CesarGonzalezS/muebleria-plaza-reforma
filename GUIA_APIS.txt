@@ -1,0 +1,269 @@
+# Guía de Uso - APIs y Pantallas Implementadas
+
+## 📋 Resumen de Implementación
+
+Se han implementado todas las pantallas necesarias para consumir las APIs de la aplicación de Mueblería Plaza Reforma. A continuación se detalla cómo acceder y usar cada una.
+
+---
+
+## 🔐 AUTENTICACIÓN
+
+### 1. Registro (POST /api/auth/register)
+**Ruta:** `/register`
+- Crear nueva cuenta de cliente
+- Campos: nombre, email, contraseña, teléfono (opcional)
+- La contraseña debe tener mínimo 8 caracteres
+
+### 2. Iniciar Sesión (POST /api/auth/login)
+**Ruta:** `/login`
+- Ingresar con email y contraseña
+- Se guardan automáticamente los tokens en localStorage
+- Redirige a `/admin` si el login es exitoso
+
+### 3. Recuperar Contraseña (POST /api/auth/forgot-password)
+**Ruta:** `/forgot-password`
+- Solicitar reset de contraseña
+- Se envía un email con instrucciones
+- Lleva a validar token y crear nueva contraseña
+
+### 4. Cambiar Contraseña (POST /api/auth/change-password)
+**Ruta:** `/change-password` (requiere autenticación)
+- Cambiar contraseña siendo usuario autenticado
+- Necesita: contraseña actual, nueva contraseña, confirmación
+
+---
+
+## 📦 PRODUCTOS
+
+### 5. Listar Productos (GET /api/products)
+**Ruta:** `/productos-lista`
+- Ver todos los productos disponibles
+- Requiere autenticación (USER o ADMIN)
+- Muestra: nombre, precio, stock, categoría, imagen
+
+### 6. Gestor de Productos (POST/PUT/DELETE /api/products)
+**Ruta:** `/productos-manager` (requiere ADMIN)
+- Crear nuevos productos
+- Editar productos existentes
+- Eliminar productos
+- Buscar por nombre o ID
+
+### 7. Productos con Stock Bajo (GET /api/products/low-stock)
+**Ruta:** `/low-stock` (requiere ADMIN)
+- Ver productos que necesitan reposición
+- Muestra: stock actual vs stock mínimo
+- Botón para ajustar inventario
+
+---
+
+## 📊 INVENTARIO
+
+### 8. Ajustar Inventario (POST /api/inventory/adjust, add-stock, remove-stock)
+**Ruta:** `/inventory-adjust` (requiere ADMIN)
+- Ajustar stock manualmente
+- Agregar stock (compras/devoluciones)
+- Remover stock (ventas/daños)
+- Registrar motivos de cambios
+
+### 9. Movimientos de Inventario (GET /api/inventory/movements/{productId})
+**Ruta:** `/inventory-movements/:productId` (requiere ADMIN)
+- Ver historial de cambios de inventario
+- Tipo de movimiento (PURCHASE, MANUAL, etc.)
+- Fecha y cantidad de cada movimiento
+
+---
+
+## 🛒 ÓRDENES
+
+### 10. Mi Carrito (POST /api/orders)
+**Ruta:** `/cart` (requiere USER)
+- Añadir productos al carrito
+- Modificar cantidades
+- Ver total de orden
+- Procesar compra
+
+### 11. Mis Órdenes (GET /api/orders)
+**Ruta:** `/my-orders` (requiere USER)
+- Ver historial de órdenes personales
+- Estado de cada orden (PENDING, SHIPPED, DELIVERED, etc.)
+- Monto total gastado
+- Promedio por orden
+
+### 12. Detalle de Orden (GET /api/orders/{id})
+**Ruta:** `/order-detail/:id` (requiere USER/ADMIN)
+- Ver detalles completos de una orden
+- Items, cantidades, precios unitarios
+- Estado actual
+- Dirección de envío
+
+### 13. Gestión de Órdenes (GET/PUT/DELETE /api/orders)
+**Ruta:** `/admin-orders` (requiere ADMIN)
+- Ver todas las órdenes del sistema
+- Cambiar estado de órdenes
+- Cancelar órdenes
+- Filtrar por estado
+
+---
+
+## 📈 REPORTES
+
+### 14. Reportes (GET /api/reports/*)
+**Ruta:** `/reports` (requiere ADMIN)
+- Reporte de ventas por período
+- Productos más vendidos
+- Stock bajo
+- Cálculo de ganancia
+- Cálculo de ingresos
+- Métricas del dashboard
+
+Tabs disponibles:
+- **Ventas:** Gráficos y tabla de ventas diarias
+- **Productos Top:** Ranking de productos más vendidos
+- **Stock Bajo:** Alertas de inventario bajo
+- **Finanzas:** Ganancia e ingresos por período
+
+---
+
+## 👤 PERFIL
+
+### 15. Mi Perfil (GET /api/auth/password-status/{userId})
+**Ruta:** `/profile` (requiere autenticación)
+- Ver información personal
+- Ver estado de contraseña
+- Acceso a cambiar contraseña
+
+---
+
+## 🎛️ PANEL DE ADMINISTRACIÓN
+
+### 16. Dashboard Admin
+**Ruta:** `/admin` (requiere ADMIN)
+- Panel principal con opciones de:
+  - Gestión de productos
+  - Gestión de categorías
+  - Tabla de productos
+  - Acciones rápidas
+
+---
+
+## 🧪 TEST DE APIS
+
+### 17. Test de APIs
+**Ruta:** `/api-test` (requiere autenticación)
+- Vista de ayuda con links a todas las pantallas
+- Muestra estado del token
+- URL de la API
+- Links rápidos a cada funcionalidad
+
+---
+
+## 🔑 FLUJO DE USO RECOMENDADO
+
+### Para Usuarios (USER):
+1. `/register` - Crear cuenta
+2. `/login` - Iniciar sesión
+3. `/productos-lista` - Ver productos
+4. `/cart` - Comprar productos
+5. `/my-orders` - Ver mis órdenes
+6. `/profile` - Mi perfil
+
+### Para Administradores (ADMIN):
+1. `/login` - Iniciar sesión
+2. `/admin` - Panel principal
+3. `/productos-manager` - Gestionar productos
+4. `/low-stock` - Ver stock bajo
+5. `/inventory-adjust` - Ajustar inventario
+6. `/admin-orders` - Gestionar órdenes
+7. `/reports` - Ver reportes
+
+---
+
+## 📝 VARIABLES DE ENTORNO
+
+En el archivo `.env` o `vite.config.js`, asegurar que esté configurado:
+
+```javascript
+VITE_API_URL=http://localhost:8080
+```
+
+---
+
+## 🔗 MAPEO DE ENDPOINTS A PANTALLAS
+
+| Endpoint | Método | Pantalla | Autenticación |
+|----------|--------|---------|-----------------|
+| /api/auth/register | POST | /register | No |
+| /api/auth/login | POST | /login | No |
+| /api/auth/forgot-password | POST | /forgot-password | No |
+| /api/auth/reset-password | POST | /reset-password | No |
+| /api/auth/change-password | POST | /change-password | JWT |
+| /api/products | GET | /productos-lista | JWT |
+| /api/products | POST/PUT/DELETE | /productos-manager | JWT + ADMIN |
+| /api/products/low-stock | GET | /low-stock | JWT + ADMIN |
+| /api/inventory/adjust | POST | /inventory-adjust | JWT + ADMIN |
+| /api/inventory/add-stock | POST | /inventory-adjust | JWT + ADMIN |
+| /api/inventory/remove-stock | POST | /inventory-adjust | JWT + ADMIN |
+| /api/orders | GET/POST | /cart, /my-orders | JWT |
+| /api/orders/{id} | GET | /order-detail/:id | JWT |
+| /api/orders | GET/PUT/DELETE | /admin-orders | JWT + ADMIN |
+| /api/reports/* | GET | /reports | JWT + ADMIN |
+
+---
+
+## ⚙️ CONFIGURACIÓN DEL TOKEN
+
+El token se maneja automáticamente:
+- **Se guarda en:** `localStorage.accessToken`
+- **Se incluye en:** Header `Authorization: Bearer <token>`
+- **Duración:** 24 horas
+- **Refresh:** Usar endpoint `/api/auth/refresh` con refreshToken
+
+---
+
+## 🛠️ SERVICIOS DISPONIBLES
+
+Los servicios están ubicados en `/src/services/`:
+
+- **auth.js** - Autenticación y gestión de usuario
+- **products.js** - Gestión de productos
+- **inventory.js** - Gestión de inventario
+- **orders.js** - Gestión de órdenes
+- **reports.js** - Reportes y analytics
+
+Cada servicio contiene métodos para interactuar con sus respectivos endpoints.
+
+---
+
+## 📞 SOPORTE
+
+Si encuentras errores:
+1. Verifica que el backend esté corriendo en `http://localhost:8080`
+2. Revisa la consola del navegador (F12) para errores
+3. Verifica que estés autenticado (si la pantalla lo requiere)
+4. Revisa los permisos (algunos endpoints requieren ADMIN)
+
+---
+
+## ✅ CHECKLIST DE FUNCIONALIDAD
+
+- [x] Pantalla de Registro
+- [x] Pantalla de Login
+- [x] Pantalla de Recuperar Contraseña
+- [x] Pantalla de Cambiar Contraseña
+- [x] Pantalla de Perfil
+- [x] Listado de Productos
+- [x] Gestor de Productos (CRUD)
+- [x] Vista de Stock Bajo
+- [x] Ajuste de Inventario
+- [x] Carrito de Compras
+- [x] Mis Órdenes
+- [x] Gestión de Órdenes (Admin)
+- [x] Reportes
+- [x] Panel de Admin
+- [x] Vista de Test de APIs
+
+---
+
+**Última actualización:** 2026-04-10
+**Estado:** ✅ Listo para producción
+

@@ -12,6 +12,7 @@ const ForgotPasswordView = () => import('../views/ForgotPasswordView.vue');
 const ResetPasswordView = () => import('../views/ResetPasswordView.vue');
 const ProfileView = () => import('../views/ProfileView.vue');
 const AuthTestView = () => import('../views/AuthTestView.vue');
+const APITestView = () => import('../views/APITestView.vue');
 const ProductsListView = () => import('../views/ProductsListView.vue');
 const ProductDetailView = () => import('../views/ProductDetailView.vue');
 const ProductManagerView = () => import('../views/ProductManagerView.vue');
@@ -38,6 +39,7 @@ const routes = [
   { path: '/change-password', component: ChangePasswordView, meta: { requiresAuth: true, title: 'Cambiar Contraseña' } },
   { path: '/profile', component: ProfileView, meta: { requiresAuth: true, title: 'Mi Perfil' } },
   { path: '/auth-test', component: AuthTestView, meta: { title: 'Test de Autenticación' } },
+  { path: '/api-test', component: APITestView, meta: { requiresAuth: true, title: 'Test de APIs' } },
   { path: '/productos-lista', component: ProductsListView, meta: { requiresAuth: true, title: 'Productos' } },
   { path: '/producto-detalle/:id', component: ProductDetailView, meta: { requiresAuth: true, title: 'Detalle del Producto' } },
   { path: '/productos-manager', component: ProductManagerView, meta: { requiresAuth: true, title: 'Gestión de Productos' } },

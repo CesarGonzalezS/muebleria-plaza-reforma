@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="/orders (snapshot).js">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="/orders (snapshot).js" />
+              <option name="originalContent" value="import axios from '../config/AxiosConfig';&#10;&#10;export const orderService = {&#10;  // Crear orden&#10;  createOrder(orderData) {&#10;    return axios.doPost('/api/orders', orderData);&#10;  },&#10;&#10;  // Obtener orden por ID&#10;  getOrderById(id) {&#10;    return axios.doGet(`/api/orders/${id}`);&#10;  },&#10;&#10;  // Listar órdenes&#10;  listOrders(customerId = null) {&#10;    const params = customerId ? { customerId } : {};&#10;    return axios.doGet('/api/orders', { params });&#10;  }&#10;};&#10;&#10;" />
+              <option name="updatedContent" value="import axios from '../config/AxiosConfig';&#10;&#10;export const orderService = {&#10;  // Crear orden&#10;  createOrder(orderData) {&#10;    return axios.doPost('/api/orders', orderData);&#10;  },&#10;&#10;  // Obtener orden por ID&#10;  getOrderById(id) {&#10;    return axios.doGet(`/api/orders/${id}`);&#10;  },&#10;&#10;  // Listar órdenes&#10;  listOrders(customerId = null) {&#10;    const params = customerId ? { customerId } : {};&#10;    return axios.doGet('/api/orders', { params });&#10;  },&#10;&#10;  // Actualizar estado de orden (Admin)&#10;  updateOrderStatus(id, status) {&#10;    return axios.doPut(`/api/orders/${id}/status`, null, {&#10;      params: { status }&#10;    });&#10;  },&#10;&#10;  // Cancelar orden (Admin)&#10;  cancelOrder(id) {&#10;    return axios.doDelete(`/api/orders/${id}`);&#10;  }&#10;};&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

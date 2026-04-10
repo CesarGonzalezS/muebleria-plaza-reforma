@@ -41,8 +41,8 @@
                   <div class="category-select-controls">
                     <select id="category" v-model="formData.category_id" required>
                       <option :value="null" disabled>Selecciona una categoría</option>
-                      <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                        {{ cat.name }}
+                      <option v-for="cat in (categories || [])" :key="cat?.id" :value="cat?.id">
+                        {{ cat?.name }}
                       </option>
                     </select>
                     <button type="button" class="btn-icon small" title="Crear categoría" @click="$emit('open-category-form')">

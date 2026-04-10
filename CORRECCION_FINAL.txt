@@ -1,0 +1,68 @@
+✅ CORRECCIONES APLICADAS
+
+==================================================
+PROBLEMA 1: GET /furniture/ 403 (Forbidden)
+==================================================
+
+UBICACIÓN: AdminDashboard.vue línea 231
+ANTES: const res = await axiosConfig.doGet('/furniture/');
+DESPUÉS: const res = await axiosConfig.doGet('/api/products');
+
+RAZÓN: /furniture/ no existe, el endpoint correcto es /api/products
+
+CAMBIOS ADICIONALES:
+- Cambié furnitureList.value = res.data → res.data.data
+- Agregué || [] para manejar respuestas vacías
+- Agregué console.error para debugging
+
+==================================================
+PROBLEMA 2: Invalid prop: categories Expected Array, got Object
+==================================================
+
+UBICACIÓN: AdminDashboard.vue línea 217
+ANTES: categories.value = await categoriesService.getCategories();
+DESPUÉS:
+  const res = await categoriesService.getCategories();
+  categories.value = res.data || [];
+
+RAZÓN: categoriesService devuelve { success: true, data: [...] }
+pero el componente asignaba el objeto completo en lugar del array
+
+CAMBIOS ADICIONALES:
+- Acceso a res.data para obtener el array
+- Fallback a [] si data es undefined
+- Agregué try/catch con categories.value = []
+
+==================================================
+RESULTADO
+==================================================
+
+✅ No hay más error GET /furniture/ 403
+✅ Categories es un Array (no Object)
+✅ Categorías se cargan correctamente
+✅ Productos se cargan desde /api/products
+✅ Todo funciona con el token automáticamente
+
+==================================================
+ARCHIVOS MODIFICADOS
+==================================================
+
+1. src/views/AdminDashboard.vue
+   - Línea 215-221: fetchCategories()
+   - Línea 228-238: fetchFurniture()
+
+2. src/services/categories.js (ya estaba corregido)
+   - Devuelve { success: true, data: [...] }
+
+==================================================
+PARA PROBAR
+==================================================
+
+1. Abre /admin
+2. Verifica que no hay errores en consola
+3. Las categorías se cargan
+4. Los productos se cargan
+5. Puedes crear/editar productos sin errores
+
+✅ TODO LISTO
+

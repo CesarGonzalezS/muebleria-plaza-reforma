@@ -214,9 +214,12 @@ const categoryForm = reactive({ id: null, name: '', description: '' });
 
 async function fetchCategories() {
   try {
-    categories.value = await categoriesService.getCategories();
+    const res = await categoriesService.getCategories();
+    // categoriesService devuelve { success, data: [...] }
+    categories.value = res.data || [];
   } catch (e) {
     console.error('Error cargando categorías:', e);
+    categories.value = [];
   }
 }
 
@@ -228,10 +231,11 @@ function logout() {
 async function fetchFurniture() {
   loading.value = true;
   try {
-    const res = await axiosConfig.doGet('/furniture/');
-    furnitureList.value = res.data;
+    const res = await axiosConfig.doGet('/api/products');
+    furnitureList.value = res.data.data || [];
   } catch (e) {
-    error.value = 'Error al cargar muebles';
+    error.value = 'Error al cargar productos';
+    console.error('Error:', e);
   } finally {
     loading.value = false;
   }
