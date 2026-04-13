@@ -1,9 +1,8 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-// Cargar la URL del backend desde el entorno
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
+// URL del backend - Simple y directo
+const API_URL = "http://localhost:8080";
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.common["Content-Type"] = "application/json";
@@ -43,9 +42,19 @@ const ToastSuccess = (title, message) => {
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
+    
+    console.log('📡 [REQUEST]', config.method.toUpperCase(), config.url);
+    console.log('   Token en localStorage:', token ? '✓ presente' : '✗ NO presente');
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('   ✓ Authorization header establecido');
+      console.log('   Token (primeros 50 caracteres):', token.substring(0, 50) + '...');
+      console.log('   Formato:', token.startsWith('eyJ') ? '✓ JWT válido' : '✗ NO es JWT');
+    } else {
+      console.warn('   ⚠️ NO HAY TOKEN - Petición irá sin autenticación');
     }
+    
     return config;
   },
   (error) => Promise.reject(error)
@@ -62,15 +71,13 @@ axios.interceptors.response.use(
     }
 
     const status = error.response.status;
+    const requestUrl = error.config?.url || '';
 
     // Error 401 - No autorizado (token inválido o expirado)
     if (status === 401) {
-      ToastWarning("Sesión expirada", "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      window.location.href = "/login";
+      console.error('❌ [401 ERROR]', requestUrl, '| Error:', error.response.data);
+      // NO hacer NADA - Solo rechazar la promesa
+      // No limpiar tokens, no redirigir, dejar que el componente maneje el error
       return Promise.reject(error);
     }
 

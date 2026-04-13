@@ -85,11 +85,19 @@ router.beforeEach((to, from, next) => {
 
   const token = localStorage.getItem('accessToken');
 
+  // Si la ruta requiere autenticación y no hay token
   if (to.meta.requiresAuth && !token) {
     next('/login');
-  } else if (to.path.startsWith('/admin') && !token) {
+  } 
+  // Si intenta acceder a rutas admin sin token
+  else if (to.path.startsWith('/admin') && !token) {
     next('/login');
-  } else {
+  } 
+  // Si está autenticado e intenta acceder a login, redirigir a admin
+  else if (to.path === '/login' && token) {
+    next('/admin');
+  }
+  else {
     next();
   }
 });

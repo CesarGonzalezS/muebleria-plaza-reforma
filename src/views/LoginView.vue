@@ -266,17 +266,33 @@ async function handleLogin() {
   error.value = '';
   loading.value = true;
   try {
+    console.log('🔐 Iniciando login...');
     const res = await authService.login(email.value, password.value);
+    console.log('✅ Respuesta del login:', res.data);
+
     if (res.data.success && res.data.data) {
       const { accessToken, refreshToken } = res.data.data;
-      authService.setTokens(accessToken, refreshToken);
+      console.log('🔑 Tokens recibidos:', { accessToken: accessToken?.substring(0, 20) + '...', refreshToken: refreshToken?.substring(0, 20) + '...' });
 
+      authService.setTokens(accessToken, refreshToken);
+      console.log('💾 Tokens guardados en localStorage');
+
+      // Verificar que se guardaron
+      const savedToken = localStorage.getItem('accessToken');
+      console.log('✔️ Token guardado verificado:', savedToken ? 'SÍ' : 'NO');
+
+      // Pequeño retraso para asegurar que el token esté guardado
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      console.log('🔄 Redirigiendo a /admin...');
       // Redirigir a admin o home
       router.push('/admin');
     } else {
+      console.warn('❌ Respuesta sin éxito:', res.data);
       error.value = 'Credenciales incorrectas';
     }
   } catch (e) {
+    console.error('❌ Error en login:', e);
     error.value = e.response?.data?.message || 'Usuario o contraseña incorrectos';
   } finally {
     loading.value = false;

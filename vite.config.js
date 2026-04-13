@@ -51,8 +51,8 @@ export default defineConfig({
   // Optimizaciones para server de desarrollo
   server: {
     port: 5173,
-    open: false, // Deshabilitado para evitar spawn EPERM en Windows
-    host: true, // Permitir acceso desde la red local
+    open: false,
+    host: true,
   },
   // Configuración adicional para evitar problemas en Windows
   optimizeDeps: {

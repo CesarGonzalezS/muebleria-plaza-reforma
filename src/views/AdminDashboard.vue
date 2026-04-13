@@ -233,12 +233,18 @@ const categoryForm = reactive({ id: null, name: '', description: '' });
 
 async function fetchCategories() {
   try {
+    console.log('📂 Cargando categorías...');
     const res = await categoriesService.getCategories();
     // res = { success: true, data: [{id, name, ...}] }
     const data = res?.data;
     categories.value = Array.isArray(data) ? data : [];
+    console.log('✅ Categorías cargadas:', categories.value.length);
   } catch (e) {
-    console.error('Error cargando categorías:', e);
+    console.error('❌ Error cargando categorías:', {
+      status: e.response?.status,
+      message: e.response?.data?.message,
+      error: e.message
+    });
     categories.value = [];
   }
 }
@@ -255,12 +261,18 @@ function logout() {
 async function fetchFurniture() {
   loading.value = true;
   try {
+    console.log('📦 Cargando muebles...');
     const res = await axiosConfig.doGet('/furniture/');
     const data = res?.data?.data;
     furnitureList.value = Array.isArray(data) ? data : [];
+    console.log('✅ Muebles cargados:', furnitureList.value.length);
   } catch (e) {
     error.value = 'Error al cargar productos';
-    console.error('Error:', e);
+    console.error('❌ Error al cargar muebles:', {
+      status: e.response?.status,
+      message: e.response?.data?.message,
+      error: e.message
+    });
   } finally {
     loading.value = false;
   }
