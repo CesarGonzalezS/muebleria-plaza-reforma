@@ -11,17 +11,15 @@ export const orderService = {
     return axios.doGet(`/api/orders/${id}`);
   },
 
-  // Listar órdenes
+  // Listar órdenes (customerId es opcional)
   listOrders(customerId = null) {
-    const params = customerId ? { customerId } : {};
-    return axios.doGet('/api/orders', { params });
+    const url = customerId ? `/api/orders?customerId=${customerId}` : '/api/orders';
+    return axios.doGet(url);
   },
 
   // Actualizar estado de orden (Admin)
   updateOrderStatus(id, status) {
-    return axios.doPut(`/api/orders/${id}/status`, null, {
-      params: { status }
-    });
+    return axios.doPut(`/api/orders/${id}/status?status=${encodeURIComponent(status)}`);
   },
 
   // Cancelar orden (Admin)
@@ -29,4 +27,3 @@ export const orderService = {
     return axios.doDelete(`/api/orders/${id}`);
   }
 };
-

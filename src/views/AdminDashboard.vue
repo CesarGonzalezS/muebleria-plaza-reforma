@@ -17,6 +17,28 @@
       </div>
     </div>
 
+    <!-- Navegación rápida entre secciones admin -->
+    <nav class="admin-nav">
+      <router-link to="/admin" class="admin-nav-item active">
+        <i class="bi bi-house-door"></i> Muebles
+      </router-link>
+      <router-link to="/admin-orders" class="admin-nav-item">
+        <i class="bi bi-bag-check"></i> Órdenes
+      </router-link>
+      <router-link to="/customers" class="admin-nav-item">
+        <i class="bi bi-people"></i> Clientes
+      </router-link>
+      <router-link to="/reports" class="admin-nav-item">
+        <i class="bi bi-graph-up"></i> Reportes
+      </router-link>
+      <router-link to="/inventory-adjust" class="admin-nav-item">
+        <i class="bi bi-boxes"></i> Inventario
+      </router-link>
+      <router-link to="/low-stock" class="admin-nav-item">
+        <i class="bi bi-exclamation-triangle"></i> Stock Bajo
+      </router-link>
+    </nav>
+
     <!-- Contenedor principal -->
     <div class="dashboard-content">
       <!-- Loading state -->
@@ -110,14 +132,14 @@
               <td data-label="Nombre" class="name-cell">{{ item.name }}</td>
               <td data-label="Precio" class="price-cell">${{ item.price.toLocaleString('es-MX') }}</td>
               <td data-label="Categoría">
-                <span class="category-badge">{{ getCategoryLabel(item.category_id || item.category) }}</span>
+                <span class="category-badge">{{ item.categoryName || getCategoryLabel(item.categoryId || item.category_id || item.category) }}</span>
               </td>
               <td data-label="Stock">
                   <span :class="['stock-badge', getStockClass(item.stock)]">
                     {{ item.stock }}
                   </span>
               </td>
-              <td data-label="Marca">{{ item.brand || '-' }}</td>
+              <td data-label="Marca">{{ item.brandName || item.brand || '-' }}</td>
               <td data-label="Color">
                 <span class="color-dot" :style="{ background: item.color || '#ccc' }"></span>
                 {{ item.color || '-' }}
@@ -199,10 +221,7 @@ const form = reactive({
   material: '',
   dimensions: ''
 });
-const maxImages = 5;
-const maxFileSizeMB = 5;
-const imageErrors = ref([]);
-const fileInputRef = ref(null);
+
 
 const categories = ref([]);
 
@@ -215,8 +234,9 @@ const categoryForm = reactive({ id: null, name: '', description: '' });
 async function fetchCategories() {
   try {
     const res = await categoriesService.getCategories();
-    // categoriesService devuelve { success, data: [...] }
-    categories.value = res.data || [];
+    // res = { success: true, data: [{id, name, ...}] }
+    const data = res?.data;
+    categories.value = Array.isArray(data) ? data : [];
   } catch (e) {
     console.error('Error cargando categorías:', e);
     categories.value = [];
@@ -225,14 +245,19 @@ async function fetchCategories() {
 
 function logout() {
   localStorage.removeItem('token');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('role');
+  localStorage.removeItem('user');
   router.push('/login');
 }
 
 async function fetchFurniture() {
   loading.value = true;
   try {
-    const res = await axiosConfig.doGet('/api/products');
-    furnitureList.value = res.data.data || [];
+    const res = await axiosConfig.doGet('/furniture/');
+    const data = res?.data?.data;
+    furnitureList.value = Array.isArray(data) ? data : [];
   } catch (e) {
     error.value = 'Error al cargar productos';
     console.error('Error:', e);
@@ -263,13 +288,15 @@ async function openCreateForm() {
 
 function openEditForm(item) {
   isEditing.value = true;
-  // Normalizar category: si el item trae un objeto category, usar su id
-  const catId = item.category_id || (item.category && (item.category.id || item.category));
+  // Soporta categoryId (nueva API /furniture/) y category_id (formato antiguo)
+  const catId = item.categoryId || item.category_id || (item.category && (item.category.id || item.category));
 
-  // Normalizar imágenes: convertir a array
+  // Normalizar imágenes: soporta imageUrl (nueva API) y arrays de imágenes (formato antiguo)
   let itemImages = [];
   if (item.images && Array.isArray(item.images) && item.images.length > 0) {
     itemImages = item.images.map(img => (typeof img === 'string' ? img : (img.img_base64 || img.url || img))).filter(Boolean);
+  } else if (item.imageUrl) {
+    itemImages = [item.imageUrl];
   } else if (item.img_base64) {
     itemImages = [item.img_base64];
   }
@@ -277,9 +304,11 @@ function openEditForm(item) {
   Object.assign(form, {
     ...item,
     category_id: catId,
+    costPrice: item.costPrice || item.cost_price || 0,
+    minStock: item.minStock || item.min_stock || 0,
+    imageUrl: item.imageUrl || '',
     images: itemImages
   });
-  imageErrors.value = [];
   showForm.value = true;
 }
 
@@ -326,32 +355,6 @@ async function deleteCategoryRequest(id) {
   }
 }
 
-function validateForm() {
-  if (!form.name.trim()) {
-    axiosConfig.ToastWarning('Validación', 'El nombre del mueble es obligatorio.');
-    return false;
-  }
-  if (form.price <= 0) {
-    axiosConfig.ToastWarning('Validación', 'El precio debe ser mayor a 0.');
-    return false;
-  }
-  if (!form.category_id) {
-    axiosConfig.ToastWarning('Validación', 'La categoría es obligatoria.');
-    return false;
-  }
-  // Ensure selected category exists in the loaded categories
-  const selId = Number(form.category_id);
-  const exists = categories.value.some(c => Number(c.id) === selId);
-  if (!exists) {
-    axiosConfig.ToastWarning('Validación', 'La categoría seleccionada no es válida. Selecciona una categoría existente.');
-    return false;
-  }
-  if (form.stock < 0) {
-    axiosConfig.ToastWarning('Validación', 'El stock no puede ser negativo.');
-    return false;
-  }
-  return true;
-}
 
 // El modal ahora maneja la API directamente, solo necesitamos recargar los muebles
 async function handleFurnitureSuccess() {
@@ -362,7 +365,7 @@ async function handleFurnitureSuccess() {
 async function deleteFurniture(id) {
   if (!confirm('¿Seguro que deseas eliminar este mueble?')) return;
   try {
-    await axiosConfig.doDelete(`/furniture/${id}/`);
+    await axiosConfig.doDelete(`/furniture/${id}`);
     axiosConfig.ToastSuccess('¡Éxito!', 'Mueble eliminado correctamente.');
     fetchFurniture();
   } catch (e) {
@@ -370,104 +373,6 @@ async function deleteFurniture(id) {
   }
 }
 
-function handleImageUpload(e) {
-  const files = e.target.files;
-  if (!files.length) return;
-
-  // Validar cantidad de imágenes
-  if (form.images.length + files.length > maxImages) {
-    axiosConfig.ToastWarning('Límite de imágenes', `Solo se permiten hasta ${maxImages} imágenes.`);
-    return;
-  }
-
-  imageErrors.value = [];
-
-  Array.from(files).forEach(file => {
-    // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      imageErrors.value.push(`${file.name} no es una imagen válida.`);
-      return;
-    }
-
-    // Validar tamaño (máximo 5MB)
-    if (file.size > maxFileSizeMB * 1024 * 1024) {
-      imageErrors.value.push(`${file.name} supera el tamaño máximo de ${maxFileSizeMB}MB.`);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      form.images.push(ev.target.result);
-    };
-    reader.onerror = () => {
-      imageErrors.value.push(`Error al leer ${file.name}.`);
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Limpiar el input para permitir subir el mismo archivo de nuevo
-  setTimeout(() => {
-    if (fileInputRef.value) {
-      fileInputRef.value.value = '';
-    }
-  }, 0);
-}
-
-function removeImage(index) {
-  form.images.splice(index, 1);
-  imageErrors.value = [];
-}
-
-function setAsMainImage(index) {
-  if (index === 0) return;
-  const [selectedImage] = form.images.splice(index, 1);
-  form.images.unshift(selectedImage);
-}
-
-// Funciones para drag & drop
-function handleDragOver(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  const files = e.dataTransfer.files;
-  if (!files.length) return;
-
-  // Validar cantidad de imágenes
-  if (form.images.length + files.length > maxImages) {
-    axiosConfig.ToastWarning('Límite de imágenes', `Solo se permiten hasta ${maxImages} imágenes.`);
-    return;
-  }
-
-  imageErrors.value = [];
-
-  Array.from(files).forEach(file => {
-    // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      imageErrors.value.push(`${file.name} no es una imagen válida.`);
-      return;
-    }
-
-    // Validar tamaño
-    if (file.size > maxFileSizeMB * 1024 * 1024) {
-      imageErrors.value.push(`${file.name} supera el tamaño máximo de ${maxFileSizeMB}MB.`);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      form.images.push(ev.target.result);
-    };
-    reader.onerror = () => {
-      imageErrors.value.push(`Error al leer ${file.name}.`);
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
 onMounted(() => {
   fetchFurniture();
@@ -478,7 +383,7 @@ function getCategoryLabel(value) {
   // Si nos pasan un objeto category, devolver su nombre
   if (!value && value !== 0) return '-';
   if (typeof value === 'object') {
-    return value.name || '-';
+    return value.name || value.categoryName || '-';
   }
   // value puede venir como id (number/string)
   const id = Number(value);
@@ -497,15 +402,14 @@ function getStockClass(stock) {
 
 // Helper para obtener la primera imagen de un mueble
 function getMainImage(item) {
-  // Si tiene un array de imágenes, devolver la primera
+  // Soporta imageUrl (nueva API /furniture/)
+  if (item.imageUrl) return item.imageUrl;
+  // Soporta array de imágenes (formato antiguo)
   if (item.images && Array.isArray(item.images) && item.images.length > 0) {
     const firstImage = item.images[0];
     return typeof firstImage === 'string' ? firstImage : (firstImage.img_base64 || firstImage.url || null);
   }
-  // Fallback a img_base64 por compatibilidad
-  if (item.img_base64) {
-    return item.img_base64;
-  }
+  if (item.img_base64) return item.img_base64;
   return null;
 }
 </script>
@@ -601,6 +505,41 @@ function getMainImage(item) {
 
 .logout-btn i {
   font-size: 1.1rem;
+}
+
+/* Admin navigation bar */
+.admin-nav {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.75rem 2rem;
+  background: #fff;
+  border-bottom: 2px solid #e9ecef;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: #555;
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.admin-nav-item:hover {
+  background: #f0f4ff;
+  color: #007bff;
+}
+
+.admin-nav-item.active,
+.admin-nav-item.router-link-active {
+  background: #007bff;
+  color: #fff;
 }
 
 .dashboard-content {

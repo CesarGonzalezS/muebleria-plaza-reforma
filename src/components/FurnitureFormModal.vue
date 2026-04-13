@@ -25,12 +25,22 @@
                   <input id="name" v-model="formData.name" placeholder="Ej: Silla ergonómica" required />
                 </div>
 
-                <div class="form-group">
-                  <label for="price">
-                    <i class="bi bi-currency-dollar"></i>
-                    Precio *
-                  </label>
-                  <input id="price" v-model.number="formData.price" type="number" placeholder="1500" required />
+                <div class="form-row form-row-compact">
+                  <div class="form-group form-group-small">
+                    <label for="price">
+                      <i class="bi bi-currency-dollar"></i>
+                      Precio venta *
+                    </label>
+                    <input id="price" v-model.number="formData.price" type="number" min="0" step="0.01" placeholder="1500" required />
+                  </div>
+
+                  <div class="form-group form-group-small">
+                    <label for="costPrice">
+                      <i class="bi bi-cash-coin"></i>
+                      Precio costo *
+                    </label>
+                    <input id="costPrice" v-model.number="formData.costPrice" type="number" min="0" step="0.01" placeholder="900" required />
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -41,8 +51,12 @@
                   <div class="category-select-controls">
                     <select id="category" v-model="formData.category_id" required>
                       <option :value="null" disabled>Selecciona una categoría</option>
-                      <option v-for="cat in (categories || [])" :key="cat?.id" :value="cat?.id">
-                        {{ cat?.name }}
+                      <option
+                        v-for="cat in (Array.isArray(categories) ? categories : []).filter(c => c != null)"
+                        :key="cat.id"
+                        :value="cat.id"
+                      >
+                        {{ cat.name }}
                       </option>
                     </select>
                     <button type="button" class="btn-icon small" title="Crear categoría" @click="$emit('open-category-form')">
@@ -55,18 +69,34 @@
                   <div class="form-group form-group-small">
                     <label for="stock">
                       <i class="bi bi-box"></i>
-                      Stock
+                      Stock actual
                     </label>
-                    <input id="stock" v-model.number="formData.stock" type="number" placeholder="20" />
+                    <input id="stock" v-model.number="formData.stock" type="number" min="0" placeholder="20" />
                   </div>
 
                   <div class="form-group form-group-small">
-                    <label for="brand">
-                      <i class="bi bi-award"></i>
-                      Marca
+                    <label for="minStock">
+                      <i class="bi bi-exclamation-triangle"></i>
+                      Stock mínimo
                     </label>
-                    <input id="brand" v-model="formData.brand" placeholder="IKEA" />
+                    <input id="minStock" v-model.number="formData.minStock" type="number" min="0" placeholder="5" />
                   </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="imageUrl">
+                    <i class="bi bi-link-45deg"></i>
+                    URL de imagen
+                  </label>
+                  <input id="imageUrl" v-model="formData.imageUrl" type="text" placeholder="https://... o sube un archivo abajo" />
+                </div>
+
+                <div class="form-group">
+                  <label for="brand">
+                    <i class="bi bi-award"></i>
+                    Marca
+                  </label>
+                  <input id="brand" v-model="formData.brand" placeholder="IKEA" />
                 </div>
               </div>
 
@@ -106,53 +136,51 @@
                   <textarea id="description" v-model="formData.description" placeholder="Describe las características del mueble..." rows="3"></textarea>
                 </div>
 
+                <!-- Sección de imagen con upload real -->
                 <div class="form-section-images">
                   <h3>
                     <i class="bi bi-images"></i>
-                    Galería de imágenes
+                    Imagen del mueble
                   </h3>
-                  <div class="images-count">
-                    {{ formData.images.length }} / {{ maxImages }} imágenes
+
+                  <!-- Preview de imagen actual -->
+                  <div v-if="formData.imageUrl" class="image-preview-current">
+                    <img :src="formData.imageUrl" alt="Imagen del mueble" />
+                    <button type="button" class="btn-remove-img" @click="formData.imageUrl = ''" title="Quitar imagen">
+                      <i class="bi bi-x-circle-fill"></i>
+                    </button>
                   </div>
 
-                  <div class="image-uploader">
-                    <div class="image-drop-area" @dragover="handleDragOver" @drop.prevent="handleDrop">
+                  <!-- Drop zone para upload -->
+                  <div
+                    class="image-drop-area"
+                    :class="{ 'uploading': isUploadingImage }"
+                    @dragover.prevent
+                    @drop.prevent="handleDrop"
+                    @click="$refs.fileInput.click()"
+                  >
+                    <template v-if="isUploadingImage">
+                      <i class="bi bi-arrow-repeat spin"></i>
+                      <p>Subiendo imagen...</p>
+                    </template>
+                    <template v-else>
                       <i class="bi bi-cloud-upload"></i>
-                      <p>Arrastra y suelta imágenes aquí o</p>
-                      <button type="button" class="browse-text" @click="$refs.fileInput.click()">
-                        Selecciona archivos
-                      </button>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        ref="fileInput"
-                        class="hidden-file-input"
-                        @change="handleImageUpload"
-                      />
-                    </div>
+                      <p>Arrastra una imagen o haz clic para seleccionar</p>
+                      <span class="hint">JPG, PNG, WEBP · máx. 5 MB</span>
+                    </template>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref="fileInput"
+                      class="hidden-file-input"
+                      @change="handleImageUpload"
+                    />
+                  </div>
 
-                    <div v-if="formData.images.length" class="image-list">
-                      <div v-for="(img, index) in formData.images" :key="index" class="image-item">
-                        <div class="image-preview-box">
-                          <img :src="img" alt="Imagen del mueble" />
-                          <div class="image-actions">
-                            <button type="button" class="btn-icon remove-btn" @click="removeImage(index)">
-                              <i class="bi bi-x-circle"></i>
-                            </button>
-                            <button type="button" class="btn-icon main-btn" @click="setAsMainImage(index)" v-if="!isEditing">
-                              <i class="bi bi-star"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-if="imageErrors.length" class="error-messages">
-                      <div v-for="(error, index) in imageErrors" :key="index" class="error-message">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {{ error }}
-                      </div>
+                  <div v-if="imageErrors.length" class="error-messages">
+                    <div v-for="(err, index) in imageErrors" :key="index" class="error-message">
+                      <i class="bi bi-exclamation-circle"></i>
+                      {{ err }}
                     </div>
                   </div>
                 </div>
@@ -180,6 +208,7 @@
 import { ref, watch } from 'vue';
 import * as furnitureService from '../services/furniture';
 import axiosConfig from '../config/AxiosConfig';
+import axios from 'axios';
 
 const props = defineProps({
   isOpen: {
@@ -202,18 +231,21 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'success', 'open-category-form']);
 
-const maxImages = 5;
 const maxFileSizeMB = 5;
 const isSubmitting = ref(false);
+const isUploadingImage = ref(false);
 
 const formData = ref({
   id: null,
   name: '',
   description: '',
   price: 0,
+  costPrice: 0,
   category_id: null,
+  imageUrl: '',
   images: [],
   stock: 0,
+  minStock: 0,
   brand: '',
   color: '',
   material: '',
@@ -228,10 +260,17 @@ watch(() => props.isOpen, (newVal) => {
       // Normalizar los datos del mueble al editar
       const normalizedData = { ...props.furnitureData };
 
-      // Normalizar category_id
-      if (normalizedData.category && typeof normalizedData.category === 'object') {
+      // Normalizar category_id: soporta categoryId (nueva API) y category_id (formato antiguo)
+      if (normalizedData.categoryId && !normalizedData.category_id) {
+        normalizedData.category_id = normalizedData.categoryId;
+      } else if (normalizedData.category && typeof normalizedData.category === 'object') {
         normalizedData.category_id = normalizedData.category.id;
       }
+
+      // Normalizar campos de la nueva API
+      normalizedData.costPrice = normalizedData.costPrice || normalizedData.cost_price || 0;
+      normalizedData.minStock = normalizedData.minStock || normalizedData.min_stock || 0;
+      normalizedData.imageUrl = normalizedData.imageUrl || '';
 
       // Normalizar imágenes
       let itemImages = [];
@@ -239,6 +278,8 @@ watch(() => props.isOpen, (newVal) => {
         itemImages = normalizedData.images.map(img =>
           typeof img === 'string' ? img : (img.img_base64 || img.url || img)
         ).filter(Boolean);
+      } else if (normalizedData.imageUrl) {
+        itemImages = [normalizedData.imageUrl];
       } else if (normalizedData.img_base64) {
         itemImages = [normalizedData.img_base64];
       }
@@ -258,9 +299,12 @@ function resetForm() {
     name: '',
     description: '',
     price: 0,
+    costPrice: 0,
     category_id: null,
+    imageUrl: '',
     images: [],
     stock: 0,
+    minStock: 0,
     brand: '',
     color: '',
     material: '',
@@ -281,7 +325,12 @@ function validateForm() {
   }
 
   if (!formData.value.price || formData.value.price <= 0) {
-    imageErrors.value.push('El precio debe ser mayor a 0');
+    imageErrors.value.push('El precio de venta debe ser mayor a 0');
+    return false;
+  }
+
+  if (formData.value.costPrice == null || formData.value.costPrice < 0) {
+    imageErrors.value.push('El precio de costo no puede ser negativo');
     return false;
   }
 
@@ -308,18 +357,16 @@ async function handleSubmit() {
 
   isSubmitting.value = true;
 
-  // Preparar los datos para enviar a la API
+  // Preparar los datos para la API /furniture/ (camelCase)
   const dataToSend = {
     name: formData.value.name.trim(),
     description: formData.value.description || '',
     price: parseFloat(formData.value.price),
-    category_id: parseInt(formData.value.category_id),
-    images: formData.value.images || [],
+    costPrice: parseFloat(formData.value.costPrice) || 0,
     stock: parseInt(formData.value.stock) || 0,
-    brand: formData.value.brand || '',
-    color: formData.value.color || '',
-    material: formData.value.material || '',
-    dimensions: formData.value.dimensions || ''
+    minStock: parseInt(formData.value.minStock) || 0,
+    categoryId: formData.value.category_id ? parseInt(formData.value.category_id) : undefined,
+    imageUrl: formData.value.imageUrl || (formData.value.images && formData.value.images[0]) || undefined,
   };
 
   try {
@@ -349,106 +396,64 @@ async function handleSubmit() {
   }
 }
 
-function handleImageUpload(e) {
-  const files = e.target.files;
-  if (!files.length) return;
 
-  // Validar cantidad de imágenes
-  if (formData.value.images.length + files.length > maxImages) {
-    imageErrors.value = [`Solo se permiten hasta ${maxImages} imágenes. Actualmente tienes ${formData.value.images.length}.`];
+// ── Upload de imagen al backend ─────────────────────────────────
+async function uploadImageFile(file) {
+  // Validar tipo
+  if (!file.type.startsWith('image/')) {
+    imageErrors.value = [`${file.name} no es una imagen válida.`];
+    return;
+  }
+  // Validar tamaño
+  if (file.size > maxFileSizeMB * 1024 * 1024) {
+    imageErrors.value = [`${file.name} supera el tamaño máximo de ${maxFileSizeMB} MB.`];
     return;
   }
 
   imageErrors.value = [];
-  let validFiles = 0;
+  isUploadingImage.value = true;
 
-  Array.from(files).forEach(file => {
-    // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      imageErrors.value.push(`${file.name} no es una imagen válida.`);
-      return;
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
+    const { data } = await axios.post('/api/images/upload', fd, {
+      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
+    });
+
+    // El backend devuelve { success: true, data: "http://...url..." }
+    const url = data?.data || data?.url || data;
+    if (typeof url === 'string' && url.startsWith('http')) {
+      formData.value.imageUrl = url;
+      axiosConfig.ToastSuccess('Imagen subida', 'La imagen se subió correctamente');
+    } else {
+      imageErrors.value = ['La respuesta del servidor no contiene una URL válida.'];
     }
-
-    // Validar tamaño (máximo 5MB)
-    if (file.size > maxFileSizeMB * 1024 * 1024) {
-      imageErrors.value.push(`${file.name} supera el tamaño máximo de ${maxFileSizeMB}MB.`);
-      return;
-    }
-
-    validFiles++;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      formData.value.images.push(ev.target.result);
-    };
-    reader.onerror = () => {
-      imageErrors.value.push(`Error al leer ${file.name}.`);
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Limpiar el input para permitir subir el mismo archivo de nuevo
-  setTimeout(() => {
-    if (e.target) {
-      e.target.value = '';
-    }
-  }, 0);
-}
-
-function removeImage(index) {
-  formData.value.images.splice(index, 1);
-  imageErrors.value = [];
-}
-
-function setAsMainImage(index) {
-  if (index === 0) return;
-  const [selectedImage] = formData.value.images.splice(index, 1);
-  formData.value.images.unshift(selectedImage);
-}
-
-function handleDragOver(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  const files = e.dataTransfer.files;
-  if (!files.length) return;
-
-  // Validar cantidad de imágenes
-  if (formData.value.images.length + files.length > maxImages) {
-    imageErrors.value = [`Solo se permiten hasta ${maxImages} imágenes. Actualmente tienes ${formData.value.images.length}.`];
-    return;
+  } catch (err) {
+    console.error('Error al subir imagen:', err);
+    imageErrors.value = ['No se pudo subir la imagen. Verifica tu conexión o ingresa una URL manualmente.'];
+  } finally {
+    isUploadingImage.value = false;
   }
+}
 
-  imageErrors.value = [];
-  let validFiles = 0;
+async function handleImageUpload(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  await uploadImageFile(file);
+  // Limpiar el input para poder volver a seleccionar el mismo archivo
+  e.target.value = '';
+}
 
-  Array.from(files).forEach(file => {
-    // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      imageErrors.value.push(`${file.name} no es una imagen válida.`);
-      return;
-    }
-
-    // Validar tamaño
-    if (file.size > maxFileSizeMB * 1024 * 1024) {
-      imageErrors.value.push(`${file.name} supera el tamaño máximo de ${maxFileSizeMB}MB.`);
-      return;
-    }
-
-    validFiles++;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      formData.value.images.push(ev.target.result);
-    };
-    reader.onerror = () => {
-      imageErrors.value.push(`Error al leer ${file.name}.`);
-    };
-    reader.readAsDataURL(file);
-  });
+async function handleDrop(e) {
+  const file = e.dataTransfer.files?.[0];
+  if (!file) return;
+  await uploadImageFile(file);
 }
 </script>
 
@@ -692,7 +697,7 @@ function handleDrop(e) {
 }
 
 .form-section-images h3 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #333;
   margin: 0;
@@ -703,152 +708,101 @@ function handleDrop(e) {
 
 .form-section-images h3 i {
   color: #007bff;
-  font-size: 1.3rem;
 }
 
-.images-count {
-  font-size: 0.9rem;
-  color: #6c757d;
-  font-weight: 500;
-}
-
-/* Image Uploader */
-.image-uploader {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.image-drop-area {
-  border: 3px dashed #e9ecef;
-  border-radius: 12px;
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.image-drop-area:hover {
-  border-color: #007bff;
-  background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, #ffffff 100%);
-  transform: translateY(-2px);
-}
-
-.image-drop-area i {
-  font-size: 3rem;
-  color: #007bff;
-  display: block;
-  margin-bottom: 1rem;
-}
-
-.image-drop-area p {
-  margin: 0.5rem 0;
-  color: #6c757d;
-  font-size: 0.95rem;
-}
-
-.browse-text {
-  background: none;
-  border: none;
-  color: #007bff;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.browse-text:hover {
-  color: #0056b3;
-}
-
-.hidden-file-input {
-  display: none;
-}
-
-/* Image List */
-.image-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.image-item {
-  width: 100px;
-  height: 100px;
+/* Preview de imagen actual */
+.image-preview-current {
   position: relative;
-}
-
-.image-preview-box {
   width: 100%;
-  height: 100%;
+  max-height: 180px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid #e9ecef;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.image-preview-box:hover {
-  border-color: #007bff;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.image-preview-box img {
+.image-preview-current img {
   width: 100%;
-  height: 100%;
+  max-height: 180px;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  display: block;
 }
 
-.image-preview-box:hover img {
-  transform: scale(1.1);
-}
-
-.image-actions {
+.btn-remove-img {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.image-preview-box:hover .image-actions {
-  opacity: 1;
-}
-
-.remove-btn,
-.main-btn {
+  top: 6px;
+  right: 6px;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  transition: all 0.2s;
 }
 
-.remove-btn:hover {
+.btn-remove-img:hover {
   background: #dc3545;
-  color: white;
-  transform: scale(1.15) rotate(90deg);
+  transform: scale(1.1);
 }
 
-.main-btn:hover {
-  background: #ffc107;
-  color: white;
-  transform: scale(1.15);
+/* Drop area */
+.image-drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.image-drop-area:hover,
+.image-drop-area:focus {
+  border-color: #007bff;
+  background: rgba(0,123,255,0.04);
+}
+
+.image-drop-area.uploading {
+  pointer-events: none;
+  border-color: #007bff;
+  background: rgba(0,123,255,0.06);
+}
+
+.image-drop-area i {
+  font-size: 2rem;
+  color: #007bff;
+}
+
+.image-drop-area p {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.image-drop-area .hint {
+  font-size: 0.78rem;
+  color: #999;
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden-file-input {
+  display: none;
 }
 
 /* Error Messages */

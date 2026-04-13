@@ -13,19 +13,16 @@ export const authService = {
 
   // Refrescar token
   refreshToken(refreshToken) {
-    return axios.doPost('/api/auth/refresh', null, {
-      params: { refreshToken }
-    });
+    return axios.doPost(`/api/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`);
   },
 
   // Cerrar sesión
   logout(accessToken, refreshToken) {
-    return axios.doPost('/api/auth/logout', null, {
-      params: {
-        accessToken: accessToken || undefined,
-        refreshToken: refreshToken || undefined
-      }
-    });
+    const params = new URLSearchParams();
+    if (accessToken) params.append('accessToken', accessToken);
+    if (refreshToken) params.append('refreshToken', refreshToken);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return axios.doPost(`/api/auth/logout${query}`);
   },
 
   // Guardar tokens en localStorage
@@ -71,7 +68,7 @@ export const authService = {
 
   // Solicitar reset de contraseña
   forgotPassword(email) {
-    return axios.doGet(`/api/auth/forgot-password?email=${encodeURIComponent(email)}`);
+    return axios.doPost(`/api/auth/forgot-password?email=${encodeURIComponent(email)}`);
   },
 
   // Validar token de reset

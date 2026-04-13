@@ -8,6 +8,15 @@
       <p>Admin Panel - Productos que necesitan reposición</p>
     </div>
 
+    <nav class="admin-nav">
+      <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
+      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Órdenes</router-link>
+      <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
+      <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
+      <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
+      <router-link to="/low-stock" class="admin-nav-item"><i class="bi bi-exclamation-triangle"></i> Stock Bajo</router-link>
+    </nav>
+
     <!-- Loading -->
     <div v-if="loading" class="loading">
       <div class="spinner">
@@ -94,7 +103,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { productsService } from '../services/products';
+import { productService } from '../services/products';
 import { authService } from '../services/auth';
 
 const router = useRouter();
@@ -117,7 +126,7 @@ async function fetchProducts() {
   error.value = '';
 
   try {
-    const response = await productsService.getLowStock();
+    const response = await productService.getLowStockProducts();
     if (response.data.success) {
       products.value = response.data.data || [];
     } else {
@@ -435,17 +444,13 @@ function calculateTotalNeeded() {
 }
 
 @media (max-width: 768px) {
-  .low-stock-container {
-    padding: 1rem;
-  }
-
-  .low-stock-header h1 {
-    font-size: 1.3rem;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
+  .low-stock-container { padding: 1rem; }
+  .low-stock-header h1 { font-size: 1.3rem; }
+  .products-grid { grid-template-columns: 1fr; }
 }
+.admin-nav { display:flex; gap:.25rem; padding:.75rem 2rem; background:#fff; border-bottom:2px solid #e9ecef; flex-wrap:wrap; }
+.admin-nav-item { display:flex; align-items:center; gap:.4rem; padding:.5rem 1rem; border-radius:8px; color:#555; font-weight:500; font-size:.9rem; text-decoration:none; transition:all .2s; }
+.admin-nav-item:hover { background:#f0f4ff; color:#007bff; }
+.admin-nav-item.router-link-active { background:#007bff; color:#fff; }
 </style>
 

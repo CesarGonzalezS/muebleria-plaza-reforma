@@ -117,14 +117,14 @@ export default {
   async doDelete(url, data) {
     return await axios.delete(url, { data });
   },
-  async doPost(url, data) {
-    return await axios.post(url, data);
+  async doPost(url, data, config = {}) {
+    return await axios.post(url, data, config);
   },
-  async doGet(url) {
-    return await axios.get(url);
+  async doGet(url, config = {}) {
+    return await axios.get(url, config);
   },
-  async doPut(url, data) {
-    return await axios.put(url, data);
+  async doPut(url, data, config = {}) {
+    return await axios.put(url, data, config);
   },
   async doPostFile(url, data) {
     return await axios.post(url, data, {
