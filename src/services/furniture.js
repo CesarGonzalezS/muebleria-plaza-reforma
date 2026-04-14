@@ -14,13 +14,33 @@ export async function getFurnitureById(id) {
 
 export async function createFurniture(data) {
   // data debe tener: name, description, price, costPrice, stock?, minStock?, imageUrl?, categoryId?, brandId?
-  const res = await api.doPost('/furniture/', data);
-  return res.data;
+  console.log('🚀 [Furniture Service] Creando mueble con datos:', data);
+
+  try {
+    const res = await api.doPost('/furniture/', data);
+    console.log('✅ [Furniture Service] Mueble creado exitosamente:', res.data);
+    return res.data;
+  } catch (error) {
+    console.error('❌ [Furniture Service] Error al crear mueble:', error);
+    console.error('   Status:', error.response?.status);
+    console.error('   Message:', error.response?.data?.message);
+    throw error;
+  }
 }
 
 export async function updateFurniture(id, data) {
-  const res = await api.doPut(`/furniture/${id}`, data);
-  return res.data;
+  console.log(`🔄 [Furniture Service] Actualizando mueble ID ${id} con datos:`, data);
+
+  try {
+    const res = await api.doPut(`/furniture/${id}`, data);
+    console.log('✅ [Furniture Service] Mueble actualizado exitosamente:', res.data);
+    return res.data;
+  } catch (error) {
+    console.error(`❌ [Furniture Service] Error al actualizar mueble ${id}:`, error);
+    console.error('   Status:', error.response?.status);
+    console.error('   Message:', error.response?.data?.message);
+    throw error;
+  }
 }
 
 export async function deleteFurniture(id) {

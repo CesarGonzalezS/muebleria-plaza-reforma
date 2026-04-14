@@ -51,8 +51,13 @@ axios.interceptors.request.use(
       console.log('   ✓ Authorization header establecido');
       console.log('   Token (primeros 50 caracteres):', token.substring(0, 50) + '...');
       console.log('   Formato:', token.startsWith('eyJ') ? '✓ JWT válido' : '✗ NO es JWT');
+      
+      // Debug: verificar que el token llegó al header
+      console.log('   ✅ Token enviado en header:', !!config.headers.Authorization);
     } else {
       console.warn('   ⚠️ NO HAY TOKEN - Petición irá sin autenticación');
+      console.warn('   AccessToken:', !!localStorage.getItem('accessToken'));
+      console.warn('   Token:', !!localStorage.getItem('token'));
     }
     
     return config;
@@ -76,8 +81,20 @@ axios.interceptors.response.use(
     // Error 401 - No autorizado (token inválido o expirado)
     if (status === 401) {
       console.error('❌ [401 ERROR]', requestUrl, '| Error:', error.response.data);
-      // NO hacer NADA - Solo rechazar la promesa
-      // No limpiar tokens, no redirigir, dejar que el componente maneje el error
+      console.warn('⚠️  Token inválido o expirado. Limpiando datos locales...');
+      
+      // Limpiar tokens
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('role');
+      
+      // Redirigir a login
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      
       return Promise.reject(error);
     }
 
