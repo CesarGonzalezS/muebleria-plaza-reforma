@@ -7,77 +7,105 @@ const instance = axios.create({
 });
 
 const ToastError = (title, message) =>
-  Swal.fire({ icon: "error", title, text: message });
+    Swal.fire({ icon: "error", title, text: message });
 
 const ToastWarning = (title, message) =>
-  Swal.fire({ icon: "warning", title, text: message });
+    Swal.fire({ icon: "warning", title, text: message });
 
 const ToastSuccess = (title, message) =>
-  Swal.fire({ icon: "success", title, text: message, timer: 2000, showConfirmButton: false });
+    Swal.fire({ icon: "success", title, text: message, timer: 2000, showConfirmButton: false });
 
-// Interceptor de petición - agregar token
+
 instance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      console.log(`TOKEN ENVIADO EN ${config.method.toUpperCase()} ${config.url}`);
-    } else {
-      console.warn(`SIN TOKEN EN ${config.method.toUpperCase()} ${config.url}`);
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
+    (config) => {
+      let token = localStorage.getItem("accessToken");
+
+      if (token) {
+        // ✅ LIMPIAR SI EL TOKEN VIENE ESCAPADO
+        token = token.replace(/^"|"$/g, ''); // Quitar comillas al inicio/final
+        token = token.replace(/\\\//g, '/'); // Quitar barras escapadas
+
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log(`✅ TOKEN ENVIADO (limpio): ${config.method.toUpperCase()} ${config.url}`);
+        console.log(`   TOKEN: ${token.substring(0, 30)}...`);
+      } else {
+        console.warn(`⚠️  SIN TOKEN: ${config.method.toUpperCase()} ${config.url}`);
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
 );
-
-// Interceptor de respuesta - manejar errores
+// ✅ RESPONSE INTERCEPTOR - Manejo de errores
 instance.interceptors.response.use(
-  (response) => {
-    console.log(`RESPUESTA OK ${response.status} ${response.config.url}`);
-    return response;
-  },
-  (error) => {
-    if (!error.response) {
-      console.error("ERROR SIN RESPUESTA:", error.message);
-      ToastError("Error de conexión", "No se pudo conectar con el servidor.");
-      return Promise.reject(error);
-    }
-
-    const { status } = error.response;
-    console.error(`ERROR ${status} EN ${error.config.url}`);
-
-    if (status === 401) {
-      // No redirigir si el error viene del propio endpoint de login/auth
-      const url = error.config?.url || '';
-      if (url.includes('/api/auth/') || url.includes('/auth/login') || url.includes('/auth/register')) {
+    (response) => {
+      console.log(`✅ RESPUESTA ${response.status}: ${response.config.url}`);
+      return response;
+    },
+    (error) => {
+      if (!error.response) {
+        console.error("❌ SIN RESPUESTA DEL SERVIDOR:", error.message);
+        ToastError("Error de conexión", "No se pudo conectar con el servidor.");
         return Promise.reject(error);
       }
-      console.log("TOKEN EXPIRADO O INVÁLIDO - LIMPIANDO Y REDIRIGIENDO A LOGIN");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
+
+      const { status } = error.response;
+      const url = error.config?.url || '';
+
+      console.error(`❌ ERROR ${status}: ${url}`);
+
+      // 🔐 CASO 401: Token inválido, expirado o no enviado
+      if (status === 401) {
+        // ✅ IMPORTANTE: NO redirigir si estamos en endpoints de AUTH
+        // (login, register, forgot-password, reset-password)
+        const isAuthEndpoint = url.includes('/api/auth/');
+
+        if (isAuthEndpoint) {
+          console.warn("⚠️  Error 401 en endpoint de auth - devolviendo error sin redirigir");
+          return Promise.reject(error);
+        }
+
+        // ❌ Si llegamos aquí, el token expiró o es inválido en un endpoint PROTEGIDO
+        console.error("❌ TOKEN EXPIRADO - LIMPIANDO Y REDIRIGIENDO A LOGIN");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+
+        ToastError("Sesión expirada", "Tu token ha expirado. Por favor, inicia sesión de nuevo.");
+
+        // Redirige después de mostrar el toast
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+
+        return Promise.reject(error);
+      }
+
+      // 🚫 CASO 403: Acceso denegado (permisos insuficientes)
+      if (status === 403) {
+        ToastWarning("Acceso denegado", "No tienes permisos para realizar esta acción.");
+      }
+      // ❌ CASO 400: Datos inválidos
+      else if (status === 400) {
+        const errorData = error.response.data;
+        if (errorData && typeof errorData === "object") {
+          const firstKey = Object.keys(errorData)[0];
+          const firstValue = errorData[firstKey];
+          ToastWarning("Datos incorrectos", Array.isArray(firstValue) ? firstValue[0] : String(firstValue));
+        } else {
+          ToastWarning("Datos incorrectos", "Verifica la información ingresada.");
+        }
+      }
+      // 🔍 CASO 404: No encontrado
+      else if (status === 404) {
+        ToastWarning("No encontrado", "El recurso solicitado no existe.");
+      }
+      // 💥 CASO 500: Error del servidor
+      else if (status === 500) {
+        ToastError("Error del servidor", "Ocurrió un error en el servidor. Inténtalo más tarde.");
+      }
+
       return Promise.reject(error);
     }
-
-    if (status === 403) {
-      ToastWarning("Acceso denegado", "No tienes permisos para realizar esta acción.");
-    } else if (status === 400) {
-      const errorData = error.response.data;
-      if (errorData && typeof errorData === "object") {
-        const firstKey = Object.keys(errorData)[0];
-        const firstValue = errorData[firstKey];
-        ToastWarning("Datos incorrectos", Array.isArray(firstValue) ? firstValue[0] : String(firstValue));
-      } else {
-        ToastWarning("Datos incorrectos", "Verifica la información ingresada.");
-      }
-    } else if (status === 404) {
-      ToastWarning("No encontrado", "El recurso solicitado no existe.");
-    } else if (status === 500) {
-      ToastError("Error del servidor", "Ocurrió un error en el servidor. Inténtalo más tarde.");
-    }
-
-    return Promise.reject(error);
-  }
 );
 
 export default {
@@ -107,3 +135,4 @@ export default {
   ToastError,
   ToastWarning,
 };
+

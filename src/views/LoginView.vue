@@ -259,27 +259,46 @@ const router = useRouter();
 async function handleLogin() {
   error.value = '';
   loading.value = true;
+
   try {
-    console.log("INICIANDO LOGIN CON:", email.value);
+    console.log("📌 INICIANDO LOGIN CON:", email.value);
+
+    // Consumir API de login
     const res = await authService.login(email.value, password.value);
-    console.log("RESPUESTA LOGIN:", res.data);
+    console.log("📥 RESPUESTA LOGIN:", res.data);
 
-    if (res.data.success && res.data.data) {
-      const { accessToken } = res.data.data;
-      console.log("TOKEN RECIBIDO:", accessToken ? "SÃ ("+accessToken.substring(0,20)+"...)" : "NO");
+    // Validar respuesta
+    if (res.data.success && res.data.data?.accessToken) {
+      const token = res.data.data.accessToken;
 
-      localStorage.setItem('accessToken', accessToken);
+      console.log("✅ TOKEN RECIBIDO:", token.substring(0, 20) + "...");
+      console.log("📝 TIPO:", typeof token);
+
+      // Guardar token en localStorage
+      localStorage.setItem('accessToken', token);
+
+      // Verificar que se guardó
       const verificar = localStorage.getItem('accessToken');
-      console.log("TOKEN GUARDADO EN LOCALSTORAGE:", verificar ? "SÃ" : "NO");
+      console.log("💾 TOKEN GUARDADO EN LOCALSTORAGE:", verificar ? "✅ SÍ" : "❌ NO");
 
-      router.push('/admin');
+      // Guardar datos del usuario
+      if (res.data.data.user) {
+        localStorage.setItem('user', JSON.stringify(res.data.data.user));
+      }
+
+      console.log("🎉 LOGIN EXITOSO - REDIRIGIENDO A /admin");
+
+      // Redirigir al dashboard
+      await router.push('/admin');
+
     } else {
-      console.log("LOGIN SIN SUCCESS O DATA");
-      error.value = 'Credenciales incorrectas';
+      error.value = 'Respuesta inválida del servidor';
+      console.error("❌ RESPUESTA SIN SUCCESS O TOKEN");
     }
+
   } catch (e) {
-    console.error("ERROR EN LOGIN:", e);
-    error.value = e.response?.data?.message || 'Usuario o contraseÃ±a incorrectos';
+    console.error("❌ ERROR EN LOGIN:", e);
+    error.value = e.response?.data?.message || 'Email o contraseña incorrectos';
   } finally {
     loading.value = false;
   }
