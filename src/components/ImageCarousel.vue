@@ -1,23 +1,23 @@
-<template>
-  <section class="split-slider" aria-label="Carrusel de imágenes promocionales">
+﻿<template>
+  <section class="split-slider" aria-label="Carrusel de imÃ¡genes promocionales">
     <div class="split-left">
       <div class="content-wrapper">
-        <span class="badge-promo" aria-label="Promoción especial">✨ Oferta Especial</span>
+        <span class="badge-promo" aria-label="PromociÃ³n especial">âœ¨ Oferta Especial</span>
         <h2 class="split-title">
-          El mejor regalo para mamá
-          <span class="highlight">encuéntralo en nuestra sucursal</span>
+          El mejor regalo para mamÃ¡
+          <span class="highlight">encuÃ©ntralo en nuestra sucursal</span>
         </h2>
         <p class="split-description">
           Descubre muebles hechos a mano que transforman tu espacio en un verdadero hogar.
-          Calidad excepcional y diseños únicos.
+          Calidad excepcional y diseÃ±os Ãºnicos.
         </p>
         <div class="cta-group">
           <router-link to="/productos" class="btn-split-primary">
-            <span>Descubre más</span>
+            <span>Descubre mÃ¡s</span>
             <i class="bi bi-arrow-right"></i>
           </router-link>
           <button class="btn-split-secondary" @click="scrollToContact">
-            Contáctanos
+            ContÃ¡ctanos
           </button>
         </div>
 
@@ -47,7 +47,7 @@
       @touchmove="onDrag"
       @touchend="endDrag"
       role="region"
-      aria-label="Galería de imágenes deslizable"
+      aria-label="GalerÃ­a de imÃ¡genes deslizable"
     >
       <!-- Navigation arrows -->
       <button
@@ -77,7 +77,7 @@
           <img
             :src="images[i]"
             :alt="`Imagen promocional ${i + 1}`"
-            :title="`Promoción ${i + 1}`"
+            :title="`PromociÃ³n ${i + 1}`"
             loading="lazy"
             @load="onImageLoad(i)"
           />
@@ -86,7 +86,7 @@
       </div>
 
       <!-- Dots navigation -->
-      <nav class="slider-dots" aria-label="Navegación de imágenes">
+      <nav class="slider-dots" aria-label="NavegaciÃ³n de imÃ¡genes">
         <button
           v-for="i in indices"
           :key="`dot-${i}`"
@@ -115,7 +115,7 @@ const images = [
   "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80",
 ];
 
-// índice reutilizable para iterar en plantillas y evitar advertencias del analizador
+// Ã­ndice reutilizable para iterar en plantillas y evitar advertencias del analizador
 const indices = images.map((_, i) => i);
 
 const current = ref(0);
@@ -245,7 +245,7 @@ onUnmounted(() => {
 <style scoped>
 .split-slider {
   display: grid;
-  grid-template-columns: 45% 75%; /* más ancho para las imágenes */
+  grid-template-columns: 45% 75%; /* mÃ¡s ancho para las imÃ¡genes */
   height: 760px; /* altura fija en pantallas grandes para evitar que aumente */
   background: linear-gradient(135deg, #fdfbff 0%, #f8f4fc 100%);
   border-radius: 1.5rem;
@@ -260,7 +260,7 @@ onUnmounted(() => {
 
 /* Left side - Content */
 .split-left {
-  padding: 1.6rem 1.2rem; /* aún menos padding para ganar ancho visible */
+  padding: 1.6rem 1.2rem; /* aÃºn menos padding para ganar ancho visible */
   display: flex;
   align-items: center;
   background: linear-gradient(135deg, #ffffff 0%, #faf8fc 100%);
@@ -517,7 +517,7 @@ onUnmounted(() => {
 }
 
 .dot.active {
-  background: #fff;
+  background: var(--white);
   width: 32px;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
@@ -554,7 +554,7 @@ onUnmounted(() => {
 @media (max-width: 1024px) {
   .split-slider {
     grid-template-columns: 1fr;
-    height: auto; /* volver a comportamiento flexible en pantallas pequeñas */
+    height: auto; /* volver a comportamiento flexible en pantallas pequeÃ±as */
   }
 
   .split-left {

@@ -1,22 +1,14 @@
 import axios from '../config/AxiosConfig';
 
 export const authService = {
-  // Registro de cliente
   register(userData) {
     return axios.doPost('/api/auth/register', userData);
   },
 
-  // Iniciar sesión
   login(email, password) {
     return axios.doPost('/api/auth/login', { email, password });
   },
 
-  // Refrescar token
-  refreshToken(refreshToken) {
-    return axios.doPost(`/api/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`);
-  },
-
-  // Cerrar sesión
   logout(accessToken, refreshToken) {
     const params = new URLSearchParams();
     if (accessToken) params.append('accessToken', accessToken);
@@ -25,13 +17,11 @@ export const authService = {
     return axios.doPost(`/api/auth/logout${query}`);
   },
 
-  // Guardar tokens en localStorage
   setTokens(accessToken, refreshToken) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
   },
 
-  // Obtener tokens
   getTokens() {
     return {
       accessToken: localStorage.getItem('accessToken'),
@@ -39,20 +29,17 @@ export const authService = {
     };
   },
 
-  // Limpiar tokens
   clearTokens() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('token'); // Para compatibilidad con código existente
+    localStorage.removeItem('token');
     localStorage.removeItem('role');
   },
 
-  // Verificar si está autenticado
   isAuthenticated() {
     return !!localStorage.getItem('accessToken');
   },
 
-  // Cambiar contraseña
   changePassword(userId, currentPassword, newPassword) {
     return axios.doPost(`/api/auth/change-password?userId=${userId}`, {
       currentPassword,
@@ -61,22 +48,18 @@ export const authService = {
     });
   },
 
-  // Obtener estado de contraseña
   getPasswordStatus(userId) {
     return axios.doGet(`/api/auth/password-status/${userId}`);
   },
 
-  // Solicitar reset de contraseña
   forgotPassword(email) {
     return axios.doPost(`/api/auth/forgot-password?email=${encodeURIComponent(email)}`);
   },
 
-  // Validar token de reset
   validateResetToken(token) {
     return axios.doGet(`/api/auth/validate-reset-token?token=${encodeURIComponent(token)}`);
   },
 
-  // Resetear contraseña con token
   resetPassword(token, newPassword, confirmPassword) {
     return axios.doPost('/api/auth/reset-password', {
       token,

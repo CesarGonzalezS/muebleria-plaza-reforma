@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <Navbar />
     <div v-scroll-animate>
@@ -42,7 +42,7 @@
     <div v-scroll-animate>
       <Footer />
     </div>
-    <!-- Botón flotante de WhatsApp -->
+    <!-- BotÃ³n flotante de WhatsApp -->
 
 
       <!-- WhatsApp flotante mejorado -->
@@ -53,7 +53,7 @@
           aria-label="WhatsApp"
       >
         <i class="bi bi-whatsapp"></i>
-        <span class="whatsapp-tooltip">¡Chatea con nosotros!</span>
+        <span class="whatsapp-tooltip">Â¡Chatea con nosotros!</span>
       </a>
 
   </div>
@@ -95,13 +95,13 @@ const galleryImages = [
 
 const testimonialsList = [
   {
-    name: 'Laura Gómez',
-    text: 'Excelente atención y muebles de calidad. Recomiendo mucho la tienda.',
+    name: 'Laura GÃ³mez',
+    text: 'Excelente atenciÃ³n y muebles de calidad. Recomiendo mucho la tienda.',
     img: '/assets/img/testimonios/laura.jpg'
   },
   {
-    name: 'Pedro Martínez',
-    text: 'Me encantó la variedad y el servicio postventa, ¡gracias!',
+    name: 'Pedro MartÃ­nez',
+    text: 'Me encantÃ³ la variedad y el servicio postventa, Â¡gracias!',
     img: '/assets/img/testimonios/pedro.jpg'
   }
 ]
@@ -113,7 +113,7 @@ async function fetchFeaturedProducts() {
   loadingFeatured.value = true;
   try {
     const res = await axiosConfig.doGet('/furniture/');
-    // Puedes filtrar aquí si quieres solo algunos destacados, por ahora muestra los primeros 6
+    // Puedes filtrar aquÃ­ si quieres solo algunos destacados, por ahora muestra los primeros 6
     featuredProducts.value = res.data.slice(0, 6).map(item => {
       // Obtener la primera imagen del array o usar fallback
       let mainImage = '/assets/img/products/default.jpg';
@@ -186,7 +186,7 @@ const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20s
   background: #1f2937;
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   white-space: nowrap;
   font-size: 0.9rem;
   font-weight: 600;

@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="product-manager-container">
     <div class="manager-header">
       <h1>
         <i class="bi bi-tools"></i>
-        Gestión de Productos
+        GestiÃ³n de Productos
       </h1>
       <button @click="showFormModal = true" class="btn-create">
         <i class="bi bi-plus-circle"></i> Nuevo Producto
@@ -31,12 +31,12 @@
             />
           </div>
 
-          <!-- Descripción -->
+          <!-- DescripciÃ³n -->
           <div class="form-group">
-            <label>Descripción *</label>
+            <label>DescripciÃ³n *</label>
             <textarea
               v-model="form.description"
-              placeholder="Descripción del producto"
+              placeholder="DescripciÃ³n del producto"
               rows="3"
               required
             ></textarea>
@@ -53,13 +53,13 @@
             />
           </div>
 
-          <!-- Categoría -->
+          <!-- CategorÃ­a -->
           <div class="form-group">
-            <label>Categoría *</label>
+            <label>CategorÃ­a *</label>
             <input
               v-model="form.categoryId"
               type="text"
-              placeholder="ID de la categoría"
+              placeholder="ID de la categorÃ­a"
               required
             />
           </div>
@@ -100,7 +100,7 @@
               />
             </div>
             <div class="form-group">
-              <label>Stock Mínimo *</label>
+              <label>Stock MÃ­nimo *</label>
               <input
                 v-model.number="form.minStock"
                 type="number"
@@ -281,7 +281,7 @@ async function saveProduct() {
 }
 
 async function deleteProductConfirm(id) {
-  if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+  if (confirm('Â¿EstÃ¡s seguro de que deseas eliminar este producto?')) {
     try {
       await productService.deleteProduct(id);
       await fetchProducts();
@@ -334,7 +334,7 @@ function formatPrice(price) {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
   font-size: 1.8rem;
 }
@@ -343,11 +343,11 @@ function formatPrice(price) {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -374,7 +374,7 @@ function formatPrice(price) {
 }
 
 .modal-content {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 2rem;
   max-width: 600px;
@@ -388,24 +388,24 @@ function formatPrice(price) {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #f3f4f6;
+  background: var(--canvas);
   border: none;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   cursor: pointer;
   font-size: 1.5rem;
-  color: #6b7280;
+  color: var(--slate);
   transition: all 0.2s;
 }
 
 .close-btn:hover {
   background: #e5e7eb;
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .modal-content h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   font-size: 1.5rem;
 }
@@ -416,7 +416,7 @@ function formatPrice(price) {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -427,7 +427,7 @@ function formatPrice(price) {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 1rem;
   font-family: inherit;
   box-sizing: border-box;
@@ -437,7 +437,7 @@ function formatPrice(price) {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -452,7 +452,7 @@ function formatPrice(price) {
   border: 1px solid #fca;
   color: #c33;
   padding: 0.75rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -468,7 +468,7 @@ function formatPrice(price) {
   flex: 1;
   padding: 0.75rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -479,7 +479,7 @@ function formatPrice(price) {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
 }
 
@@ -494,8 +494,8 @@ function formatPrice(price) {
 }
 
 .btn-cancel {
-  background: #f3f4f6;
-  color: #1f2937;
+  background: var(--canvas);
+  color: var(--ink);
 }
 
 .btn-cancel:hover {
@@ -509,12 +509,12 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: var(--ink);
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
 }
@@ -531,7 +531,7 @@ function formatPrice(price) {
 }
 
 .product-card {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -547,7 +547,7 @@ function formatPrice(price) {
   width: 100%;
   height: 200px;
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--canvas);
 }
 
 .card-image img {
@@ -559,7 +559,7 @@ function formatPrice(price) {
 .card-image-placeholder {
   width: 100%;
   height: 200px;
-  background: #f3f4f6;
+  background: var(--canvas);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -573,7 +573,7 @@ function formatPrice(price) {
 
 .card-content h3 {
   margin: 0 0 0.5rem;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -582,7 +582,7 @@ function formatPrice(price) {
 }
 
 .description {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.85rem;
   margin: 0 0 1rem;
   display: -webkit-box;
@@ -599,12 +599,12 @@ function formatPrice(price) {
 }
 
 .info-row .label {
-  color: #6b7280;
+  color: var(--slate);
   font-weight: 600;
 }
 
 .info-row .value {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -623,7 +623,7 @@ function formatPrice(price) {
   flex: 1;
   padding: 0.6rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -659,7 +659,7 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-radius: 12px;
   text-align: center;
   color: #9ca3af;

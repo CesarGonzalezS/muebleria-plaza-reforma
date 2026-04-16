@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div>
     <!-- Indicador de carga -->
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
-      <p>Cargando categorías...</p>
+      <p>Cargando categorÃ­as...</p>
     </div>
 
     <!-- Error message -->
@@ -51,15 +51,15 @@ const localItems = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Icono predeterminado para categorías sin icono
+// Icono predeterminado para categorÃ­as sin icono
 const defaultIcon = `<i class="bi bi-grid"></i>`;
 
-// Determinar qué items mostrar (props o datos locales)
+// Determinar quÃ© items mostrar (props o datos locales)
 const displayItems = computed(() => {
   return props.items.length > 0 ? props.items : localItems.value;
 });
 
-// Función para obtener categorías
+// FunciÃ³n para obtener categorÃ­as
 async function fetchCategories() {
   if (!props.autoLoad && props.items.length > 0) {
     return; // No cargar si no es autoload y ya tenemos items
@@ -72,8 +72,8 @@ async function fetchCategories() {
     localItems.value = data;
     emit('loaded', data);
   } catch (err) {
-    console.error('Error al cargar las categorías:', err);
-    error.value = 'No se pudieron cargar las categorías. Por favor, intente nuevamente.';
+    console.error('Error al cargar las categorÃ­as:', err);
+    error.value = 'No se pudieron cargar las categorÃ­as. Por favor, intente nuevamente.';
     emit('error', err);
   } finally {
     loading.value = false;
@@ -84,7 +84,7 @@ function onClick(item) {
   emit('select', item);
 }
 
-// Cargar categorías al montar si autoLoad está activado
+// Cargar categorÃ­as al montar si autoLoad estÃ¡ activado
 onMounted(() => {
   if (props.autoLoad) {
     fetchCategories();
@@ -136,13 +136,13 @@ defineExpose({
   width: 100%;
   aspect-ratio: 1 / 1;
   background: #efebe6;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 10px auto;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #111827;
+  color: var(--ink);
   border: 1px solid rgba(15, 23, 42, 0.05);
 }
 
@@ -162,7 +162,7 @@ defineExpose({
 .icon-box svg {
   width: 56px;
   height: 56px;
-  color: #111827;
+  color: var(--ink);
   opacity: 0.95;
 }
 
@@ -182,7 +182,7 @@ defineExpose({
 .label {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--ink);
   max-width: 120px;
   margin: 0 auto;
   line-height: 1.3;
@@ -251,7 +251,7 @@ defineExpose({
   padding: 2rem;
   color: #860734;
   background: rgba(134, 7, 52, 0.1);
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin: 1rem 0;
 }
 

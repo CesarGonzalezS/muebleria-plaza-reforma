@@ -1,7 +1,7 @@
-<template>
+﻿<template>
   <div class="order-detail-container">
     <router-link to="/my-orders" class="back-link">
-      <i class="bi bi-arrow-left"></i> Volver a Mis Órdenes
+      <i class="bi bi-arrow-left"></i> Volver a Mis Ã“rdenes
     </router-link>
 
     <!-- Loading -->
@@ -38,9 +38,9 @@
         </div>
       </div>
 
-      <!-- Información General -->
+      <!-- InformaciÃ³n General -->
       <div class="info-section">
-        <h2>Información de la Orden</h2>
+        <h2>InformaciÃ³n de la Orden</h2>
         <div class="info-grid">
           <div class="info-item">
             <span class="label">ID de Orden</span>
@@ -55,15 +55,15 @@
             <span class="value">{{ formatStatus(order.status) }}</span>
           </div>
           <div class="info-item">
-            <span class="label">Fecha de Creación</span>
+            <span class="label">Fecha de CreaciÃ³n</span>
             <span class="value">{{ formatDateTime(order.createdAt) }}</span>
           </div>
         </div>
       </div>
 
-      <!-- Dirección de Envío -->
+      <!-- DirecciÃ³n de EnvÃ­o -->
       <div v-if="order.shippingAddress" class="address-section">
-        <h2>Dirección de Envío</h2>
+        <h2>DirecciÃ³n de EnvÃ­o</h2>
         <div class="address-box">
           <i class="bi bi-geo-alt"></i>
           <p>{{ order.shippingAddress }}</p>
@@ -133,7 +133,7 @@
       <i class="bi bi-inbox"></i>
       <p>Orden no encontrada</p>
       <router-link to="/my-orders" class="btn-back">
-        Volver a Mis Órdenes
+        Volver a Mis Ã“rdenes
       </router-link>
     </div>
   </div>
@@ -159,7 +159,7 @@ async function fetchOrder() {
   const orderId = route.params.id;
 
   if (!orderId) {
-    error.value = 'ID de orden no válido';
+    error.value = 'ID de orden no vÃ¡lido';
     return;
   }
 
@@ -226,7 +226,7 @@ function calculateTax() {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #667eea;
+  color: var(--ink);
   text-decoration: none;
   font-weight: 600;
   margin-bottom: 2rem;
@@ -245,12 +245,12 @@ function calculateTax() {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: var(--ink);
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
 }
@@ -268,7 +268,7 @@ function calculateTax() {
   border: 2px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 2rem;
 }
 
@@ -278,14 +278,14 @@ function calculateTax() {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
 }
 
 /* Detail */
 .order-detail {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -302,7 +302,7 @@ function calculateTax() {
 
 .header-info h1 {
   margin: 0 0 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.8rem;
 }
 
@@ -315,7 +315,7 @@ function calculateTax() {
 .status-badge {
   display: inline-flex;
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -346,7 +346,7 @@ function calculateTax() {
 }
 
 .date {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
 }
 
@@ -363,7 +363,7 @@ function calculateTax() {
 
 .header-total .amount {
   display: block;
-  color: #667eea;
+  color: var(--ink);
   font-size: 2rem;
   font-weight: 700;
 }
@@ -374,7 +374,7 @@ function calculateTax() {
 .items-section,
 .summary-section {
   padding: 2rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .info-section:last-of-type,
@@ -389,7 +389,7 @@ function calculateTax() {
 .items-section h2,
 .summary-section h2,
 .actions-section h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   font-size: 1.1rem;
 }
@@ -413,7 +413,7 @@ function calculateTax() {
 }
 
 .info-item .value {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 500;
   word-break: break-all;
 }
@@ -421,21 +421,21 @@ function calculateTax() {
 .address-box {
   display: flex;
   gap: 1rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   border-left: 4px solid #667eea;
 }
 
 .address-box i {
-  color: #667eea;
+  color: var(--ink);
   font-size: 1.5rem;
   flex-shrink: 0;
 }
 
 .address-box p {
   margin: 0;
-  color: #1f2937;
+  color: var(--ink);
   line-height: 1.6;
 }
 
@@ -451,10 +451,10 @@ function calculateTax() {
   grid-template-columns: 1fr 100px 150px 150px;
   gap: 1rem;
   padding: 1rem;
-  background: #f3f4f6;
-  border-radius: 8px;
+  background: var(--canvas);
+  border-radius: var(--r-card);
   font-weight: 600;
-  color: #374151;
+  color: var(--charcoal);
 }
 
 .items-row {
@@ -462,7 +462,7 @@ function calculateTax() {
   grid-template-columns: 1fr 100px 150px 150px;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   align-items: center;
 }
 
@@ -471,7 +471,7 @@ function calculateTax() {
 }
 
 .product-id {
-  color: #667eea;
+  color: var(--ink);
   font-weight: 600;
   font-family: monospace;
 }
@@ -480,7 +480,7 @@ function calculateTax() {
 .unit-price,
 .subtotal {
   text-align: right;
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .quantity {
@@ -489,7 +489,7 @@ function calculateTax() {
 
 .subtotal {
   font-weight: 700;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .empty-items {
@@ -500,9 +500,9 @@ function calculateTax() {
 
 /* Summary */
 .summary-box {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   border-left: 4px solid #667eea;
 }
 
@@ -510,14 +510,14 @@ function calculateTax() {
   display: flex;
   justify-content: space-between;
   padding: 0.75rem 0;
-  color: #6b7280;
+  color: var(--slate);
   font-weight: 500;
 }
 
 .summary-row.total {
   padding: 1rem 0;
   border-top: 2px solid #e5e7eb;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.2rem;
   font-weight: 700;
   margin-top: 0.5rem;
@@ -528,7 +528,7 @@ function calculateTax() {
   padding: 2rem;
   display: flex;
   gap: 1rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-radius: 0 0 12px 12px;
 }
 
@@ -540,7 +540,7 @@ function calculateTax() {
   gap: 0.75rem;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -582,7 +582,7 @@ function calculateTax() {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-radius: 12px;
   text-align: center;
   color: #9ca3af;
@@ -596,10 +596,10 @@ function calculateTax() {
 
 .btn-back {
   display: inline-block;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   text-decoration: none;
   font-weight: 600;
   margin-top: 1rem;

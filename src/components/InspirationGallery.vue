@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="gallery-section py-5">
     <div class="container">
       <h3 class="mb-4 text-center gallery-title">
@@ -47,7 +47,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/pagination";
 
-// Galería de imágenes (tus imports)
+// GalerÃ­a de imÃ¡genes (tus imports)
 import img1 from "./assets/img/inspiracion1.jpg";
 import img2 from "./assets/img/inspiracion2.jpg";
 import img3 from "./assets/img/inspiracion3.jpg";
@@ -83,7 +83,7 @@ function closeModal() {
   lastDist = 0; // Reiniciar la distancia para evitar problemas con el gesto de "pinch"
 }
 
-// Zoom con la rueda del mouse o "pinch" móvil
+// Zoom con la rueda del mouse o "pinch" mÃ³vil
 const scale = ref(1);
 function zoom(e) {
   e.preventDefault();
@@ -95,13 +95,13 @@ function zoom(e) {
   scale.value += e.deltaY < 0 ? zoomStep : -zoomStep;
   scale.value = Math.max(minScale, Math.min(maxScale, scale.value));
 
-  // Aplicar transformación a la imagen
+  // Aplicar transformaciÃ³n a la imagen
   if (modalImgRef.value) {
     modalImgRef.value.style.transform = `scale(${scale.value})`;
   }
 }
 
-// Mejorar el manejo de "pinch" en dispositivos táctiles
+// Mejorar el manejo de "pinch" en dispositivos tÃ¡ctiles
 let lastDist = 0;
 function onPinch(e) {
   if (e.touches && e.touches.length === 2) {
@@ -161,7 +161,7 @@ window.addEventListener("touchend", resetPinch);
   position: relative;
   max-width: 92vw;
   max-height: 88vh;
-  background: #fff;
+  background: var(--white);
   border-radius: 18px;
   box-shadow: 0 4px 38px #8607346e;
   display: flex;

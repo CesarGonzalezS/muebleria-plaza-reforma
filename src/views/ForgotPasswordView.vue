@@ -1,18 +1,18 @@
-<template>
+﻿<template>
   <div class="forgot-password-container">
     <div class="forgot-password-card">
       <button @click="goBack" class="back-btn">
-        <i class="bi bi-arrow-left"></i> Atrás
+        <i class="bi bi-arrow-left"></i> AtrÃ¡s
       </button>
 
       <!-- Step 1: Solicitar Reset -->
       <div v-if="step === 1">
-        <h1>¿Olvidaste tu Contraseña?</h1>
+        <h1>Â¿Olvidaste tu ContraseÃ±a?</h1>
         <p class="subtitle">Ingresa tu email para recibir instrucciones</p>
 
         <form @submit.prevent="handleForgotPassword">
           <div class="form-group">
-            <label for="email">Correo Electrónico</label>
+            <label for="email">Correo ElectrÃ³nico</label>
             <input
               v-model="email"
               id="email"
@@ -32,7 +32,7 @@
           </button>
 
           <div class="form-link">
-            ¿Recuerdas tu contraseña? <router-link to="/login">Inicia sesión</router-link>
+            Â¿Recuerdas tu contraseÃ±a? <router-link to="/login">Inicia sesiÃ³n</router-link>
           </div>
         </form>
       </div>
@@ -44,7 +44,7 @@
 
         <form @submit.prevent="handleValidateToken">
           <div class="form-group">
-            <label for="token">Token de Recuperación</label>
+            <label for="token">Token de RecuperaciÃ³n</label>
             <input
               v-model="resetToken"
               id="token"
@@ -65,13 +65,13 @@
         </form>
       </div>
 
-      <!-- Step 3: Éxito y Redireccionamiento -->
+      <!-- Step 3: Ã‰xito y Redireccionamiento -->
       <div v-if="step === 3" class="success-container">
         <div class="success-icon">
           <i class="bi bi-check-circle"></i>
         </div>
-        <h1>¡Token Válido!</h1>
-        <p>Redirigiendo para resetear tu contraseña...</p>
+        <h1>Â¡Token VÃ¡lido!</h1>
+        <p>Redirigiendo para resetear tu contraseÃ±a...</p>
       </div>
     </div>
   </div>
@@ -130,7 +130,7 @@ async function handleValidateToken() {
       }, 1000);
     }
   } catch (err) {
-    error.value = err.response?.data?.message || 'Token inválido o expirado.';
+    error.value = err.response?.data?.message || 'Token invÃ¡lido o expirado.';
   } finally {
     loading.value = false;
   }
@@ -143,12 +143,12 @@ async function handleValidateToken() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   padding: 2rem 1rem;
 }
 
 .forgot-password-card {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   padding: 3rem;
   width: 100%;
@@ -173,11 +173,11 @@ async function handleValidateToken() {
   position: absolute;
   top: 1.5rem;
   left: 1.5rem;
-  background: #f3f4f6;
+  background: var(--canvas);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  color: #6b7280;
+  border-radius: var(--r-card);
+  color: var(--slate);
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -189,19 +189,19 @@ async function handleValidateToken() {
 
 .back-btn:hover {
   background: #e5e7eb;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .forgot-password-card h1 {
   text-align: center;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 0.5rem;
   font-size: 1.8rem;
 }
 
 .subtitle {
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   margin: 0 0 2rem;
   font-size: 0.95rem;
 }
@@ -212,7 +212,7 @@ async function handleValidateToken() {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
@@ -222,7 +222,7 @@ async function handleValidateToken() {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   transition: all 0.3s;
   box-sizing: border-box;
@@ -230,7 +230,7 @@ async function handleValidateToken() {
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -249,7 +249,7 @@ async function handleValidateToken() {
   right: 0.75rem;
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -257,7 +257,7 @@ async function handleValidateToken() {
 }
 
 .toggle-password:hover {
-  color: #667eea;
+  color: var(--ink);
 }
 
 .error-message {
@@ -265,7 +265,7 @@ async function handleValidateToken() {
   border: 1px solid #fca;
   color: #c33;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -275,18 +275,18 @@ async function handleValidateToken() {
   border: 1px solid #aca;
   color: #3a3;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
 .btn-submit {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border: none;
   padding: 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -309,13 +309,13 @@ async function handleValidateToken() {
 
 .form-link {
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   margin-top: 1rem;
 }
 
 .form-link a {
-  color: #667eea;
+  color: var(--ink);
   text-decoration: none;
   font-weight: 600;
 }
@@ -359,7 +359,7 @@ async function handleValidateToken() {
 }
 
 .success-container p {
-  color: #6b7280;
+  color: var(--slate);
   margin-bottom: 2rem;
 }
 

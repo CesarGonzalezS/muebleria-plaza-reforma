@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="inventory-adjust-container">
     <div class="adjust-header">
       <h1>
@@ -10,7 +10,7 @@
 
     <nav class="admin-nav">
       <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
-      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Órdenes</router-link>
+      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Ã“rdenes</router-link>
       <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
       <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
       <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
@@ -61,10 +61,10 @@
             <label>Motivo del Ajuste *</label>
             <select v-model="adjust.reason" required>
               <option value="">Seleccionar motivo</option>
-              <option value="Inventario físico">Inventario físico</option>
-              <option value="Corrección de error">Corrección de error</option>
-              <option value="Daño detectado">Daño detectado</option>
-              <option value="Robo/Pérdida">Robo/Pérdida</option>
+              <option value="Inventario fÃ­sico">Inventario fÃ­sico</option>
+              <option value="CorrecciÃ³n de error">CorrecciÃ³n de error</option>
+              <option value="DaÃ±o detectado">DaÃ±o detectado</option>
+              <option value="Robo/PÃ©rdida">Robo/PÃ©rdida</option>
               <option value="Ajuste administrativo">Ajuste administrativo</option>
               <option value="Otro">Otro</option>
             </select>
@@ -111,9 +111,9 @@
             <select v-model="add.referenceType">
               <option value="MANUAL">Manual</option>
               <option value="PURCHASE_ORDER">Orden de Compra</option>
-              <option value="RETURN">Devolución</option>
+              <option value="RETURN">DevoluciÃ³n</option>
               <option value="TRANSFER">Transferencia</option>
-              <option value="PRODUCTION">Producción</option>
+              <option value="PRODUCTION">ProducciÃ³n</option>
             </select>
           </div>
 
@@ -163,14 +163,14 @@
           </div>
 
           <div class="form-group">
-            <label>Motivo de la Remoción *</label>
+            <label>Motivo de la RemociÃ³n *</label>
             <select v-model="remove.reason" required>
               <option value="">Seleccionar motivo</option>
               <option value="Venta">Venta</option>
-              <option value="Devolución de cliente">Devolución de cliente</option>
-              <option value="Daño o deterioro">Daño o deterioro</option>
+              <option value="DevoluciÃ³n de cliente">DevoluciÃ³n de cliente</option>
+              <option value="DaÃ±o o deterioro">DaÃ±o o deterioro</option>
               <option value="Transferencia a otra sucursal">Transferencia a otra sucursal</option>
-              <option value="Robo/Pérdida">Robo/Pérdida</option>
+              <option value="Robo/PÃ©rdida">Robo/PÃ©rdida</option>
               <option value="Otro">Otro</option>
             </select>
           </div>
@@ -325,17 +325,17 @@ function showSuccess(message) {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
   font-size: 2rem;
 }
 
 .adjust-header h1 i {
-  color: #667eea;
+  color: var(--ink);
 }
 
 .adjust-header p {
-  color: #6b7280;
+  color: var(--slate);
   margin: 0.5rem 0 0;
 }
 
@@ -354,7 +354,7 @@ function showSuccess(message) {
   background: transparent;
   border: none;
   padding: 1rem;
-  color: #6b7280;
+  color: var(--slate);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -363,12 +363,12 @@ function showSuccess(message) {
 }
 
 .tab-btn:hover {
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .tab-btn.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: var(--ink);
+  border-bottom-color: var(--ink);
 }
 
 .tab-btn i {
@@ -377,7 +377,7 @@ function showSuccess(message) {
 
 /* Tab Content */
 .tab-content {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -399,7 +399,7 @@ function showSuccess(message) {
 }
 
 .tab-pane h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   font-size: 1.3rem;
 }
@@ -410,7 +410,7 @@ function showSuccess(message) {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -422,7 +422,7 @@ function showSuccess(message) {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 1rem;
   font-family: inherit;
   box-sizing: border-box;
@@ -433,7 +433,7 @@ function showSuccess(message) {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -442,7 +442,7 @@ function showSuccess(message) {
   border: 1px solid #fca;
   color: #c33;
   padding: 0.75rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -455,12 +455,12 @@ function showSuccess(message) {
   width: 100%;
   padding: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
 }
 
@@ -498,7 +498,7 @@ function showSuccess(message) {
   background: #d1fae5;
   color: #065f46;
   padding: 1rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   border-left: 4px solid #10b981;
   display: flex;
   align-items: center;

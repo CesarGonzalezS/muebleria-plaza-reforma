@@ -1,61 +1,231 @@
+/* ============================================================
+   DESIGN SYSTEM — Mueblería Plaza Reforma
+   Inspired by: DESIGN.md (Mastercard editorial aesthetic)
+   ============================================================ */
+
+/* --- Tokens ------------------------------------------------- */
+:root {
+  /* Surfaces */
+  --canvas:        #F3F0EE;
+  --canvas-lifted: #FCFBFA;
+  --white:         #FFFFFF;
+
+  /* Text & ink */
+  --ink:       #141413;
+  --charcoal:  #262627;
+  --slate:     #696969;
+  --dust:      #D1CDC7;
+
+  /* Accent */
+  --signal:    #CF4500;
+  --signal-lt: #F37338;
+
+  /* Border */
+  --border:    rgba(20, 20, 19, 0.14);
+
+  /* Radius */
+  --r-btn:  20px;
+  --r-card: 16px;
+  --r-hero: 40px;
+  --r-pill: 999px;
+
+  /* Shadow */
+  --shadow-sm:  0 4px 24px rgba(0,0,0,0.04);
+  --shadow-md:  0 24px 48px rgba(0,0,0,0.08);
+
+  /* Spacing */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+  --s7: 96px;
+
+  /* Font */
+  --font: 'Inter', 'Sofia Sans', Arial, sans-serif;
+}
+
+/* --- Reset -------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
 html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  height: 100%;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-* {
-  box-sizing: border-box;
-}
+#app { background: var(--canvas); }
 
-.container {
-  padding: 0;
-  max-height: 100vh;
-  overflow-y: auto;
-}
-
-/* Defensive rules to avoid horizontal scroll due to elements exceeding viewport */
-html, body, #app {
-  max-width: 100vw !important;
-  overflow-x: hidden !important;
-}
-
-/* Make sure images and media never overflow the viewport */
 img, picture, video, iframe {
-  max-width: 100% !important;
-  height: auto !important;
+  max-width: 100%;
+  height: auto;
   display: block;
 }
 
-/* Force main layout containers to respect viewport width */
-main, .detail-page, .product-detail, .container {
-  width: 100% !important;
-  max-width: 100vw !important;
-  overflow-x: hidden !important;
+/* --- Typography -------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.1;
 }
 
-/* Prevent large grid items producing horizontal overflow */
-.related-products-grid, .thumbnails {
-  box-sizing: border-box;
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; line-height: 1.2; }
+
+p { margin: 0; }
+
+a { color: var(--ink); text-decoration: none; }
+
+/* --- Utility ----------------------------------------------- */
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.muted { color: var(--slate); }
+
+.container {
   width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--s3);
 }
 
-/* Utility: hide accidental horizontal overflow on small devices */
-@media (max-width: 480px) {
-  body {
-    position: relative;
-    left: 0;
-    right: 0;
-    overflow-x: hidden !important;
-  }
+/* --- Buttons ----------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  padding: 8px 24px;
+  border-radius: var(--r-btn);
+  font-family: var(--font);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: opacity 0.15s, background 0.15s;
+  white-space: nowrap;
 }
 
-/* Ajustar espaciado entre inputs */
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--canvas);
+  border-color: var(--ink);
+}
+.btn-primary:hover:not(:disabled) { opacity: 0.85; }
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.btn-secondary:hover:not(:disabled) { background: var(--canvas); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--border);
+}
+.btn-ghost:hover:not(:disabled) { background: var(--canvas-lifted); }
+
+.btn-sm { padding: 5px 16px; font-size: 0.8125rem; }
+.btn-lg { padding: 14px 40px; font-size: 1rem; border-radius: 40px; }
+
+/* --- Forms ------------------------------------------------- */
 .form-group {
-  margin-bottom: 2.5rem; /* Incrementar aún más el margen inferior entre inputs */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
+
+.form-group label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--dust);
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 0.9375rem;
+  color: var(--ink);
+  background: var(--white);
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--ink);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--dust); }
 
 .form-row {
-  gap: 2.5rem; /* Incrementar el espacio entre columnas en una fila */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2);
 }
+
+/* --- Cards ------------------------------------------------- */
+.card {
+  background: var(--white);
+  border-radius: var(--r-card);
+  border: 1px solid var(--border);
+  padding: var(--s3);
+}
+
+/* --- Spinner ----------------------------------------------- */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--dust);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Modal overlay ----------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 19, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--s3);
+}
+
+/* --- Scrollbar thin ---------------------------------------- */
+* { scrollbar-width: thin; scrollbar-color: var(--dust) transparent; }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="inventory-movements-container">
     <!-- Header -->
     <div class="movements-header">
@@ -26,7 +26,7 @@
       <button @click="fetchMovements" class="retry-btn">Reintentar</button>
     </div>
 
-    <!-- Lista vacía -->
+    <!-- Lista vacÃ­a -->
     <div v-else-if="movements.length === 0" class="empty-state">
       <i class="bi bi-inbox"></i>
       <p>No hay movimientos registrados</p>
@@ -40,7 +40,7 @@
             <th>ID</th>
             <th>Tipo de Movimiento</th>
             <th>Cantidad</th>
-            <th>Razón/Referencia</th>
+            <th>RazÃ³n/Referencia</th>
             <th>Referencia</th>
             <th>Fecha</th>
           </tr>
@@ -75,7 +75,7 @@
         <span class="value">{{ formatDate(movements[movements.length - 1]?.createdAt) }}</span>
       </div>
       <div class="summary-item">
-        <span class="label">Último Movimiento:</span>
+        <span class="label">Ãšltimo Movimiento:</span>
         <span class="value">{{ formatDate(movements[0]?.createdAt) }}</span>
       </div>
     </div>
@@ -123,10 +123,10 @@ function formatMovementType(type) {
     'SALE': 'Venta',
     'ADJUSTMENT_UP': 'Ajuste +',
     'ADJUSTMENT_DOWN': 'Ajuste -',
-    'RETURN': 'Devolución',
+    'RETURN': 'DevoluciÃ³n',
     'TRANSFER': 'Transferencia',
-    'DAMAGE': 'Daño',
-    'INVENTORY_CHECK': 'Verificación'
+    'DAMAGE': 'DaÃ±o',
+    'INVENTORY_CHECK': 'VerificaciÃ³n'
   };
   return types[type] || type;
 }
@@ -166,22 +166,22 @@ function formatDate(dateString) {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
   font-size: 1.8rem;
 }
 
 .header-info {
   margin-top: 0.75rem;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
 }
 
 .product-id {
   display: inline-flex;
-  background: #f3f4f6;
+  background: var(--canvas);
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 600;
 }
 
@@ -192,12 +192,12 @@ function formatDate(dateString) {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: var(--ink);
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
 }
@@ -215,7 +215,7 @@ function formatDate(dateString) {
   border: 2px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 2rem;
 }
 
@@ -229,7 +229,7 @@ function formatDate(dateString) {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s;
@@ -258,7 +258,7 @@ function formatDate(dateString) {
 
 /* Tabla */
 .movements-table-wrapper {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -272,7 +272,7 @@ function formatDate(dateString) {
 }
 
 .movements-table thead {
-  background: #f3f4f6;
+  background: var(--canvas);
   border-bottom: 2px solid #e5e7eb;
 }
 
@@ -280,21 +280,21 @@ function formatDate(dateString) {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  color: var(--charcoal);
 }
 
 .movements-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   transition: background 0.2s;
 }
 
 .movements-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
 }
 
 .movements-table td {
   padding: 1rem;
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .id-cell {
@@ -310,7 +310,7 @@ function formatDate(dateString) {
 .badge {
   display: inline-flex;
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -370,22 +370,22 @@ function formatDate(dateString) {
 }
 
 .reason-cell {
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .reference-cell {
   font-family: monospace;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .date-cell {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 /* Summary */
 .movements-summary {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -402,13 +402,13 @@ function formatDate(dateString) {
 }
 
 .summary-item .label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .summary-item .value {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.25rem;
   font-weight: 700;
 }

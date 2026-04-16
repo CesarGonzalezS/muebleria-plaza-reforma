@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="customers-page">
     <!-- Header -->
     <div class="page-header">
@@ -6,7 +6,7 @@
         <i class="bi bi-people"></i>
         <div>
           <h1>Clientes</h1>
-          <p>Gestión de clientes registrados</p>
+          <p>GestiÃ³n de clientes registrados</p>
         </div>
       </div>
       <button @click="openCreate" class="btn-primary">
@@ -17,7 +17,7 @@
     <!-- Admin nav -->
     <nav class="admin-nav">
       <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
-      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Órdenes</router-link>
+      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Ã“rdenes</router-link>
       <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
       <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
       <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
@@ -37,7 +37,7 @@
       <button @click="fetchCustomers" class="btn-retry">Reintentar</button>
     </div>
 
-    <!-- Lista vacía -->
+    <!-- Lista vacÃ­a -->
     <div v-else-if="!customers.length" class="state-box">
       <i class="bi bi-people"></i>
       <p>No hay clientes registrados</p>
@@ -52,9 +52,9 @@
             <th>ID</th>
             <th>Nombre</th>
             <th>Email</th>
-            <th>Teléfono</th>
+            <th>TelÃ©fono</th>
             <th>Ciudad</th>
-            <th>Órdenes</th>
+            <th>Ã“rdenes</th>
             <th>Total gastado</th>
             <th>Acciones</th>
           </tr>
@@ -72,7 +72,7 @@
               <button @click="openEdit(c)" class="btn-icon" title="Editar">
                 <i class="bi bi-pencil"></i>
               </button>
-              <router-link :to="`/customer-stats/${c.id}`" class="btn-icon" title="Estadísticas">
+              <router-link :to="`/customer-stats/${c.id}`" class="btn-icon" title="EstadÃ­sticas">
                 <i class="bi bi-bar-chart"></i>
               </router-link>
             </td>
@@ -93,18 +93,18 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Nombre *</label>
-                <input v-model="form.name" required placeholder="Juan Pérez" />
+                <input v-model="form.name" required placeholder="Juan PÃ©rez" />
               </div>
               <div class="form-group">
                 <label>Email *</label>
                 <input v-model="form.email" type="email" required placeholder="juan@email.com" />
               </div>
               <div class="form-group">
-                <label>Teléfono</label>
+                <label>TelÃ©fono</label>
                 <input v-model="form.phone" placeholder="+52 55 5555 1234" />
               </div>
               <div class="form-group">
-                <label>Dirección</label>
+                <label>DirecciÃ³n</label>
                 <input v-model="form.address" placeholder="Calle 123" />
               </div>
               <div class="form-group">
@@ -113,10 +113,10 @@
               </div>
               <div class="form-group">
                 <label>Estado</label>
-                <input v-model="form.state" placeholder="Ciudad de México" />
+                <input v-model="form.state" placeholder="Ciudad de MÃ©xico" />
               </div>
               <div class="form-group">
-                <label>Código Postal</label>
+                <label>CÃ³digo Postal</label>
                 <input v-model="form.postalCode" placeholder="06600" />
               </div>
             </div>
@@ -195,10 +195,10 @@ async function handleSubmit() {
 
     if (editing.value && form.value.id) {
       await customersService.update(form.value.id, payload);
-      axiosConfig.ToastSuccess('¡Éxito!', 'Cliente actualizado correctamente');
+      axiosConfig.ToastSuccess('Â¡Ã‰xito!', 'Cliente actualizado correctamente');
     } else {
       await customersService.create(payload);
-      axiosConfig.ToastSuccess('¡Éxito!', 'Cliente creado correctamente');
+      axiosConfig.ToastSuccess('Â¡Ã‰xito!', 'Cliente creado correctamente');
     }
     closeModal();
     await fetchCustomers();
@@ -222,7 +222,7 @@ function formatPrice(val) {
 }
 
 .page-header {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: var(--ink);
   color: #fff;
   padding: 1.5rem 2rem;
   display: flex;
@@ -244,7 +244,7 @@ function formatPrice(val) {
   display: flex;
   gap: 0.25rem;
   padding: 0.75rem 2rem;
-  background: #fff;
+  background: var(--white);
   border-bottom: 2px solid #e9ecef;
   flex-wrap: wrap;
 }
@@ -254,7 +254,7 @@ function formatPrice(val) {
   align-items: center;
   gap: 0.4rem;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   color: #555;
   font-weight: 500;
   font-size: 0.9rem;
@@ -262,7 +262,7 @@ function formatPrice(val) {
   transition: all 0.2s;
 }
 
-.admin-nav-item:hover { background: #f0f4ff; color: #007bff; }
+.admin-nav-item:hover { background: #f0f4ff; color: var(--ink); }
 .admin-nav-item.router-link-active { background: #007bff; color: #fff; }
 
 .state-box {
@@ -286,7 +286,7 @@ function formatPrice(val) {
   background: #dc3545;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   cursor: pointer;
   font-weight: 600;
 }
@@ -299,7 +299,7 @@ function formatPrice(val) {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--white);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
@@ -327,7 +327,7 @@ function formatPrice(val) {
 
 .badge {
   background: #e3f0ff;
-  color: #007bff;
+  color: var(--ink);
   padding: 0.2rem 0.6rem;
   border-radius: 20px;
   font-weight: 600;
@@ -338,9 +338,9 @@ function formatPrice(val) {
 
 .btn-icon {
   width: 32px; height: 32px;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   border: 1px solid #dee2e6;
-  background: #fff;
+  background: var(--white);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   color: #555;
@@ -349,13 +349,13 @@ function formatPrice(val) {
   text-decoration: none;
 }
 
-.btn-icon:hover { background: #007bff; color: #fff; border-color: #007bff; }
+.btn-icon:hover { background: #007bff; color: #fff; border-color: var(--ink); }
 
 .btn-primary {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: var(--ink);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   padding: 0.6rem 1.4rem;
   font-weight: 600;
   cursor: pointer;
@@ -369,10 +369,10 @@ function formatPrice(val) {
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn-secondary {
-  background: #fff;
+  background: var(--white);
   color: #555;
   border: 2px solid #dee2e6;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   padding: 0.6rem 1.4rem;
   font-weight: 600;
   cursor: pointer;
@@ -391,7 +391,7 @@ function formatPrice(val) {
 }
 
 .modal-card {
-  background: #fff;
+  background: var(--white);
   border-radius: 16px;
   width: 100%;
   max-width: 560px;
@@ -406,7 +406,7 @@ function formatPrice(val) {
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: var(--ink);
   color: #fff;
   padding: 1.25rem 1.5rem;
   display: flex; align-items: center; justify-content: space-between;
@@ -449,14 +449,14 @@ function formatPrice(val) {
 .form-group input {
   padding: 0.6rem 0.85rem;
   border: 2px solid #dee2e6;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 0.92rem;
   transition: border-color 0.2s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: var(--ink);
   box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
 }
 

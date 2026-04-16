@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="filters-container">
     <div class="filters-header">
       <h2><i class="bi bi-funnel"></i> Filtrar productos</h2>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="filters-content">
-      <!-- Búsqueda -->
+      <!-- BÃºsqueda -->
       <div class="filter-item search-filter">
         <label><i class="bi bi-search"></i> Buscar</label>
         <div class="search-wrapper">
@@ -28,23 +28,23 @@
             v-if="localSearchTerm"
             class="clear-search-btn"
             @click="clearSearch"
-            title="Limpiar búsqueda"
+            title="Limpiar bÃºsqueda"
           >
             <i class="bi bi-x"></i>
           </button>
         </div>
       </div>
 
-      <!-- Categoría -->
+      <!-- CategorÃ­a -->
       <div class="filter-item">
-        <label for="category-filter"><i class="bi bi-tag"></i> Categoría</label>
+        <label for="category-filter"><i class="bi bi-tag"></i> CategorÃ­a</label>
         <select
           id="category-filter"
           name="category"
           v-model="localSelectedCategory"
           class="filter-select"
-          aria-label="Filtrar por categoría">
-          <option value="">Todas las categorías</option>
+          aria-label="Filtrar por categorÃ­a">
+          <option value="">Todas las categorÃ­as</option>
           <option v-for="cat in categories" :key="cat.value" :value="cat.value">
             {{ cat.icon }} {{ cat.label }}
           </option>
@@ -60,21 +60,21 @@
             id="price-min"
             name="priceMin"
             class="price-input"
-            placeholder="Mínimo"
-            title="Precio mínimo"
-            aria-label="Precio mínimo"
+            placeholder="MÃ­nimo"
+            title="Precio mÃ­nimo"
+            aria-label="Precio mÃ­nimo"
             v-model.number="localMinPrice"
             min="0"
           />
-          <span class="price-separator">—</span>
+          <span class="price-separator">â€”</span>
           <input
             type="number"
             id="price-max"
             name="priceMax"
             class="price-input"
-            placeholder="Máximo"
-            title="Precio máximo"
-            aria-label="Precio máximo"
+            placeholder="MÃ¡ximo"
+            title="Precio mÃ¡ximo"
+            aria-label="Precio mÃ¡ximo"
             v-model.number="localMaxPrice"
             min="0"
           />
@@ -150,7 +150,7 @@ export default {
 
 <style scoped>
 .filters-container {
-  background: #ffffff;
+  background: var(--white);
   border-radius: 24px;
   padding: 2rem;
   margin-bottom: 3rem;
@@ -242,7 +242,7 @@ export default {
 
 .search-input:focus {
   border-color: #860734;
-  background: #ffffff;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
 }
 
@@ -279,7 +279,7 @@ export default {
 
 .filter-select:focus {
   border-color: #860734;
-  background: #ffffff;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
 }
 
@@ -303,7 +303,7 @@ export default {
 
 .price-input:focus {
   border-color: #860734;
-  background: #ffffff;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
 }
 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <!-- Usamos router-link para que toda la tarjeta sea clicable y navegue al detalle -->
   <router-link
     class="product-card"
@@ -21,7 +21,7 @@ const router = useRouter();
 
 // Fallback para la imagen: puede venir como img o img_base64
 const imgSrc = computed(() => {
-  // Primero intentar obtener del array de imágenes
+  // Primero intentar obtener del array de imÃ¡genes
   if (props.product?.images && Array.isArray(props.product.images) && props.product.images.length > 0) {
     const firstImage = props.product.images[0];
     // La imagen puede venir como string o como objeto con img_base64
@@ -46,17 +46,17 @@ function handleClick(event) {
   console.log('[ProductCard] click, product id =', id);
 
   if (id === undefined || id === null || id === '') {
-    // Si no hay id prevenimos la navegación por defecto y redirigimos a lista
+    // Si no hay id prevenimos la navegaciÃ³n por defecto y redirigimos a lista
     event.preventDefault();
     router.push({ name: 'ProductosList' });
   }
-  // Si hay id, dejamos que router-link realice la navegación por defecto
+  // Si hay id, dejamos que router-link realice la navegaciÃ³n por defecto
 }
 </script>
 
 <style scoped>
 .product-card {
-  background: #fff;
+  background: var(--white);
   border-radius: 12px;
   box-shadow: 0 2px 16px rgba(134, 7, 52, 0.08);
   overflow: hidden;

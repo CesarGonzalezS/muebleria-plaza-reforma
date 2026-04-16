@@ -1,9 +1,9 @@
-<template>
+﻿<template>
     <main>
         <!-- Formulario -->
         <section class="contact-form-col">
           <!-- Solo la parte del formulario mejorada -->
-            <h2><i class="fas fa-paper-plane"></i> Envíanos un mensaje</h2>
+            <h2><i class="fas fa-paper-plane"></i> EnvÃ­anos un mensaje</h2>
             <form class="contact-form" @submit.prevent="handleSubmit" autocomplete="off">
               <div class="form-group">
                 <label for="name"><i class="fas fa-user"></i> Nombre</label>
@@ -20,16 +20,16 @@
               </div>
 
               <div class="form-group">
-                <label for="phone"><i class="fas fa-phone"></i> Teléfono</label>
+                <label for="phone"><i class="fas fa-phone"></i> TelÃ©fono</label>
                 <input type="tel" id="phone" name="phone" v-model="form.phone" @blur="validateField('phone')"
-                  :class="{ error: errors.phone }" autocomplete="tel" placeholder="10 dígitos" />
+                  :class="{ error: errors.phone }" autocomplete="tel" placeholder="10 dÃ­gitos" />
                 <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
               </div>
 
               <div class="form-group">
                 <label for="message"><i class="fas fa-comment-alt"></i> Mensaje</label>
                 <textarea id="message" name="message" v-model="form.message" @blur="validateField('message')"
-                  :class="{ error: errors.message }" rows="4" placeholder="¿En qué podemos ayudarte?"></textarea>
+                  :class="{ error: errors.message }" rows="4" placeholder="Â¿En quÃ© podemos ayudarte?"></textarea>
                 <span class="error-message" v-if="errors.message">{{ errors.message }}</span>
               </div>
 
@@ -37,7 +37,7 @@
                 {{ isSubmitting ? 'Enviando...' : 'Enviar mensaje' }}
               </button>
               <div class="form-note">
-                <i class="fas fa-shield-alt"></i> Tus datos están protegidos y no serán compartidos.
+                <i class="fas fa-shield-alt"></i> Tus datos estÃ¡n protegidos y no serÃ¡n compartidos.
               </div>
             </form>
 
@@ -76,14 +76,14 @@ const validateField = (field) => {
       break;
     case 'email':
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      errors.value.email = !emailRegex.test(value) ? 'Correo inválido' : '';
+      errors.value.email = !emailRegex.test(value) ? 'Correo invÃ¡lido' : '';
       break;
     case 'phone':
       const phoneRegex = /^[0-9]{10}$/;
-      errors.value.phone = !phoneRegex.test(value) ? 'Teléfono debe tener 10 dígitos' : '';
+      errors.value.phone = !phoneRegex.test(value) ? 'TelÃ©fono debe tener 10 dÃ­gitos' : '';
       break;
     case 'message':
-      errors.value.message = value.trim().length < 10 ? 'Mínimo 10 caracteres' : '';
+      errors.value.message = value.trim().length < 10 ? 'MÃ­nimo 10 caracteres' : '';
       break;
   }
 };
@@ -96,20 +96,20 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
   try {
     // Construir el mensaje para WhatsApp
-    const message = `Hola, mi nombre es ${form.value.name}. Mi correo es ${form.value.email}, mi teléfono es ${form.value.phone}. Quiero decir: ${form.value.message}`;
+    const message = `Hola, mi nombre es ${form.value.name}. Mi correo es ${form.value.email}, mi telÃ©fono es ${form.value.phone}. Quiero decir: ${form.value.message}`;
     const encodedMessage = encodeURIComponent(message);
     // Usar el enlace web de WhatsApp (evita intentar abrir el esquema nativo que falla en algunos navegadores)
     const phoneNumber = '7341218621';
     const webWhatsappLink = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
 
-    // Abrir en una nueva pestaña/ventana (más seguro en escritorio y móviles)
+    // Abrir en una nueva pestaÃ±a/ventana (mÃ¡s seguro en escritorio y mÃ³viles)
     const newWin = window.open(webWhatsappLink, '_blank');
-    // Si el navegador bloquea popups, forzar la navegación en la misma ventana como fallback
+    // Si el navegador bloquea popups, forzar la navegaciÃ³n en la misma ventana como fallback
     if (!newWin) {
       window.location.href = webWhatsappLink;
     }
   } catch (error) {
-    alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.');
+    alert('Hubo un error al enviar el mensaje. Por favor, intÃ©ntalo de nuevo.');
   } finally {
     isSubmitting.value = false;
   }
@@ -183,7 +183,7 @@ const handleSubmit = async () => {
 @media (max-width: 900px) {
   .contact-form-col {
     margin-top: 4rem;
-    padding: 1.5rem 0.7rem 1.2rem 0.7rem; /* Menos padding en móvil */
+    padding: 1.5rem 0.7rem 1.2rem 0.7rem; /* Menos padding en mÃ³vil */
   }
 }
 
@@ -201,7 +201,7 @@ input, textarea {
 
 .contact-form {
   width: 100%;
-  max-width: 900px; /* Aumentado para inputs más anchos */
+  max-width: 900px; /* Aumentado para inputs mÃ¡s anchos */
   margin: 0 auto;
   padding: 0;
   display: flex;
@@ -241,7 +241,7 @@ textarea {
   width: 100%;
   padding: 0.7em 1em;
   border: 1.5px solid #ecd5e7;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   background: #faf6fa;
   font-size: 1.07rem;
   font-family: inherit;
@@ -254,7 +254,7 @@ input:focus,
 textarea:focus {
   border-color: #a81552;
   outline: none;
-  background: #fff;
+  background: var(--white);
   box-shadow: 0 2px 9px #fffefe;
 }
 

@@ -53,6 +53,18 @@ export default defineConfig({
     port: 5173,
     open: false,
     host: true,
+    // Proxy evita que el navegador trate las peticiones como cross-origin
+    // (resuelve el bloqueo de localStorage por Tracking Prevention de Edge)
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/furniture': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
   },
   // Configuración adicional para evitar problemas en Windows
   optimizeDeps: {

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="admin-dashboard">
     <!-- Header del Dashboard -->
     <div class="dashboard-header">
@@ -6,24 +6,24 @@
         <div class="header-title-section">
           <i class="bi bi-speedometer2"></i>
           <div>
-            <h1>Panel de Administración</h1>
+            <h1>Panel de AdministraciÃ³n</h1>
             <p>Gestiona tu inventario de muebles</p>
           </div>
         </div>
         <button @click="logout" class="logout-btn">
           <i class="bi bi-box-arrow-right"></i>
-          Cerrar sesión
+          Cerrar sesiÃ³n
         </button>
       </div>
     </div>
 
-    <!-- Navegación rápida entre secciones admin -->
+    <!-- NavegaciÃ³n rÃ¡pida entre secciones admin -->
     <nav class="admin-nav">
       <router-link to="/admin" class="admin-nav-item active">
         <i class="bi bi-house-door"></i> Muebles
       </router-link>
       <router-link to="/admin-orders" class="admin-nav-item">
-        <i class="bi bi-bag-check"></i> Órdenes
+        <i class="bi bi-bag-check"></i> Ã“rdenes
       </router-link>
       <router-link to="/customers" class="admin-nav-item">
         <i class="bi bi-people"></i> Clientes
@@ -47,7 +47,7 @@
         <p>Cargando muebles...</p>
       </div>
 
-      <!-- Content cuando no está cargando -->
+      <!-- Content cuando no estÃ¡ cargando -->
       <div v-else class="content-wrapper">
         <!-- Barra de acciones -->
         <div class="actions-bar">
@@ -58,7 +58,7 @@
             </button>
             <button @click="openCreateCategory" class="btn-secondary" style="margin-left:0.75rem">
               <i class="bi bi-tags"></i>
-              Nueva Categoría
+              Nueva CategorÃ­a
             </button>
           </div>
           <div class="stats-summary">
@@ -69,11 +69,11 @@
           </div>
         </div>
 
-        <!-- Sección de categorías integrada -->
+        <!-- SecciÃ³n de categorÃ­as integrada -->
         <div class="categories-section">
           <div class="section-header">
-            <h2>Categorías</h2>
-            <p class="muted">Gestiona las categorías disponibles en el catálogo</p>
+            <h2>CategorÃ­as</h2>
+            <p class="muted">Gestiona las categorÃ­as disponibles en el catÃ¡logo</p>
           </div>
 
           <div v-if="categories.length" class="categories-grid">
@@ -96,9 +96,9 @@
 
           <div v-else class="empty-state small">
             <i class="bi bi-inbox"></i>
-            <h4>No hay categorías</h4>
-            <p>Añade categorías para organizar tus muebles</p>
-            <button class="btn-primary" @click="openCreateCategory">Crear Categoría</button>
+            <h4>No hay categorÃ­as</h4>
+            <p>AÃ±ade categorÃ­as para organizar tus muebles</p>
+            <button class="btn-primary" @click="openCreateCategory">Crear CategorÃ­a</button>
           </div>
         </div>
 
@@ -110,7 +110,7 @@
               <th>Imagen</th>
               <th>Nombre</th>
               <th>Precio</th>
-              <th>Categoría</th>
+              <th>CategorÃ­a</th>
               <th>Stock</th>
               <th>Marca</th>
               <th>Color</th>
@@ -131,7 +131,7 @@
               </td>
               <td data-label="Nombre" class="name-cell">{{ item.name }}</td>
               <td data-label="Precio" class="price-cell">${{ item.price.toLocaleString('es-MX') }}</td>
-              <td data-label="Categoría">
+              <td data-label="CategorÃ­a">
                 <span class="category-badge">{{ item.categoryName || getCategoryLabel(item.categoryId || item.category_id || item.category) }}</span>
               </td>
               <td data-label="Stock">
@@ -159,7 +159,7 @@
           </table>
         </div>
 
-        <!-- Estado vacío -->
+        <!-- Estado vacÃ­o -->
         <div v-else class="empty-state">
           <i class="bi bi-inbox"></i>
           <h3>No hay muebles registrados</h3>
@@ -183,7 +183,7 @@
       @open-category-form="openCreateCategory"
     />
 
-    <!-- Modal del formulario (Categoría) -->
+    <!-- Modal del formulario (CategorÃ­a) -->
     <CategoryFormModal
       :is-open="showCategoryForm"
       :is-editing="isEditingCategory"
@@ -214,7 +214,7 @@ const form = reactive({
   description: '',
   price: 0,
   category_id: null,
-  images: [], // Array de imágenes en base64
+  images: [], // Array de imÃ¡genes en base64
   stock: 0,
   brand: '',
   color: '',
@@ -225,7 +225,7 @@ const form = reactive({
 
 const categories = ref([]);
 
-// --- NUEVO: estados y formulario para categorías integradas ---
+// --- NUEVO: estados y formulario para categorÃ­as integradas ---
 const showCategoryForm = ref(false);
 const isEditingCategory = ref(false);
 // Removed icon_base64 from categoryForm
@@ -233,18 +233,10 @@ const categoryForm = reactive({ id: null, name: '', description: '' });
 
 async function fetchCategories() {
   try {
-    console.log('📂 Cargando categorías...');
     const res = await categoriesService.getCategories();
-    // res = { success: true, data: [{id, name, ...}] }
     const data = res?.data;
     categories.value = Array.isArray(data) ? data : [];
-    console.log('✅ Categorías cargadas:', categories.value.length);
   } catch (e) {
-    console.error('❌ Error cargando categorías:', {
-      status: e.response?.status,
-      message: e.response?.data?.message,
-      error: e.message
-    });
     categories.value = [];
   }
 }
@@ -261,18 +253,11 @@ function logout() {
 async function fetchFurniture() {
   loading.value = true;
   try {
-    console.log('📦 Cargando muebles...');
     const res = await axiosConfig.doGet('/furniture/');
     const data = res?.data?.data;
     furnitureList.value = Array.isArray(data) ? data : [];
-    console.log('✅ Muebles cargados:', furnitureList.value.length);
   } catch (e) {
     error.value = 'Error al cargar productos';
-    console.error('❌ Error al cargar muebles:', {
-      status: e.response?.status,
-      message: e.response?.data?.message,
-      error: e.message
-    });
   } finally {
     loading.value = false;
   }
@@ -303,7 +288,7 @@ function openEditForm(item) {
   // Soporta categoryId (nueva API /furniture/) y category_id (formato antiguo)
   const catId = item.categoryId || item.category_id || (item.category && (item.category.id || item.category));
 
-  // Normalizar imágenes: soporta imageUrl (nueva API) y arrays de imágenes (formato antiguo)
+  // Normalizar imÃ¡genes: soporta imageUrl (nueva API) y arrays de imÃ¡genes (formato antiguo)
   let itemImages = [];
   if (item.images && Array.isArray(item.images) && item.images.length > 0) {
     itemImages = item.images.map(img => (typeof img === 'string' ? img : (img.img_base64 || img.url || img))).filter(Boolean);
@@ -324,7 +309,7 @@ function openEditForm(item) {
   showForm.value = true;
 }
 
-// --- NUEVO: funciones para CRUD de categorías dentro del dashboard ---
+// --- NUEVO: funciones para CRUD de categorÃ­as dentro del dashboard ---
 function openCreateCategory() {
   isEditingCategory.value = false;
   Object.assign(categoryForm, { id: null, name: '', description: '' });
@@ -337,32 +322,32 @@ function openEditCategory(cat) {
   showCategoryForm.value = true;
 }
 
-// El modal ahora maneja la API directamente, solo necesitamos recargar las categorías
+// El modal ahora maneja la API directamente, solo necesitamos recargar las categorÃ­as
 async function handleCategorySuccess() {
   showCategoryForm.value = false;
   await fetchCategories();
-  // Si hay un formulario de mueble abierto, actualizar su lista de categorías también
+  // Si hay un formulario de mueble abierto, actualizar su lista de categorÃ­as tambiÃ©n
   if (showForm.value) {
-    // Las categorías ya están actualizadas en categories.value
+    // Las categorÃ­as ya estÃ¡n actualizadas en categories.value
   }
 }
 
 function confirmDeleteCategory(cat) {
-  if (!confirm(`¿Eliminar la categoría "${cat.name}"?`)) return;
+  if (!confirm(`Â¿Eliminar la categorÃ­a "${cat.name}"?`)) return;
   deleteCategoryRequest(cat.id);
 }
 
 async function deleteCategoryRequest(id) {
   try {
     await categoriesService.deleteCategory(id);
-    axiosConfig.ToastSuccess('Eliminado', 'Categoría eliminada correctamente');
+    axiosConfig.ToastSuccess('Eliminado', 'CategorÃ­a eliminada correctamente');
     fetchCategories();
   } catch (err) {
     console.error(err);
     if (err.response && err.response.status === 400) {
-      axiosConfig.ToastWarning('No se puede eliminar', 'La categoría tiene muebles asociados');
+      axiosConfig.ToastWarning('No se puede eliminar', 'La categorÃ­a tiene muebles asociados');
     } else {
-      axiosConfig.ToastError('Error', 'No se pudo eliminar la categoría');
+      axiosConfig.ToastError('Error', 'No se pudo eliminar la categorÃ­a');
     }
   }
 }
@@ -375,10 +360,10 @@ async function handleFurnitureSuccess() {
 }
 
 async function deleteFurniture(id) {
-  if (!confirm('¿Seguro que deseas eliminar este mueble?')) return;
+  if (!confirm('Â¿Seguro que deseas eliminar este mueble?')) return;
   try {
     await axiosConfig.doDelete(`/furniture/${id}`);
-    axiosConfig.ToastSuccess('¡Éxito!', 'Mueble eliminado correctamente.');
+    axiosConfig.ToastSuccess('Â¡Ã‰xito!', 'Mueble eliminado correctamente.');
     fetchFurniture();
   } catch (e) {
     console.error('Error al eliminar:', e);
@@ -416,7 +401,7 @@ function getStockClass(stock) {
 function getMainImage(item) {
   // Soporta imageUrl (nueva API /furniture/)
   if (item.imageUrl) return item.imageUrl;
-  // Soporta array de imágenes (formato antiguo)
+  // Soporta array de imÃ¡genes (formato antiguo)
   if (item.images && Array.isArray(item.images) && item.images.length > 0) {
     const firstImage = item.images[0];
     return typeof firstImage === 'string' ? firstImage : (firstImage.img_base64 || firstImage.url || null);
@@ -429,15 +414,15 @@ function getMainImage(item) {
 <style scoped>
 .admin-dashboard {
   min-height: 100vh;
-  background: #f9fafb;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: #111827;
+  background: var(--canvas);
+  font-family: var(--font);
+  color: var(--ink);
 }
 
 /* Header */
 .dashboard-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -447,7 +432,7 @@ function getMainImage(item) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.875rem 1.5rem;
+  padding: 14px var(--s3);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -455,52 +440,77 @@ function getMainImage(item) {
 .header-title-section {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--s2);
 }
 
-.header-title-section i {
-  font-size: 1.25rem;
-  color: #6b7280;
-}
+.header-title-section i { font-size: 1rem; color: var(--slate); }
 
 .header-title-section h1 {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   margin: 0;
-  color: #111827;
+  letter-spacing: -0.02em;
 }
 
 .header-title-section p {
-  margin: 0.1rem 0 0;
-  font-size: 0.8125rem;
-  color: #6b7280;
+  margin: 2px 0 0;
+  font-size: 0.75rem;
+  color: var(--slate);
 }
 
 .logout-btn {
   background: transparent;
-  border: 1px solid #e5e7eb;
-  color: #374151;
-  padding: 0.4375rem 0.875rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 6px 16px;
+  border-radius: var(--r-pill);
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  transition: background 0.15s, border-color 0.15s;
-  font-family: inherit;
+  gap: 6px;
+  transition: background 0.15s;
+  font-family: var(--font);
 }
-.logout-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+.logout-btn:hover { background: var(--canvas); }
 
-/* Dashboard content */
+/* Admin nav */
+.admin-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding: 0 var(--s3);
+  max-width: 100%;
+}
+
+.admin-nav-item {
+  padding: 10px 16px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--slate);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-nav-item:hover { color: var(--ink); }
+.admin-nav-item.active,
+.admin-nav-item.router-link-active { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* Content */
 .dashboard-content {
-  padding: 1.5rem;
+  padding: var(--s3);
   max-width: 1400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--s3);
 }
 
 /* Loading */
@@ -509,16 +519,17 @@ function getMainImage(item) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 3rem;
-  color: #6b7280;
+  gap: var(--s2);
+  padding: var(--s7);
+  color: var(--slate);
+  font-size: 0.875rem;
 }
 
 .spinner {
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid #e5e7eb;
-  border-top-color: #111827;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--dust);
+  border-top-color: var(--ink);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -529,116 +540,114 @@ function getMainImage(item) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: var(--s2);
   flex-wrap: wrap;
 }
 
 .actions-left {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--s2);
   flex-wrap: wrap;
 }
 
 .btn-primary {
-  background: #111827;
-  color: #fff;
-  border: 1px solid #111827;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: var(--ink);
+  color: var(--canvas);
+  border: 1.5px solid var(--ink);
+  padding: 7px 20px;
+  border-radius: var(--r-btn);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  transition: background 0.15s;
-  font-family: inherit;
+  gap: 6px;
+  transition: opacity 0.15s;
+  font-family: var(--font);
+  letter-spacing: -0.02em;
 }
-.btn-primary:hover { background: #374151; border-color: #374151; }
+.btn-primary:hover { opacity: 0.85; }
 
 .btn-secondary {
-  background: #ffffff;
-  color: #374151;
-  border: 1px solid #e5e7eb;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: var(--white);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  padding: 7px 20px;
+  border-radius: var(--r-btn);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 6px;
   transition: background 0.15s;
-  font-family: inherit;
+  font-family: var(--font);
+  letter-spacing: -0.02em;
 }
-.btn-secondary:hover { background: #f9fafb; }
+.btn-secondary:hover { background: var(--canvas); }
 
-.stats-summary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+.stats-summary { display: flex; align-items: center; gap: var(--s1); }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: #6b7280;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--slate);
 }
 
 /* Categories section */
 .categories-section {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: var(--s3);
 }
 
-.section-header {
-  margin-bottom: 1rem;
-}
+.section-header { margin-bottom: var(--s2); }
 
 .section-header h2 {
   font-size: 0.9375rem;
   font-weight: 600;
-  margin: 0 0 0.25rem;
-  color: #111827;
+  margin: 0 0 3px;
+  letter-spacing: -0.02em;
 }
 
-.muted { color: #6b7280; }
+.muted { color: var(--slate); font-size: 0.8125rem; }
 
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 0.75rem;
+  gap: var(--s2);
 }
 
 .category-card-mini {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 0.875rem 1rem;
+  background: var(--canvas-lifted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px var(--s2);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--s2);
+  transition: border-color 0.15s;
 }
-.category-card-mini:hover { border-color: #d1d5db; background: #f9fafb; }
+.category-card-mini:hover { border-color: var(--ink); }
 
-.cat-left { display: flex; align-items: center; gap: 0.625rem; }
+.cat-left { display: flex; align-items: center; gap: 10px; }
 
 .icon-area-small {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 6px;
-  background: #f3f4f6;
-  color: #6b7280;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-card);
+  background: var(--canvas);
+  color: var(--slate);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 .cat-mid { flex: 1; min-width: 0; }
@@ -647,16 +656,17 @@ function getMainImage(item) {
   font-weight: 600;
   font-size: 0.875rem;
   margin: 0;
-  color: #111827;
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
+  letter-spacing: -0.01em;
 }
 
 .muted.small {
-  font-size: 0.8125rem;
-  color: #6b7280;
+  font-size: 0.75rem;
+  color: var(--slate);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -664,32 +674,31 @@ function getMainImage(item) {
   display: block;
 }
 
-.cat-actions { display: flex; gap: 0.375rem; }
+.cat-actions { display: flex; gap: 4px; }
 
 .btn-icon {
   background: transparent;
-  border: 1px solid #e5e7eb;
-  color: #6b7280;
+  border: 1px solid var(--border);
+  color: var(--slate);
   cursor: pointer;
-  font-size: 0.875rem;
-  width: 1.875rem;
-  height: 1.875rem;
-  border-radius: 6px;
+  font-size: 0.8125rem;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-card);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+  font-family: var(--font);
 }
-.btn-icon:hover { background: #f3f4f6; color: #111827; }
-.btn-icon.btn-delete:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+.btn-icon:hover { background: var(--canvas); color: var(--ink); }
+.btn-icon.btn-delete:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
 
 /* Table */
-
 .table-container {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
   overflow-x: auto;
 }
 
@@ -701,94 +710,99 @@ function getMainImage(item) {
 
 .furniture-table th,
 .furniture-table td {
-  padding: 0.75rem 1rem;
+  padding: 10px var(--s2);
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .furniture-table th {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #6b7280;
+  letter-spacing: 0.06em;
+  color: var(--slate);
 }
 
-.furniture-table tbody tr:hover { background: #f9fafb; }
+.furniture-table tbody tr:last-child td { border-bottom: none; }
+.furniture-table tbody tr:hover { background: var(--canvas-lifted); }
 
 .img-cell { width: 70px; }
 .img-wrapper {
-  width: 60px;
-  height: 60px;
-  border-radius: 6px;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
 .no-image {
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f3f4f6;
-  border-radius: 6px;
-  color: #9ca3af;
-  font-size: 1.25rem;
-  border: 1px solid #e5e7eb;
+  background: var(--canvas);
+  border-radius: 10px;
+  color: var(--dust);
+  font-size: 1rem;
+  border: 1px solid var(--border);
 }
-
-.table-row { }
-.table-row:hover { background: #f9fafb; }
 
 .category-badge {
   display: inline-block;
-  padding: 0.2rem 0.5rem;
-  background: #f3f4f6;
-  color: #374151;
-  border-radius: 4px;
+  padding: 2px 10px;
+  background: var(--canvas);
+  color: var(--charcoal);
+  border-radius: var(--r-pill);
   font-size: 0.75rem;
   font-weight: 500;
+  border: 1px solid var(--border);
 }
 
-.stock-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+.stock-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
 .stock-empty  { background: #fee2e2; color: #dc2626; }
 .stock-low    { background: #fef3c7; color: #b45309; }
 .stock-medium { background: #dbeafe; color: #1e40af; }
 .stock-high   { background: #dcfce7; color: #16a34a; }
 
-.color-dot { display: inline-block; width: 0.875rem; height: 0.875rem; border-radius: 50%; margin-right: 0.375rem; border: 1px solid #e5e7eb; vertical-align: middle; }
+.color-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; border: 1px solid var(--border); vertical-align: middle; }
 .actions-cell { white-space: nowrap; }
-.btn-edit { color: #6b7280; }
-.btn-edit:hover { background: #f3f4f6; color: #111827; }
+.btn-edit { color: var(--slate); }
+.btn-edit:hover { background: var(--canvas); color: var(--ink); }
 
 .empty-state {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3rem 1.5rem;
-  color: #6b7280;
-  gap: 0.75rem;
+  padding: var(--s7) var(--s4);
+  color: var(--slate);
+  gap: var(--s2);
 }
-.empty-state i { font-size: 2rem; }
-.empty-state h3 { font-size: 1rem; font-weight: 600; margin: 0; color: #374151; }
-.empty-state h4 { font-size: 0.9375rem; font-weight: 600; margin: 0; color: #374151; }
-.empty-state p { margin: 0; font-size: 0.875rem; max-width: 320px; }
-.empty-state.small { padding: 1.5rem; }
+.empty-state i { font-size: 1.5rem; color: var(--dust); }
+.empty-state h3 { font-size: 0.9375rem; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
+.empty-state h4 { font-size: 0.875rem; font-weight: 600; color: var(--ink); }
+.empty-state p { font-size: 0.8125rem; max-width: 320px; }
+.empty-state.small { padding: var(--s4) var(--s3); }
 
 .modal-enter-active, .modal-leave-active { transition: opacity 0.2s; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
 
 @media (max-width: 768px) {
-  .header-content { flex-wrap: wrap; }
-  .dashboard-content { padding: 1rem; }
+  .header-content { flex-wrap: wrap; gap: var(--s2); }
+  .dashboard-content { padding: var(--s2); }
   .actions-bar { flex-direction: column; align-items: stretch; }
   .actions-left { flex-direction: column; }
   .btn-primary, .btn-secondary { width: 100%; justify-content: center; }

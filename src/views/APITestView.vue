@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <div class="api-test-container">
     <div class="test-header">
       <h1><i class="bi bi-bug"></i> Test de APIs</h1>
-      <p>Prueba todos los endpoints de la aplicación</p>
+      <p>Prueba todos los endpoints de la aplicaciÃ³n</p>
     </div>
 
     <div class="test-section">
@@ -13,7 +13,7 @@
           <span>{{ hasToken ? 'Token presente' : 'Sin token' }}</span>
         </div>
         <button v-if="!hasToken" @click="goToLogin" class="btn-primary">
-          Iniciar Sesión
+          Iniciar SesiÃ³n
         </button>
       </div>
     </div>
@@ -22,11 +22,11 @@
       <h2>Endpoints Disponibles</h2>
 
       <div class="endpoints-grid">
-        <!-- Autenticación -->
+        <!-- AutenticaciÃ³n -->
         <div class="endpoint-card">
-          <h3><i class="bi bi-lock"></i> Autenticación</h3>
+          <h3><i class="bi bi-lock"></i> AutenticaciÃ³n</h3>
           <ul>
-            <li><router-link to="/change-password">Cambiar Contraseña</router-link></li>
+            <li><router-link to="/change-password">Cambiar ContraseÃ±a</router-link></li>
             <li><router-link to="/profile">Mi Perfil</router-link></li>
           </ul>
         </div>
@@ -49,12 +49,12 @@
           </ul>
         </div>
 
-        <!-- Órdenes -->
+        <!-- Ã“rdenes -->
         <div class="endpoint-card">
-          <h3><i class="bi bi-receipt"></i> Órdenes</h3>
+          <h3><i class="bi bi-receipt"></i> Ã“rdenes</h3>
           <ul>
-            <li><router-link to="/my-orders">Mis Órdenes</router-link></li>
-            <li><router-link to="/admin-orders">Gestión de Órdenes</router-link></li>
+            <li><router-link to="/my-orders">Mis Ã“rdenes</router-link></li>
+            <li><router-link to="/admin-orders">GestiÃ³n de Ã“rdenes</router-link></li>
           </ul>
         </div>
 
@@ -70,17 +70,17 @@
         <div class="endpoint-card">
           <h3><i class="bi bi-speedometer2"></i> Admin</h3>
           <ul>
-            <li><router-link to="/admin">Panel de Administración</router-link></li>
+            <li><router-link to="/admin">Panel de AdministraciÃ³n</router-link></li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="test-section">
-      <h2>Información Importante</h2>
+      <h2>InformaciÃ³n Importante</h2>
       <div class="info-box">
         <p><strong>Base URL:</strong> {{ baseURL }}</p>
-        <p><strong>Token guardado:</strong> {{ hasToken ? 'Sí' : 'No' }}</p>
+        <p><strong>Token guardado:</strong> {{ hasToken ? 'SÃ­' : 'No' }}</p>
         <p v-if="hasToken"><strong>Token:</strong> <code>{{ tokenPreview }}</code></p>
       </div>
     </div>
@@ -115,7 +115,7 @@ function goToLogin() {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   min-height: 100vh;
 }
 
@@ -125,7 +125,7 @@ function goToLogin() {
 }
 
 .test-header h1 {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 2rem;
   display: flex;
   align-items: center;
@@ -135,12 +135,12 @@ function goToLogin() {
 }
 
 .test-header p {
-  color: #6b7280;
+  color: var(--slate);
   margin-top: 0.5rem;
 }
 
 .test-section {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -148,7 +148,7 @@ function goToLogin() {
 }
 
 .test-section h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
@@ -167,7 +167,7 @@ function goToLogin() {
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-weight: 600;
 }
 
@@ -192,21 +192,21 @@ function goToLogin() {
 }
 
 .endpoint-card {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   padding: 1.5rem;
   transition: all 0.3s;
 }
 
 .endpoint-card:hover {
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
 .endpoint-card h3 {
   margin: 0 0 1rem;
-  color: #1f2937;
+  color: var(--ink);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -214,7 +214,7 @@ function goToLogin() {
 }
 
 .endpoint-card h3 i {
-  color: #667eea;
+  color: var(--ink);
   font-size: 1.2rem;
 }
 
@@ -233,7 +233,7 @@ function goToLogin() {
 }
 
 .endpoint-card a {
-  color: #667eea;
+  color: var(--ink);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
@@ -251,7 +251,7 @@ function goToLogin() {
   background: #f0f9ff;
   border-left: 4px solid #0284c7;
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
 }
 
 .info-box p {
@@ -260,7 +260,7 @@ function goToLogin() {
 }
 
 .info-box code {
-  background: white;
+  background: var(--white);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
@@ -268,11 +268,11 @@ function goToLogin() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="products-view">
     <Navbar />
     <Header />
@@ -9,7 +9,7 @@
       <div class="hero-content">
         <h1 class="hero-title">
           <i class="bi bi-shop"></i>
-          Catálogo de Productos
+          CatÃ¡logo de Productos
         </h1>
         <p class="hero-subtitle">Descubre nuestros muebles de calidad excepcional</p>
       </div>
@@ -52,7 +52,7 @@
               <!-- Badge de oferta -->
               <div v-if="product.price < 5000" class="product-badge">
                 <i class="bi bi-lightning-fill"></i>
-                ¡Oferta!
+                Â¡Oferta!
               </div>
 
               <!-- Imagen -->
@@ -87,13 +87,13 @@
             </article>
           </div>
 
-          <!-- Paginación -->
-          <nav class="pagination" v-if="totalPages > 1" aria-label="Navegación de productos">
+          <!-- PaginaciÃ³n -->
+          <nav class="pagination" v-if="totalPages > 1" aria-label="NavegaciÃ³n de productos">
             <button
               class="page-btn nav-btn"
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage === 1"
-              aria-label="Página anterior"
+              aria-label="PÃ¡gina anterior"
             >
               <i class="bi bi-chevron-left"></i>
             </button>
@@ -103,7 +103,7 @@
               :key="page"
               :class="['page-btn', { active: page === currentPage }]"
               @click="goToPage(page)"
-              :aria-label="`Ir a página ${page}`"
+              :aria-label="`Ir a pÃ¡gina ${page}`"
               :aria-current="page === currentPage ? 'page' : null"
             >
               {{ page }}
@@ -113,7 +113,7 @@
               class="page-btn nav-btn"
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              aria-label="Página siguiente"
+              aria-label="PÃ¡gina siguiente"
             >
               <i class="bi bi-chevron-right"></i>
             </button>
@@ -126,7 +126,7 @@
             <i class="bi bi-inbox"></i>
           </div>
           <h3>No hay productos que coincidan</h3>
-          <p>Intenta ajustar los filtros de búsqueda o explora todas las categorías</p>
+          <p>Intenta ajustar los filtros de bÃºsqueda o explora todas las categorÃ­as</p>
           <button class="btn-primary" @click="clearFilters">
             <i class="bi bi-arrow-clockwise"></i>
             Ver todos los productos
@@ -148,7 +148,7 @@ import ProductFilters from '../components/ProductFilters.vue';
 import { ref, computed, onMounted, watch } from 'vue';
 import axiosConfig from '../config/AxiosConfig.js';
 import { useRouter, useRoute } from 'vue-router';
-import { getCategories } from '../services/categories'; // Importamos el servicio de categorías
+import { getCategories } from '../services/categories'; // Importamos el servicio de categorÃ­as
 
 const router = useRouter();
 const route = useRoute();
@@ -161,7 +161,7 @@ function goToProduct(id) {
 const products = ref([]);
 const loadingProducts = ref(false);
 const categories = ref([]); // Ahora es reactivo para cargar desde la API
-const loadingCategories = ref(false); // Estado de carga para categorías
+const loadingCategories = ref(false); // Estado de carga para categorÃ­as
 
 function normalizeCategory(cat) {
   if (!cat && cat !== 0) return '';
@@ -255,7 +255,7 @@ function fetchProductosPorCategoria(categoria) {
 }
 
 function getCategoryLabel(category) {
-  if (!category) return 'Sin categoría';
+  if (!category) return 'Sin categorÃ­a';
   if (typeof category === 'object' && category.label) {
     return category.label;
   }
@@ -264,7 +264,7 @@ function getCategoryLabel(category) {
   );
   if (!categoryObj) {
   }
-  return categoryObj ? categoryObj.label : 'Categoría desconocida';
+  return categoryObj ? categoryObj.label : 'CategorÃ­a desconocida';
 }
 
 const selectedCategory = ref('');
@@ -403,7 +403,7 @@ function applyFilters() {
 
 /* Filtros Mejorados */
 .filters-container {
-  background: #ffffff;
+  background: var(--white);
   border-radius: 24px;
   padding: 2rem;
   margin-bottom: 3rem;
@@ -495,7 +495,7 @@ function applyFilters() {
 
 .search-input:focus {
   border-color: #860734;
-  background: #ffffff;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
 }
 
@@ -532,7 +532,7 @@ function applyFilters() {
 
 .filter-select:focus {
   border-color: #860734;
-  background: #ffffff;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
 }
 
@@ -556,7 +556,7 @@ function applyFilters() {
 
 .price-input:focus {
   border-color: #860734;
-  background: #ffffff;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
 }
 
@@ -676,7 +676,7 @@ function applyFilters() {
 }
 
 .product-card {
-  background: #ffffff;
+  background: var(--white);
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
@@ -895,7 +895,7 @@ function applyFilters() {
   box-shadow: 0 8px 30px rgba(134, 7, 52, 0.4);
 }
 
-/* Paginación Mejorada */
+/* PaginaciÃ³n Mejorada */
 .pagination {
   display: flex;
   justify-content: center;
@@ -909,7 +909,7 @@ function applyFilters() {
   height: 44px;
   padding: 0;
   border: 2px solid #e0d0e0;
-  background: #ffffff;
+  background: var(--white);
   color: #860734;
   border-radius: 12px;
   font-size: 1rem;

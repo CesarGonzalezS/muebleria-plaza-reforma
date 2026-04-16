@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="related-products-container">
     <h2 class="section-title">
       <i class="bi bi-link-45deg"></i>
@@ -101,13 +101,13 @@ function formatPrice(price) {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.3rem;
   margin: 0 0 1.5rem;
 }
 
 .section-title i {
-  color: #667eea;
+  color: var(--ink);
 }
 
 /* Loading */
@@ -133,7 +133,7 @@ function formatPrice(price) {
   background: #fee;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 0.9rem;
 }
 
@@ -145,15 +145,15 @@ function formatPrice(price) {
 }
 
 .related-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
   overflow: hidden;
   transition: all 0.3s;
 }
 
 .related-card:hover {
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -194,7 +194,7 @@ function formatPrice(price) {
 }
 
 .related-card h3 {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1rem;
   margin: 0 0 0.75rem;
   display: -webkit-box;
@@ -214,7 +214,7 @@ function formatPrice(price) {
 .price {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .stock {

@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="products-list-container">
     <div class="products-header">
       <h1>Productos</h1>
       <p v-if="!authService.isAuthenticated()" class="auth-required">
-        <i class="bi bi-lock"></i> Requiere autenticación
+        <i class="bi bi-lock"></i> Requiere autenticaciÃ³n
       </p>
     </div>
 
@@ -22,7 +22,7 @@
       <button @click="fetchProducts" class="retry-btn">Reintentar</button>
     </div>
 
-    <!-- Lista vacía -->
+    <!-- Lista vacÃ­a -->
     <div v-else-if="products.length === 0" class="empty-state">
       <i class="bi bi-inbox"></i>
       <p>No hay productos disponibles</p>
@@ -36,7 +36,7 @@
             <th>ID</th>
             <th>Producto</th>
             <th>Marca</th>
-            <th>Categoría</th>
+            <th>CategorÃ­a</th>
             <th>Precio</th>
             <th>Stock</th>
             <th>Estado</th>
@@ -124,7 +124,7 @@ function formatPrice(price) {
 
 .products-header h1 {
   font-size: 2rem;
-  color: #1f2937;
+  color: var(--ink);
   margin-bottom: 0.5rem;
 }
 
@@ -132,7 +132,7 @@ function formatPrice(price) {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #667eea;
+  color: var(--ink);
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -144,12 +144,12 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: var(--ink);
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
 }
@@ -167,7 +167,7 @@ function formatPrice(price) {
   border: 2px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 2rem;
 }
 
@@ -182,7 +182,7 @@ function formatPrice(price) {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s;
@@ -211,7 +211,7 @@ function formatPrice(price) {
 
 /* Tabla */
 .products-table-wrapper {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -224,7 +224,7 @@ function formatPrice(price) {
 }
 
 .products-table thead {
-  background: #f3f4f6;
+  background: var(--canvas);
   border-bottom: 2px solid #e5e7eb;
 }
 
@@ -232,16 +232,16 @@ function formatPrice(price) {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  color: var(--charcoal);
 }
 
 .products-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   transition: background 0.2s;
 }
 
 .products-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
 }
 
 .products-table tbody tr.inactive {
@@ -250,7 +250,7 @@ function formatPrice(price) {
 
 .products-table td {
   padding: 1rem;
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .id-cell {
@@ -267,7 +267,7 @@ function formatPrice(price) {
 
 .product-name {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .low-stock-badge {
@@ -285,7 +285,7 @@ function formatPrice(price) {
 
 .price-cell {
   font-weight: 600;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .stock-cell {
@@ -300,7 +300,7 @@ function formatPrice(price) {
 .status-badge {
   display: inline-flex;
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -311,8 +311,8 @@ function formatPrice(price) {
 }
 
 .status-badge.inactive {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--canvas);
+  color: var(--slate);
 }
 
 .actions-cell {
@@ -326,9 +326,9 @@ function formatPrice(price) {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
-  background: #f3f4f6;
-  color: #6b7280;
+  border-radius: 10px;
+  background: var(--canvas);
+  color: var(--slate);
   transition: all 0.2s;
   cursor: pointer;
   text-decoration: none;

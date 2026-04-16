@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="furniture-view">
     <h1>Muebles</h1>
     <button @click="fetchFurniture">Recargar</button>
@@ -6,7 +6,7 @@
       <li v-for="item in furniture" :key="item.id">
         <h3>{{ item.name }}</h3>
         <p>{{ item.description }}</p>
-        <small>Categoría: {{ item.category }} | Precio: ${{ item.price }}</small>
+        <small>CategorÃ­a: {{ item.category }} | Precio: ${{ item.price }}</small>
         <button @click="deleteFurniture(item.id)">Eliminar</button>
       </li>
     </ul>
@@ -26,12 +26,12 @@ async function fetchFurniture() {
   try {
     furniture.value = await getFurniture();
   } catch (e) {
-    // Manejo de error ya está en AxiosConfig
+    // Manejo de error ya estÃ¡ en AxiosConfig
   }
 }
 
 async function deleteFurniture(id) {
-  if (confirm('¿Seguro que deseas eliminar este mueble?')) {
+  if (confirm('Â¿Seguro que deseas eliminar este mueble?')) {
     await deleteFurniture(id);
     fetchFurniture();
   }
@@ -45,7 +45,7 @@ onMounted(fetchFurniture);
   max-width: 700px;
   margin: 2rem auto;
   padding: 1rem;
-  background: #fff;
+  background: var(--white);
   border-radius: 1rem;
   box-shadow: 0 2px 12px #86073422;
 }
@@ -66,7 +66,7 @@ button {
   background: #a81552;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 0.5rem 1rem;
   cursor: pointer;
   margin-top: 0.5rem;

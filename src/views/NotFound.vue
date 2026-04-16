@@ -1,13 +1,13 @@
-<template>
+﻿<template>
   <div class="not-found">
     <h1>404</h1>
-    <p>Lo sentimos, la página que buscas no existe.</p>
+    <p>Lo sentimos, la pÃ¡gina que buscas no existe.</p>
     <router-link to="/" class="home-link">Volver al inicio</router-link>
   </div>
 </template>
 
 <script setup>
-// No se requiere lógica adicional para esta vista.
+// No se requiere lÃ³gica adicional para esta vista.
 </script>
 
 <style scoped>
@@ -40,7 +40,7 @@
   color: #fff;
   background: linear-gradient(135deg, #d32f2f, #f44336);
   padding: 0.8rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   text-decoration: none;
   font-weight: bold;
   transition: background 0.3s, transform 0.2s;

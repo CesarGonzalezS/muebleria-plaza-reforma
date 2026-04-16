@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <Transition name="modal">
     <div v-if="isOpen" class="modal-overlay" role="dialog" aria-modal="true" @click.self="closeModal">
       <div class="modal-card" role="document">
@@ -8,8 +8,8 @@
               <div class="icon-wrapper" aria-hidden="true">
                 <i class="bi bi-folder-plus"></i>
               </div>
-              <h2 class="modal-title">{{ isEditing ? 'Editar categoría' : 'Crear categoría' }}</h2>
-              <p class="modal-subtitle" v-if="isEditing">Actualiza los datos de la categoría</p>
+              <h2 class="modal-title">{{ isEditing ? 'Editar categorÃ­a' : 'Crear categorÃ­a' }}</h2>
+              <p class="modal-subtitle" v-if="isEditing">Actualiza los datos de la categorÃ­a</p>
             </div>
 
             <button type="button" class="close-btn" @click="closeModal" aria-label="Cerrar formulario">
@@ -27,19 +27,19 @@
                   id="category-name"
                   v-model="formData.name"
                   type="text"
-                  placeholder="Ej: Tecnología, Hogar, etc."
+                  placeholder="Ej: TecnologÃ­a, Hogar, etc."
                   required
                   aria-required="true"
                 />
               </div>
 
               <div class="form-group">
-                <label for="category-description">Descripción</label>
+                <label for="category-description">DescripciÃ³n</label>
                 <textarea
                   id="category-description"
                   v-model="formData.description"
                   rows="4"
-                  placeholder="Describe esta categoría (opcional)"
+                  placeholder="Describe esta categorÃ­a (opcional)"
                 ></textarea>
               </div>
             </div>
@@ -51,7 +51,7 @@
             </button>
             <button type="submit" class="btn btn-primary">
               <i class="bi" :class="isEditing ? 'bi-check-lg' : 'bi-plus-lg'" aria-hidden="true"></i>
-              <span class="btn-text">{{ isEditing ? 'Guardar cambios' : 'Crear categoría' }}</span>
+              <span class="btn-text">{{ isEditing ? 'Guardar cambios' : 'Crear categorÃ­a' }}</span>
             </button>
           </footer>
         </form>
@@ -118,7 +118,7 @@ function validateForm() {
   errors.value = [];
 
   if (!formData.value.name || !formData.value.name.trim()) {
-    errors.value.push('El nombre de la categoría es obligatorio');
+    errors.value.push('El nombre de la categorÃ­a es obligatorio');
     return false;
   }
 
@@ -132,7 +132,7 @@ function validateForm() {
 
 async function handleSubmit() {
   if (!validateForm()) {
-    axiosConfig.ToastWarning('Validación', errors.value[0]);
+    axiosConfig.ToastWarning('ValidaciÃ³n', errors.value[0]);
     return;
   }
 
@@ -147,27 +147,27 @@ async function handleSubmit() {
 
   try {
     if (props.isEditing && formData.value.id) {
-      // Actualizar categoría existente
+      // Actualizar categorÃ­a existente
       await categoriesService.updateCategory(formData.value.id, payload);
-      axiosConfig.ToastSuccess('¡Éxito!', 'Categoría actualizada correctamente');
+      axiosConfig.ToastSuccess('Â¡Ã‰xito!', 'CategorÃ­a actualizada correctamente');
     } else {
-      // Crear nueva categoría
+      // Crear nueva categorÃ­a
       await categoriesService.createCategory(payload);
-      axiosConfig.ToastSuccess('¡Éxito!', 'Categoría creada correctamente');
+      axiosConfig.ToastSuccess('Â¡Ã‰xito!', 'CategorÃ­a creada correctamente');
     }
 
     emit('success');
     closeModal();
   } catch (err) {
-    console.error('Error al guardar categoría:', err);
+    console.error('Error al guardar categorÃ­a:', err);
 
     if (err.response && err.response.status === 409) {
-      axiosConfig.ToastWarning('Conflicto', 'Ya existe una categoría con ese nombre');
+      axiosConfig.ToastWarning('Conflicto', 'Ya existe una categorÃ­a con ese nombre');
     } else if (err.response && err.response.data) {
       const errorMsg = err.response.data.detail || JSON.stringify(err.response.data);
       axiosConfig.ToastError('Error', errorMsg);
     } else {
-      axiosConfig.ToastError('Error', 'No se pudo guardar la categoría');
+      axiosConfig.ToastError('Error', 'No se pudo guardar la categorÃ­a');
     }
   } finally {
     isSubmitting.value = false;
@@ -176,264 +176,133 @@ async function handleSubmit() {
 </script>
 
 <style scoped>
-/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(20,20,19,0.45);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: var(--s3);
   overflow-y: auto;
 }
 
-/* Modal Card */
 .modal-card {
-  background: #fff;
-  border-radius: 16px;
-  max-width: 550px;
+  background: var(--white);
+  border-radius: var(--r-hero);
+  max-width: 500px;
   width: 100%;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  animation: scaleIn 0.3s ease;
-  /* permitir que el modal sea alto y el body haga scroll en pantallas pequeñas */
-  max-height: calc(100vh - 80px);
+  box-shadow: var(--shadow-md);
+  max-height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
 }
 
-@keyframes scaleIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+.modal-card form { display: flex; flex-direction: column; min-height: 0; }
 
-.modal-card form {
-  display: flex;
-  flex-direction: column;
-  /* asegurar que el contenido principal pueda crecer y el body haga scroll */
-  min-height: 0;
-}
-
-/* Modal Header */
 .modal-header {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  color: #fff;
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.modal-header::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -10%;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-}
-
-.modal-header .header-content {
-  position: relative;
-  z-index: 1;
-}
-
-.modal-header .icon-wrapper {
-  width: 3.5rem;
-  height: 3.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: var(--s3) var(--s4);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.modal-header .icon-wrapper i {
-  font-size: 1.75rem;
-}
+.modal-header .header-content { display: flex; flex-direction: column; gap: 2px; }
+
+.modal-header .icon-wrapper { display: none; }
 
 .modal-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.5px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 .modal-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.75rem;
+  color: var(--slate);
   margin: 0;
-  opacity: 0.9;
-  font-weight: 400;
 }
 
-.modal-header .close-btn {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  width: 2.25rem;
-  height: 2.25rem;
+.close-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--slate);
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  z-index: 2;
+  transition: background 0.15s, color 0.15s;
+  font-size: 0.8125rem;
+  flex-shrink: 0;
 }
+.close-btn:hover { background: var(--canvas); color: var(--ink); }
 
-.modal-header .close-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: rotate(90deg) scale(1.1);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Modal Body */
 .modal-body {
-  padding: 2rem;
-  background: linear-gradient(to bottom, #fafbfc, #ffffff);
-  /* Hacer la zona central scrollable si el contenido desborda */
+  padding: var(--s4);
+  background: var(--canvas-lifted);
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  flex: 1;
 }
 
-/* Mantener el footer fijo al final pero dentro del modal */
 .modal-footer {
-  padding: 1.5rem 2rem;
-  background: linear-gradient(to top, #f8f9fa, #ffffff);
-  border-top: 2px solid #e9ecef;
+  padding: var(--s3) var(--s4);
+  background: var(--white);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: var(--s2);
+  flex-shrink: 0;
 }
 
-/* Modal Transitions */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
+.modal-enter-active, .modal-leave-active { transition: opacity 0.2s; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
+
+/* Buttons inherit from global but need local overrides */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 24px;
+  border-radius: var(--r-btn);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: opacity 0.15s, background 0.15s;
 }
 
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
+.btn-primary {
+  background: var(--ink);
+  color: var(--canvas);
+  border-color: var(--ink);
 }
+.btn-primary:hover { opacity: 0.85; }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .modal-card {
-    max-width: 95%;
-  }
-
-  .modal-header {
-    padding: 1.5rem;
-  }
-
-  .modal-header .icon-wrapper {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .modal-header .icon-wrapper i {
-    font-size: 1.5rem;
-  }
-
-  .modal-title {
-    font-size: 1.35rem;
-  }
-
-  .modal-body {
-    padding: 1.5rem;
-  }
-
-  .modal-footer {
-    padding: 1.25rem 1.5rem;
-  }
+.btn-secondary {
+  background: var(--white);
+  color: var(--ink);
+  border-color: var(--ink);
 }
+.btn-secondary:hover { background: var(--canvas); }
 
 @media (max-width: 480px) {
-  .modal-card {
-    max-width: 98%;
-  }
-
-  .modal-header {
-    padding: 1.25rem 1rem;
-  }
-
-  .modal-header::before {
-    width: 150px;
-    height: 150px;
-  }
-
-  .modal-header .icon-wrapper {
-    width: 2.75rem;
-    height: 2.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .modal-header .icon-wrapper i {
-    font-size: 1.35rem;
-  }
-
-  .modal-title {
-    font-size: 1.25rem;
-  }
-
-  .modal-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .modal-header .close-btn {
-    top: 1rem;
-    right: 1rem;
-    width: 2rem;
-    height: 2rem;
-    font-size: 0.9rem;
-  }
-
-  .modal-body {
-    padding: 1.25rem 1rem;
-  }
-
-  .modal-body .form-grid {
-    gap: 1.25rem;
-  }
-
-  .modal-body .form-group label {
-    font-size: 0.9rem;
-  }
-
-  .modal-body .form-group input,
-  .modal-body .form-group textarea {
-    padding: 0.75rem 0.875rem;
-    font-size: 0.95rem;
-  }
-
-  .modal-footer {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .modal-footer .btn {
-    width: 100%;
-    justify-content: center;
-    padding: 0.875rem 1.5rem;
-  }
+  .modal-card { border-radius: var(--r-card); }
+  .modal-body { padding: var(--s3); }
+  .modal-footer { flex-direction: column; padding: var(--s2) var(--s3); }
 }
 </style>

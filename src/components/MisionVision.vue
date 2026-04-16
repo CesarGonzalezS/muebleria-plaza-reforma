@@ -1,18 +1,18 @@
-<template>
+﻿<template>
   <section class="mision-vision-section">
     <div class="container mision-vision-row">
       <div class="mv-card mv-mision">
         <div class="mv-icon"><i class="bi bi-bullseye"></i></div>
-        <h3>Misión</h3>
+        <h3>MisiÃ³n</h3>
         <p>
-          Nuestra misión es ofrecer muebles de alta calidad, funcionales y con diseño único, que mejoren la vida de nuestros clientes y creen espacios inolvidables en sus hogares y oficinas.
+          Nuestra misiÃ³n es ofrecer muebles de alta calidad, funcionales y con diseÃ±o Ãºnico, que mejoren la vida de nuestros clientes y creen espacios inolvidables en sus hogares y oficinas.
         </p>
       </div>
       <div class="mv-card mv-vision">
         <div class="mv-icon"><i class="bi bi-eye"></i></div>
-        <h3>Visión</h3>
+        <h3>VisiÃ³n</h3>
         <p>
-          Ser la marca de referencia en muebles a nivel nacional, reconocida por la innovación, excelencia en el servicio y compromiso con la satisfacción total de nuestros clientes.
+          Ser la marca de referencia en muebles a nivel nacional, reconocida por la innovaciÃ³n, excelencia en el servicio y compromiso con la satisfacciÃ³n total de nuestros clientes.
         </p>
       </div>
     </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-// Sin lógica extra por ahora
+// Sin lÃ³gica extra por ahora
 </script>
 
 <style scoped>
@@ -40,7 +40,7 @@
 }
 
 .mv-card {
-  background: #fff;
+  background: var(--white);
   border-radius: 20px;
   box-shadow: 0 2px 24px #86073413;
   max-width: 410px;

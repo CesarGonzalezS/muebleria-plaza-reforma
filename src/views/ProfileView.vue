@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="profile-container">
     <div class="profile-card">
       <h1>Mi Perfil</h1>
@@ -19,7 +19,7 @@
         </div>
 
         <div v-if="userInfo.phone" class="info-group">
-          <label>Teléfono:</label>
+          <label>TelÃ©fono:</label>
           <p>{{ userInfo.phone }}</p>
         </div>
 
@@ -28,9 +28,9 @@
           <p>{{ userInfo.id }}</p>
         </div>
 
-        <!-- Estado de Contraseña -->
+        <!-- Estado de ContraseÃ±a -->
         <div v-if="passwordStatus" class="password-status">
-          <label>Estado de Contraseña:</label>
+          <label>Estado de ContraseÃ±a:</label>
           <div class="status-content">
             <div :class="['status-badge', passwordStatus.changeRequired ? 'required' : 'ok']">
               <i :class="passwordStatus.changeRequired ? 'bi bi-exclamation-circle' : 'bi bi-check-circle'"></i>
@@ -38,30 +38,30 @@
             </div>
             <p class="status-text">
               <span v-if="!passwordStatus.changeRequired">
-                Días restantes: <strong>{{ passwordStatus.daysRemaining }}</strong> de {{ passwordStatus.expirationDays }}
+                DÃ­as restantes: <strong>{{ passwordStatus.daysRemaining }}</strong> de {{ passwordStatus.expirationDays }}
               </span>
               <span v-else>
-                Se requiere cambiar la contraseña urgentemente
+                Se requiere cambiar la contraseÃ±a urgentemente
               </span>
             </p>
           </div>
         </div>
 
-        <!-- Botones de Acción -->
+        <!-- Botones de AcciÃ³n -->
         <div class="actions">
           <router-link to="/change-password" class="btn btn-primary">
             <i class="bi bi-key"></i>
-            Cambiar Contraseña
+            Cambiar ContraseÃ±a
           </router-link>
           <button @click="handleLogout" class="btn btn-danger">
             <i class="bi bi-box-arrow-right"></i>
-            Cerrar sesión
+            Cerrar sesiÃ³n
           </button>
         </div>
       </div>
 
       <div v-else class="error">
-        Por favor inicia sesión
+        Por favor inicia sesiÃ³n
       </div>
     </div>
   </div>
@@ -81,26 +81,26 @@ onMounted(async () => {
   if (!authService.isAuthenticated()) {
     router.push('/login');
   } else {
-    // Simulación - en producción obtendría los datos de una API
+    // SimulaciÃ³n - en producciÃ³n obtendrÃ­a los datos de una API
     isLoading.value = false;
     userInfo.value = {
       id: 1,
-      name: 'Juan Pérez',
+      name: 'Juan PÃ©rez',
       email: 'juan@example.com',
       phone: '+52 5555551234'
     };
 
-    // Guardar userId para usar después
+    // Guardar userId para usar despuÃ©s
     localStorage.setItem('userId', userInfo.value.id);
 
-    // Obtener estado de contraseña
+    // Obtener estado de contraseÃ±a
     try {
       const response = await authService.getPasswordStatus(userInfo.value.id);
       if (response.data.success) {
         passwordStatus.value = response.data.data;
       }
     } catch (err) {
-      console.error('Error al obtener estado de contraseña:', err);
+      console.error('Error al obtener estado de contraseÃ±a:', err);
       // Usar valores por defecto
       passwordStatus.value = {
         changeRequired: false,
@@ -130,12 +130,12 @@ async function handleLogout() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   padding: 2rem 1rem;
 }
 
 .profile-card {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   padding: 3rem;
   width: 100%;
@@ -145,7 +145,7 @@ async function handleLogout() {
 
 .profile-card h1 {
   text-align: center;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 2rem;
   font-size: 1.8rem;
 }
@@ -153,7 +153,7 @@ async function handleLogout() {
 .loading,
 .error {
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   padding: 2rem;
 }
 
@@ -168,25 +168,25 @@ async function handleLogout() {
 }
 
 .info-group {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 1rem;
 }
 
 .info-group label {
   display: block;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .info-group p {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
   font-size: 1rem;
 }
 
-/* Estado de Contraseña */
+/* Estado de ContraseÃ±a */
 .password-status {
   background: #f0f9ff;
   border: 2px solid #bfdbfe;
@@ -213,7 +213,7 @@ async function handleLogout() {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   width: fit-content;
   font-weight: 600;
   font-size: 0.9rem;
@@ -247,7 +247,7 @@ async function handleLogout() {
 
 .btn {
   padding: 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -262,7 +262,7 @@ async function handleLogout() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
 }
 

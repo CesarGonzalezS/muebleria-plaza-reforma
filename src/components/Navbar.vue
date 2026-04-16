@@ -1,7 +1,7 @@
-<template>
+﻿<template>
 
   <header class="navbar">
-    <!-- Barra principal de navegación -->
+    <!-- Barra principal de navegaciÃ³n -->
     <div class="navbar__main">
       <div class="navbar__inner">
         <div class="navbar__brand-wrap">
@@ -15,14 +15,14 @@
               </svg>
             </span>
             <div class="brand-text">
-              <span class="navbar__title">Mueblería Plaza Reforma</span>
+              <span class="navbar__title">MueblerÃ­a Plaza Reforma</span>
               <span class="navbar__subtitle">Calidad y estilo para tu hogar</span>
             </div>
           </router-link>
         </div>
 
         <nav class="navbar__nav" :class="{ 'nav-open': mobileMenuOpen }">
-          <button class="nav-close" @click="mobileMenuOpen = false" aria-label="Cerrar menú">
+          <button class="nav-close" @click="mobileMenuOpen = false" aria-label="Cerrar menÃº">
             <i class="bi bi-x-lg"></i>
           </button>
           <router-link
@@ -60,43 +60,43 @@
                 type="button"
                 class="navbar__search-clear"
                 @click="clearSearch"
-                title="Limpiar búsqueda"
+                title="Limpiar bÃºsqueda"
             >
               <i class="bi bi-x-circle-fill"></i>
             </button>
           </form>
 
-          <!-- Botón de Logout si está autenticado -->
+          <!-- BotÃ³n de Logout si estÃ¡ autenticado -->
           <button
             v-if="isAuthenticated"
             @click="handleLogout"
             class="logout-btn"
-            title="Cerrar sesión"
-            aria-label="Cerrar sesión"
+            title="Cerrar sesiÃ³n"
+            aria-label="Cerrar sesiÃ³n"
           >
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
           </button>
 
-          <!-- Link de Login si no está autenticado -->
+          <!-- Link de Login si no estÃ¡ autenticado -->
           <router-link
             v-else
             to="/login"
             class="login-btn"
-            title="Iniciar sesión"
+            title="Iniciar sesiÃ³n"
           >
             <i class="bi bi-box-arrow-in-right"></i>
             <span>Login</span>
           </router-link>
 
-          <button class="mobile-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Abrir menú">
+          <button class="mobile-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Abrir menÃº">
             <i class="bi bi-list"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Overlay para menú móvil -->
+    <!-- Overlay para menÃº mÃ³vil -->
     <Transition name="overlay">
       <div v-if="mobileMenuOpen" class="nav-overlay" @click="mobileMenuOpen = false"></div>
     </Transition>
@@ -114,7 +114,7 @@ const searchQuery = ref('');
 const mobileMenuOpen = ref(false);
 const searchFocused = ref(false);
 
-// Verificar si el usuario está autenticado
+// Verificar si el usuario estÃ¡ autenticado
 const isAuthenticated = computed(() => authService.isAuthenticated());
 
 // Sincronizar el input con el query param de la URL
@@ -126,7 +126,7 @@ watch(() => route.query.buscar, (newSearch) => {
   }
 }, { immediate: true });
 
-// Cerrar menú móvil al cambiar de ruta
+// Cerrar menÃº mÃ³vil al cambiar de ruta
 watch(() => route.path, () => {
   mobileMenuOpen.value = false;
 });
@@ -435,7 +435,7 @@ async function handleLogout() {
 
 .navbar__search:focus-within {
   border-color: var(--nav-primary);
-  background: white;
+  background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
   transform: translateY(-2px);
 }
@@ -579,7 +579,7 @@ async function handleLogout() {
     right: -100%;
     width: 280px;
     height: 100vh;
-    background: white;
+    background: var(--white);
     flex-direction: column;
     align-items: stretch;
     gap: 0;
@@ -652,7 +652,7 @@ async function handleLogout() {
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;

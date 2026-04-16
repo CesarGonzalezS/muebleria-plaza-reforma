@@ -1,16 +1,16 @@
-<template>
+﻿<template>
   <div class="admin-orders-container">
     <div class="admin-header">
       <h1>
         <i class="bi bi-inbox"></i>
-        Gestión de Órdenes
+        GestiÃ³n de Ã“rdenes
       </h1>
-      <p>Panel de administración de órdenes</p>
+      <p>Panel de administraciÃ³n de Ã³rdenes</p>
     </div>
 
     <nav class="admin-nav">
       <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
-      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Órdenes</router-link>
+      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Ã“rdenes</router-link>
       <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
       <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
       <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
@@ -37,7 +37,7 @@
 
     <!-- Loading -->
     <div v-if="loading" class="loading">
-      <i class="bi bi-arrow-repeat"></i> Cargando órdenes...
+      <i class="bi bi-arrow-repeat"></i> Cargando Ã³rdenes...
     </div>
 
     <!-- Error -->
@@ -45,7 +45,7 @@
       {{ error }}
     </div>
 
-    <!-- Tabla de órdenes -->
+    <!-- Tabla de Ã³rdenes -->
     <div v-else-if="filteredOrders.length > 0" class="orders-table-wrapper">
       <table class="orders-table">
         <thead>
@@ -88,7 +88,7 @@
     <!-- Empty -->
     <div v-else class="empty-state">
       <i class="bi bi-inbox"></i>
-      <p>No hay órdenes para mostrar</p>
+      <p>No hay Ã³rdenes para mostrar</p>
     </div>
 
     <!-- Modal de cambiar estado -->
@@ -165,7 +165,7 @@ async function fetchOrders() {
       orders.value = response.data.data || [];
     }
   } catch (err) {
-    error.value = 'Error al cargar órdenes';
+    error.value = 'Error al cargar Ã³rdenes';
   } finally {
     loading.value = false;
   }
@@ -203,7 +203,7 @@ async function updateOrderStatus() {
 }
 
 async function deleteOrder(orderId) {
-  if (!confirm('¿Estás seguro de que deseas cancelar esta orden?')) return;
+  if (!confirm('Â¿EstÃ¡s seguro de que deseas cancelar esta orden?')) return;
 
   loading.value = true;
   error.value = '';
@@ -239,21 +239,21 @@ function formatPrice(price) {
   return parseFloat(price).toFixed(2);
 }
 
-// Cargar órdenes al montar
+// Cargar Ã³rdenes al montar
 fetchOrders();
 </script>
 
 <style scoped>
 .admin-orders-container {
   min-height: 100vh;
-  background: #f9fafb;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: #111827;
+  background: var(--canvas-lifted);
+  font-family: var(--font);
+  color: var(--ink);
 }
 
 .admin-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
   padding: 0.875rem 1.5rem;
   display: flex;
   align-items: flex-start;
@@ -265,40 +265,40 @@ fetchOrders();
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #111827;
+  color: var(--ink);
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
 }
 
-.admin-header h1 i { color: #6b7280; font-size: 1rem; }
-.admin-header p { color: #6b7280; margin: 0; font-size: 0.8125rem; }
+.admin-header h1 i { color: var(--slate); font-size: 1rem; }
+.admin-header p { color: var(--slate); margin: 0; font-size: 0.8125rem; }
 
 .filters {
   display: flex;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
   align-items: flex-end;
   flex-wrap: wrap;
 }
 
 .form-group { display: flex; flex-direction: column; gap: 0.375rem; min-width: 150px; flex: 1; }
 
-.form-group label { font-size: 0.8125rem; font-weight: 500; color: #374151; }
+.form-group label { font-size: 0.8125rem; font-weight: 500; color: var(--charcoal); }
 
 .form-group select {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 0.875rem;
   font-family: inherit;
-  background: #fff;
-  color: #111827;
+  background: var(--white);
+  color: var(--ink);
   transition: border-color 0.15s;
 }
-.form-group select:focus { outline: none; border-color: #111827; }
+.form-group select:focus { outline: none; border-color: var(--ink); }
 
 .btn-refresh {
   display: inline-flex;
@@ -308,7 +308,7 @@ fetchOrders();
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -324,7 +324,7 @@ fetchOrders();
   justify-content: center;
   gap: 0.75rem;
   padding: 3rem;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.875rem;
 }
 
@@ -333,16 +333,16 @@ fetchOrders();
   border: 1px solid #fca5a5;
   color: #dc2626;
   padding: 0.75rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin: 1rem 1.5rem;
   font-size: 0.875rem;
 }
 
 .orders-table-wrapper {
   margin: 1.5rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
   overflow-x: auto;
 }
 
@@ -352,7 +352,7 @@ fetchOrders();
   font-size: 0.875rem;
 }
 
-.orders-table thead { background: #f9fafb; }
+.orders-table thead { background: var(--canvas-lifted); }
 .orders-table th {
   padding: 0.75rem 1rem;
   text-align: left;
@@ -360,15 +360,15 @@ fetchOrders();
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7280;
-  border-bottom: 1px solid #e5e7eb;
+  color: var(--slate);
+  border-bottom: 1px solid var(--border);
 }
 
-.orders-table tbody tr { border-bottom: 1px solid #e5e7eb; }
-.orders-table tbody tr:hover { background: #f9fafb; }
-.orders-table td { padding: 0.75rem 1rem; color: #111827; vertical-align: middle; }
+.orders-table tbody tr { border-bottom: 1px solid var(--border); }
+.orders-table tbody tr:hover { background: var(--canvas-lifted); }
+.orders-table td { padding: 0.75rem 1rem; color: var(--ink); vertical-align: middle; }
 
-.id-cell { font-weight: 600; font-family: monospace; font-size: 0.8125rem; color: #374151; }
+.id-cell { font-weight: 600; font-family: monospace; font-size: 0.8125rem; color: var(--charcoal); }
 .amount { font-weight: 600; }
 
 .status-badge {
@@ -388,17 +388,17 @@ fetchOrders();
 
 .btn-change-status, .btn-delete, .btn-view {
   background: transparent;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   width: 2rem;
   height: 2rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--slate);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
   font-family: inherit;
 }
@@ -413,11 +413,11 @@ fetchOrders();
   justify-content: center;
   padding: 3rem 1.5rem;
   margin: 1.5rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   gap: 0.75rem;
 }
 .empty-state i { font-size: 1.75rem; }
@@ -436,9 +436,9 @@ fetchOrders();
 }
 
 .modal-content {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
   padding: 1.5rem;
   max-width: 440px;
   width: 100%;
@@ -449,14 +449,14 @@ fetchOrders();
   position: absolute;
   top: 0.875rem;
   right: 0.875rem;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  background: var(--canvas);
+  border: 1px solid var(--border);
   width: 2rem;
   height: 2rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--slate);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -465,23 +465,23 @@ fetchOrders();
 }
 .close-btn:hover { background: #e5e7eb; }
 
-.modal-content h2 { color: #111827; margin: 0 0 0.375rem; font-size: 1rem; font-weight: 600; }
-.order-info { color: #6b7280; margin: 0 0 1.25rem; font-size: 0.8125rem; }
+.modal-content h2 { color: var(--ink); margin: 0 0 0.375rem; font-size: 1rem; font-weight: 600; }
+.order-info { color: var(--slate); margin: 0 0 1.25rem; font-size: 0.8125rem; }
 
 .form-group { margin-bottom: 1rem; }
 
 .form-group input, .form-group select {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 0.875rem;
   font-family: inherit;
   box-sizing: border-box;
   transition: border-color 0.15s;
-  color: #111827;
+  color: var(--ink);
 }
-.form-group input:focus, .form-group select:focus { outline: none; border-color: #111827; }
+.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--ink); }
 
 .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
 
@@ -489,7 +489,7 @@ fetchOrders();
   flex: 1;
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -503,7 +503,7 @@ fetchOrders();
 .btn-submit { background: #111827; color: #fff; }
 .btn-submit:hover:not(:disabled) { background: #374151; }
 .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-cancel { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+.btn-cancel { background: var(--canvas); color: var(--charcoal); border: 1px solid var(--border); }
 .btn-cancel:hover { background: #e5e7eb; }
 
 @media (max-width: 768px) {
@@ -513,415 +513,3 @@ fetchOrders();
   .btn-refresh { width: 100%; justify-content: center; }
 }
 </style>
-
-
-
-.admin-header h1 {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #1f2937;
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.admin-header h1 i {
-  color: #667eea;
-}
-
-.admin-header p {
-  color: #6b7280;
-  margin: 0.5rem 0 0;
-}
-
-/* Filtros */
-.filters {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  align-items: flex-end;
-}
-
-.form-group {
-  flex: 1;
-  min-width: 150px;
-}
-
-.form-group label {
-  display: block;
-  color: #374151;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  box-sizing: border-box;
-}
-
-.form-group select:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.btn-refresh {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-refresh:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-/* Loading */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 3rem 2rem;
-  color: #6b7280;
-}
-
-.loading i {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Error */
-.error-message {
-  background: #fee;
-  border: 1px solid #fca;
-  color: #c33;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 2rem;
-}
-
-/* Tabla */
-.orders-table-wrapper {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.orders-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-
-.orders-table thead {
-  background: #f3f4f6;
-  border-bottom: 2px solid #e5e7eb;
-}
-
-.orders-table th {
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: #374151;
-}
-
-.orders-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
-  transition: background 0.2s;
-}
-
-.orders-table tbody tr:hover {
-  background: #f9fafb;
-}
-
-.orders-table td {
-  padding: 1rem;
-  color: #1f2937;
-}
-
-.id-cell {
-  color: #667eea;
-  font-weight: 600;
-  font-family: monospace;
-}
-
-.amount {
-  font-weight: 600;
-  color: #667eea;
-}
-
-.status-badge {
-  display: inline-flex;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.status-badge.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status-badge.processing {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.status-badge.shipped {
-  background: #e0e7ff;
-  color: #3730a3;
-}
-
-.status-badge.delivered {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.status-badge.cancelled {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-change-status,
-.btn-delete,
-.btn-view {
-  background: transparent;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 1rem;
-}
-
-.btn-change-status {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.btn-change-status:hover {
-  background: #bfdbfe;
-}
-
-.btn-delete {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.btn-delete:hover {
-  background: #fecaca;
-}
-
-.btn-view {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.btn-view:hover {
-  background: #a7f3d0;
-}
-
-/* Empty */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 2rem;
-  background: #f9fafb;
-  border-radius: 12px;
-  text-align: center;
-  color: #9ca3af;
-}
-
-.empty-state i {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 500px;
-  width: 100%;
-  position: relative;
-}
-
-.close-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: #f3f4f6;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #6b7280;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background: #e5e7eb;
-}
-
-.modal-content h2 {
-  color: #1f2937;
-  margin: 0 0 0.5rem;
-}
-
-.order-info {
-  color: #9ca3af;
-  margin: 0 0 1.5rem;
-  font-size: 0.9rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-family: inherit;
-  box-sizing: border-box;
-  transition: all 0.2s;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-.modal-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.btn-submit,
-.btn-cancel {
-  flex: 1;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-cancel {
-  background: #f3f4f6;
-  color: #1f2937;
-}
-
-.btn-cancel:hover {
-  background: #e5e7eb;
-}
-
-@media (max-width: 768px) {
-  .admin-orders-container {
-    padding: 1rem;
-  }
-
-  .filters {
-    flex-direction: column;
-  }
-
-  .form-group {
-    width: 100%;
-  }
-
-  .btn-refresh {
-    width: 100%;
-  }
-
-  .orders-table {
-    font-size: 0.85rem;
-  }
-
-  .orders-table th,
-  .orders-table td {
-    padding: 0.75rem 0.5rem;
-  }
-}
-.admin-nav { display:flex; gap:.25rem; padding:.75rem 2rem; background:#fff; border-bottom:2px solid #e9ecef; flex-wrap:wrap; }
-.admin-nav-item { display:flex; align-items:center; gap:.4rem; padding:.5rem 1rem; border-radius:8px; color:#555; font-weight:500; font-size:.9rem; text-decoration:none; transition:all .2s; }
-.admin-nav-item:hover { background:#f0f4ff; color:#007bff; }
-.admin-nav-item.router-link-active { background:#007bff; color:#fff; }
-</style>
-

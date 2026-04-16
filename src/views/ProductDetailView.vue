@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="product-detail-container">
     <!-- Back Button -->
     <router-link to="/productos-lista" class="back-link">
@@ -31,9 +31,9 @@
           </div>
         </div>
 
-        <!-- Información -->
+        <!-- InformaciÃ³n -->
         <div class="detail-info">
-          <!-- Nombre y Categoría -->
+          <!-- Nombre y CategorÃ­a -->
           <div class="detail-header">
             <h1>{{ product.name }}</h1>
             <div class="detail-badges">
@@ -45,7 +45,7 @@
             </div>
           </div>
 
-          <!-- Descripción -->
+          <!-- DescripciÃ³n -->
           <p class="description">{{ product.description }}</p>
 
           <!-- Marca -->
@@ -77,11 +77,11 @@
               <span :class="['stock-value', product.stock <= product.minStock ? 'low' : '']">
                 {{ product.stock }} unidades
               </span>
-              <span class="min-stock">Mínimo: {{ product.minStock }}</span>
+              <span class="min-stock">MÃ­nimo: {{ product.minStock }}</span>
             </div>
           </div>
 
-          <!-- Botones de acción -->
+          <!-- Botones de acciÃ³n -->
           <div class="detail-actions">
             <button class="btn-primary">
               <i class="bi bi-cart"></i> Agregar al Carrito
@@ -95,14 +95,14 @@
 
       <!-- Especificaciones adicionales -->
       <div class="detail-specs">
-        <h3>Información Adicional</h3>
+        <h3>InformaciÃ³n Adicional</h3>
         <div class="specs-grid">
           <div class="spec-item">
             <span class="spec-label">ID del Producto</span>
             <span class="spec-value">{{ product.id }}</span>
           </div>
           <div class="spec-item">
-            <span class="spec-label">Categoría</span>
+            <span class="spec-label">CategorÃ­a</span>
             <span class="spec-value">{{ product.category }}</span>
           </div>
           <div class="spec-item">
@@ -152,7 +152,7 @@ async function fetchProduct() {
   const productId = route.params.id;
 
   if (!productId) {
-    error.value = 'ID de producto no válido';
+    error.value = 'ID de producto no vÃ¡lido';
     return;
   }
 
@@ -199,7 +199,7 @@ function goBack() {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #667eea;
+  color: var(--ink);
   text-decoration: none;
   font-weight: 600;
   margin-bottom: 2rem;
@@ -218,12 +218,12 @@ function goBack() {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: var(--ink);
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
 }
@@ -241,7 +241,7 @@ function goBack() {
   border: 2px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 2rem;
 }
 
@@ -255,7 +255,7 @@ function goBack() {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s;
@@ -267,7 +267,7 @@ function goBack() {
 
 /* Product Detail */
 .product-detail {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 2rem;
@@ -278,7 +278,7 @@ function goBack() {
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 2rem;
 }
 
@@ -291,15 +291,15 @@ function goBack() {
 .detail-image img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   object-fit: cover;
 }
 
 .placeholder-image {
   width: 300px;
   height: 300px;
-  background: #f3f4f6;
-  border-radius: 8px;
+  background: var(--canvas);
+  border-radius: var(--r-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -314,7 +314,7 @@ function goBack() {
 }
 
 .detail-header h1 {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 2rem;
   margin: 0;
 }
@@ -331,7 +331,7 @@ function goBack() {
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -342,8 +342,8 @@ function goBack() {
 }
 
 .badge.inactive {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--canvas);
+  color: var(--slate);
 }
 
 .badge.low-stock {
@@ -352,7 +352,7 @@ function goBack() {
 }
 
 .description {
-  color: #6b7280;
+  color: var(--slate);
   line-height: 1.6;
   margin: 0;
 }
@@ -362,16 +362,16 @@ function goBack() {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .detail-row label {
   font-weight: 600;
-  color: #374151;
+  color: var(--charcoal);
 }
 
 .detail-row span {
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .detail-row.prices {
@@ -389,13 +389,13 @@ function goBack() {
 
 .price-item label {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .cost {
@@ -448,7 +448,7 @@ function goBack() {
   flex: 1;
   padding: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -461,7 +461,7 @@ function goBack() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
 }
 
@@ -471,8 +471,8 @@ function goBack() {
 }
 
 .btn-secondary {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--canvas);
+  color: var(--charcoal);
   border: 2px solid #e5e7eb;
 }
 
@@ -486,7 +486,7 @@ function goBack() {
 }
 
 .detail-specs h3 {
-  color: #1f2937;
+  color: var(--ink);
   margin-bottom: 1rem;
 }
 
@@ -501,18 +501,18 @@ function goBack() {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  background: var(--canvas-lifted);
+  border-radius: var(--r-card);
 }
 
 .spec-label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .spec-value {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 600;
 }
 

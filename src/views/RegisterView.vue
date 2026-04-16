@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="register-container">
     <div class="register-card">
       <h1>Crear Cuenta</h1>
@@ -12,14 +12,14 @@
             v-model="form.name"
             id="name"
             type="text"
-            placeholder="Juan Pérez"
+            placeholder="Juan PÃ©rez"
             required
           />
         </div>
 
         <!-- Email -->
         <div class="form-group">
-          <label for="email">Correo Electrónico</label>
+          <label for="email">Correo ElectrÃ³nico</label>
           <input
             v-model="form.email"
             id="email"
@@ -29,9 +29,9 @@
           />
         </div>
 
-        <!-- Teléfono -->
+        <!-- TelÃ©fono -->
         <div class="form-group">
-          <label for="phone">Teléfono (Opcional)</label>
+          <label for="phone">TelÃ©fono (Opcional)</label>
           <input
             v-model="form.phone"
             id="phone"
@@ -40,15 +40,15 @@
           />
         </div>
 
-        <!-- Contraseña -->
+        <!-- ContraseÃ±a -->
         <div class="form-group">
-          <label for="password">Contraseña</label>
+          <label for="password">ContraseÃ±a</label>
           <div class="password-wrapper">
             <input
               v-model="form.password"
               id="password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="Mínimo 8 caracteres"
+              placeholder="MÃ­nimo 8 caracteres"
               required
               minlength="8"
             />
@@ -62,15 +62,15 @@
           </div>
         </div>
 
-        <!-- Confirmar Contraseña -->
+        <!-- Confirmar ContraseÃ±a -->
         <div class="form-group">
-          <label for="password-confirm">Confirmar Contraseña</label>
+          <label for="password-confirm">Confirmar ContraseÃ±a</label>
           <div class="password-wrapper">
             <input
               v-model="form.passwordConfirm"
               id="password-confirm"
               :type="showPasswordConfirm ? 'text' : 'password'"
-              placeholder="Confirma tu contraseña"
+              placeholder="Confirma tu contraseÃ±a"
               required
               minlength="8"
             />
@@ -89,12 +89,12 @@
           {{ error }}
         </div>
 
-        <!-- Mensaje de éxito -->
+        <!-- Mensaje de Ã©xito -->
         <div v-if="success" class="success-message">
-          ¡Registro exitoso! Redirigiendo...
+          Â¡Registro exitoso! Redirigiendo...
         </div>
 
-        <!-- Botón enviar -->
+        <!-- BotÃ³n enviar -->
         <button type="submit" class="btn-submit" :disabled="loading">
           <span v-if="!loading">Registrarse</span>
           <span v-else>Registrando...</span>
@@ -102,7 +102,7 @@
 
         <!-- Link a login -->
         <div class="login-link">
-          ¿Ya tienes cuenta? <router-link to="/login">Inicia sesión aquí</router-link>
+          Â¿Ya tienes cuenta? <router-link to="/login">Inicia sesiÃ³n aquÃ­</router-link>
         </div>
       </form>
     </div>
@@ -134,15 +134,15 @@ async function handleRegister() {
   error.value = '';
   success.value = false;
 
-  // Validar que las contraseñas coincidan
+  // Validar que las contraseÃ±as coincidan
   if (form.value.password !== form.value.passwordConfirm) {
-    error.value = 'Las contraseñas no coinciden';
+    error.value = 'Las contraseÃ±as no coinciden';
     return;
   }
 
-  // Validar longitud de contraseña
+  // Validar longitud de contraseÃ±a
   if (form.value.password.length < 8) {
-    error.value = 'La contraseña debe tener mínimo 8 caracteres';
+    error.value = 'La contraseÃ±a debe tener mÃ­nimo 8 caracteres';
     return;
   }
 
@@ -176,159 +176,130 @@ async function handleRegister() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem 1rem;
+  background: var(--canvas);
+  padding: var(--s4) var(--s3);
 }
 
 .register-card {
-  background: white;
-  border-radius: 16px;
-  padding: 3rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-hero);
+  padding: var(--s4);
   width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  max-width: 480px;
+  box-shadow: var(--shadow-sm);
 }
 
 .register-card h1 {
   text-align: center;
-  color: #1f2937;
-  margin: 0 0 0.5rem;
-  font-size: 1.8rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 4px;
 }
 
 .subtitle {
   text-align: center;
-  color: #6b7280;
-  margin: 0 0 2rem;
-  font-size: 0.95rem;
+  color: var(--slate);
+  margin: 0 0 var(--s3);
+  font-size: 0.8125rem;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--s2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .form-group label {
   display: block;
-  color: #374151;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  color: var(--charcoal);
+  font-weight: 500;
+  font-size: 0.8125rem;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s;
+  padding: 10px 14px;
+  border: 1px solid var(--dust);
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--canvas-lifted);
+  transition: border-color 0.15s;
+  outline: none;
   box-sizing: border-box;
 }
 
-.form-group input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
+.form-group input:focus { border-color: var(--ink); background: var(--white); }
+.form-group input::placeholder { color: var(--dust); }
 
-.password-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-wrapper input {
-  padding-right: 3rem;
-}
+.password-wrapper { position: relative; display: flex; align-items: center; }
+.password-wrapper input { padding-right: 2.5rem; }
 
 .toggle-password {
   position: absolute;
-  right: 0.75rem;
+  right: 10px;
   background: transparent;
   border: none;
-  color: #6b7280;
-  font-size: 1.2rem;
+  color: var(--slate);
+  font-size: 0.875rem;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
 }
-
-.toggle-password:hover {
-  color: #667eea;
-}
+.toggle-password:hover { color: var(--ink); }
 
 .error-message {
-  background: #fee;
-  border: 1px solid #fca;
-  color: #c33;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: var(--s2);
+  font-size: 0.8125rem;
 }
 
 .success-message {
-  background: #efe;
-  border: 1px solid #aca;
-  color: #3a3;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: var(--s2);
+  font-size: 0.8125rem;
 }
 
 .btn-submit {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 0.85rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  background: var(--ink);
+  color: var(--canvas);
+  border: 1.5px solid var(--ink);
+  padding: 10px 24px;
+  border-radius: var(--r-btn);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-family: var(--font);
+  letter-spacing: -0.02em;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-bottom: 1rem;
+  transition: opacity 0.15s;
+  margin-bottom: var(--s2);
 }
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.btn-submit:hover:not(:disabled) { opacity: 0.85; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .login-link {
   text-align: center;
-  color: #6b7280;
-  font-size: 0.9rem;
+  color: var(--slate);
+  font-size: 0.8125rem;
 }
+.login-link a { color: var(--ink); font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
 
-.login-link a {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-
-.login-link a:hover {
-  color: #764ba2;
-}
-
-@media (max-width: 640px) {
-  .register-card {
-    padding: 2rem 1.5rem;
-  }
-
-  .register-card h1 {
-    font-size: 1.5rem;
-  }
+@media (max-width: 480px) {
+  .register-card { padding: var(--s3); border-radius: var(--r-card); }
 }
 </style>
-

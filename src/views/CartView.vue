@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <div class="cart-container">
     <h1>Carrito de Compras</h1>
 
-    <!-- Carrito vacío -->
+    <!-- Carrito vacÃ­o -->
     <div v-if="cartItems.length === 0" class="empty-cart">
       <i class="bi bi-cart-x"></i>
-      <p>Tu carrito está vacío</p>
+      <p>Tu carrito estÃ¡ vacÃ­o</p>
       <router-link to="/productos-lista" class="btn-continue">
         <i class="bi bi-arrow-left"></i> Continuar comprando
       </router-link>
@@ -58,15 +58,15 @@
           <span>${{ formatPrice(total) }}</span>
         </div>
 
-        <!-- Datos de envío -->
+        <!-- Datos de envÃ­o -->
         <div class="shipping-section">
-          <h3>Dirección de Envío</h3>
+          <h3>DirecciÃ³n de EnvÃ­o</h3>
 
           <div class="form-group">
-            <label>Dirección *</label>
+            <label>DirecciÃ³n *</label>
             <textarea
               v-model="shippingAddress"
-              placeholder="Ingresa tu dirección completa"
+              placeholder="Ingresa tu direcciÃ³n completa"
               rows="3"
               required
             ></textarea>
@@ -101,8 +101,8 @@ import { orderService } from '../services/orders';
 
 const router = useRouter();
 const cartItems = ref([
-  // Simulación de items en el carrito
-  // En producción, estos vendrían de un estado global o localStorage
+  // SimulaciÃ³n de items en el carrito
+  // En producciÃ³n, estos vendrÃ­an de un estado global o localStorage
 ]);
 
 const shippingAddress = ref('');
@@ -136,7 +136,7 @@ function removeItem(productId) {
 }
 
 function clearCart() {
-  if (confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
+  if (confirm('Â¿EstÃ¡s seguro de que deseas limpiar el carrito?')) {
     cartItems.value = [];
     shippingAddress.value = '';
   }
@@ -146,12 +146,12 @@ async function handleCheckout() {
   error.value = '';
 
   if (!shippingAddress.value.trim()) {
-    error.value = 'Por favor ingresa una dirección de envío';
+    error.value = 'Por favor ingresa una direcciÃ³n de envÃ­o';
     return;
   }
 
   if (cartItems.value.length === 0) {
-    error.value = 'El carrito está vacío';
+    error.value = 'El carrito estÃ¡ vacÃ­o';
     return;
   }
 
@@ -159,7 +159,7 @@ async function handleCheckout() {
 
   try {
     const orderData = {
-      customerId: 1, // En producción, obtener del usuario autenticado
+      customerId: 1, // En producciÃ³n, obtener del usuario autenticado
       shippingAddress: shippingAddress.value,
       items: cartItems.value.map(item => ({
         productId: item.productId,
@@ -175,7 +175,7 @@ async function handleCheckout() {
       cartItems.value = [];
       shippingAddress.value = '';
 
-      // Redirigir a página de éxito o detalle de orden
+      // Redirigir a pÃ¡gina de Ã©xito o detalle de orden
       router.push(`/order-detail/${response.data.data.id}`);
     }
   } catch (err) {
@@ -198,7 +198,7 @@ function formatPrice(price) {
 }
 
 .cart-container h1 {
-  color: #1f2937;
+  color: var(--ink);
   margin-bottom: 2rem;
   font-size: 2rem;
 }
@@ -210,7 +210,7 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-radius: 12px;
   text-align: center;
   color: #9ca3af;
@@ -231,10 +231,10 @@ function formatPrice(price) {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s;
@@ -253,14 +253,14 @@ function formatPrice(price) {
 }
 
 .cart-items {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .cart-items h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
 }
@@ -271,7 +271,7 @@ function formatPrice(price) {
   gap: 1rem;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .cart-item:last-child {
@@ -280,7 +280,7 @@ function formatPrice(price) {
 
 .item-info h3 {
   margin: 0 0 0.25rem;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1rem;
 }
 
@@ -294,9 +294,9 @@ function formatPrice(price) {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #f3f4f6;
+  background: var(--canvas);
   padding: 0.4rem;
-  border-radius: 6px;
+  border-radius: 10px;
 }
 
 .qty-btn {
@@ -341,7 +341,7 @@ function formatPrice(price) {
 }
 
 .total-price {
-  color: #667eea;
+  color: var(--ink);
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -352,7 +352,7 @@ function formatPrice(price) {
   border: none;
   width: 40px;
   height: 40px;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -366,7 +366,7 @@ function formatPrice(price) {
 
 /* Summary */
 .cart-summary {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -376,7 +376,7 @@ function formatPrice(price) {
 }
 
 .cart-summary h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   font-size: 1.1rem;
 }
@@ -385,8 +385,8 @@ function formatPrice(price) {
   display: flex;
   justify-content: space-between;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #e5e7eb;
-  color: #6b7280;
+  border-bottom: 1px solid var(--border);
+  color: var(--slate);
   font-weight: 500;
 }
 
@@ -394,7 +394,7 @@ function formatPrice(price) {
   padding: 1rem 0;
   border-bottom: none;
   border-top: 2px solid #e5e7eb;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.2rem;
   font-weight: 700;
 }
@@ -410,7 +410,7 @@ function formatPrice(price) {
 }
 
 .shipping-section h3 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1rem;
   font-size: 1rem;
 }
@@ -421,7 +421,7 @@ function formatPrice(price) {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -431,7 +431,7 @@ function formatPrice(price) {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.9rem;
   font-family: inherit;
   box-sizing: border-box;
@@ -441,7 +441,7 @@ function formatPrice(price) {
 
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -450,7 +450,7 @@ function formatPrice(price) {
   border: 1px solid #fca;
   color: #c33;
   padding: 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -460,7 +460,7 @@ function formatPrice(price) {
   width: 100%;
   padding: 0.875rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -472,7 +472,7 @@ function formatPrice(price) {
 }
 
 .btn-checkout {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
 }
 
@@ -487,8 +487,8 @@ function formatPrice(price) {
 }
 
 .btn-clear {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--canvas);
+  color: var(--slate);
 }
 
 .btn-clear:hover {

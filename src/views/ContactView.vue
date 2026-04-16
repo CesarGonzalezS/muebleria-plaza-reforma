@@ -1,18 +1,18 @@
-<template>
+﻿<template>
   <div class="contact-view">
     <Navbar />
     <Header />
 
     <main>
-      <!-- Título y subtítulo mejorado -->
+      <!-- TÃ­tulo y subtÃ­tulo mejorado -->
       <section class="contact-header">
         <div class="container">
           <div class="header-content">
             <div class="header-icon">
               <i class="bi bi-question-circle"></i>
             </div>
-            <h1>¿Tienes dudas?</h1>
-            <p>Estamos aquí para ayudarte. Contáctanos por el medio que prefieras</p>
+            <h1>Â¿Tienes dudas?</h1>
+            <p>Estamos aquÃ­ para ayudarte. ContÃ¡ctanos por el medio que prefieras</p>
           </div>
         </div>
       </section>
@@ -24,7 +24,7 @@
             <ContactForm />
         </section>
 
-        <!-- Columna de información -->
+        <!-- Columna de informaciÃ³n -->
         <section class="contact-info-col">
           <div class="section-header">
           </div>
@@ -35,8 +35,8 @@
                 <i class="bi bi-geo-alt-fill"></i>
               </div>
               <div class="info-content">
-                <h3>Dirección</h3>
-                <p>No Reelección Sn, Tetecala.<br> 62620 Tetecala, Morelos</p>
+                <h3>DirecciÃ³n</h3>
+                <p>No ReelecciÃ³n Sn, Tetecala.<br> 62620 Tetecala, Morelos</p>
               </div>
             </div>
 
@@ -45,7 +45,7 @@
                 <i class="bi bi-telephone-fill"></i>
               </div>
               <div class="info-content">
-                <h3>Teléfono</h3>
+                <h3>TelÃ©fono</h3>
                 <p><a href="tel:+523411223344">+52 751 396 0035</a></p>
               </div>
             </div>
@@ -55,7 +55,7 @@
                 <i class="bi bi-envelope-fill"></i>
               </div>
               <div class="info-content">
-                <h3>Correo electrónico</h3>
+                <h3>Correo electrÃ³nico</h3>
                 <p><a href="mailto:contacto@plazareforma.com">contacto@plazareforma.com</a></p>
               </div>
             </div>
@@ -66,14 +66,14 @@
               </div>
               <div class="info-content">
                 <h3>Horario</h3>
-                <p>Lun - Sáb: 8:00 AM - 8:00 PM<br>Dom: 8:00 AM - 8:00 PM</p>
+                <p>Lun - SÃ¡b: 8:00 AM - 8:00 PM<br>Dom: 8:00 AM - 8:00 PM</p>
               </div>
             </div>
           </div>
 
           <!-- Mapa -->
           <div class="map-card">
-            <h3><i class="bi bi-map"></i> Encuéntranos</h3>
+            <h3><i class="bi bi-map"></i> EncuÃ©ntranos</h3>
             <div class="map-container">
 
               <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1382.2723339199551!2d-99.39990252639842!3d18.728819667257643!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdcfbaf63ba957%3A0x93f721af2123d9fb!2sMuebler%C3%ADa%20Plaza%20Reforma%20S.A.%20de%20C.V.!5e1!3m2!1ses!2smx!4v1761155962689!5m2!1ses!2smx" 
@@ -101,7 +101,7 @@
       aria-label="WhatsApp"
     >
       <i class="bi bi-whatsapp"></i>
-      <span class="whatsapp-tooltip">¡Chatea con nosotros!</span>
+      <span class="whatsapp-tooltip">Â¡Chatea con nosotros!</span>
     </a>
   </div>
 </template>
@@ -234,14 +234,14 @@ const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20d
 }
 
 .section-header p {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 1rem;
   margin: 0;
 }
 
 /* Tarjetas */
 .form-card {
-  background: white;
+  background: var(--white);
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(134, 7, 52, 0.1);
@@ -255,7 +255,7 @@ const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20d
 }
 
 .info-card {
-  background: white;
+  background: var(--white);
   padding: 1.5rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(134, 7, 52, 0.08);
@@ -318,7 +318,7 @@ const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20d
 /* Mapa */
 .map-card {
   margin-top: -6rem; /* Ajustado para mover hacia arriba */
-  background: white;
+  background: var(--white);
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 10px 10px rgba(134, 7, 52, 0.1);
@@ -384,7 +384,7 @@ const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20d
   background: #1f2937;
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   white-space: nowrap;
   font-size: 0.9rem;
   font-weight: 600;
@@ -588,7 +588,7 @@ const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20d
   }
 
   .map-container {
-    border-radius: 8px;
+    border-radius: var(--r-card);
   }
 
   .map-container iframe {

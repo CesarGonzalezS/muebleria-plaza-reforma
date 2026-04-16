@@ -1,23 +1,23 @@
-<template>
+﻿<template>
   <div class="change-password-container">
     <div class="change-password-card">
       <button @click="goBack" class="back-btn">
-        <i class="bi bi-arrow-left"></i> Atrás
+        <i class="bi bi-arrow-left"></i> AtrÃ¡s
       </button>
 
-      <h1>Cambiar Contraseña</h1>
-      <p class="subtitle">Actualiza tu contraseña para mantener tu cuenta segura</p>
+      <h1>Cambiar ContraseÃ±a</h1>
+      <p class="subtitle">Actualiza tu contraseÃ±a para mantener tu cuenta segura</p>
 
       <form @submit.prevent="handleChangePassword">
-        <!-- Contraseña Actual -->
+        <!-- ContraseÃ±a Actual -->
         <div class="form-group">
-          <label for="current-password">Contraseña Actual</label>
+          <label for="current-password">ContraseÃ±a Actual</label>
           <div class="password-wrapper">
             <input
               v-model="form.currentPassword"
               id="current-password"
               :type="showCurrentPassword ? 'text' : 'password'"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               required
             />
             <button
@@ -30,15 +30,15 @@
           </div>
         </div>
 
-        <!-- Nueva Contraseña -->
+        <!-- Nueva ContraseÃ±a -->
         <div class="form-group">
-          <label for="new-password">Nueva Contraseña</label>
+          <label for="new-password">Nueva ContraseÃ±a</label>
           <div class="password-wrapper">
             <input
               v-model="form.newPassword"
               id="new-password"
               :type="showNewPassword ? 'text' : 'password'"
-              placeholder="Mínimo 8 caracteres"
+              placeholder="MÃ­nimo 8 caracteres"
               required
               minlength="8"
             />
@@ -52,15 +52,15 @@
           </div>
         </div>
 
-        <!-- Confirmar Nueva Contraseña -->
+        <!-- Confirmar Nueva ContraseÃ±a -->
         <div class="form-group">
-          <label for="confirm-password">Confirmar Nueva Contraseña</label>
+          <label for="confirm-password">Confirmar Nueva ContraseÃ±a</label>
           <div class="password-wrapper">
             <input
               v-model="form.confirmPassword"
               id="confirm-password"
               :type="showConfirmPassword ? 'text' : 'password'"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               required
               minlength="8"
             />
@@ -74,7 +74,7 @@
           </div>
         </div>
 
-        <!-- Validación de fortaleza -->
+        <!-- ValidaciÃ³n de fortaleza -->
         <div class="password-strength">
           <span :class="passwordStrength">
             <i :class="strengthIcon"></i>
@@ -87,15 +87,15 @@
           {{ error }}
         </div>
 
-        <!-- Mensaje de éxito -->
+        <!-- Mensaje de Ã©xito -->
         <div v-if="success" class="success-message">
-          ¡Contraseña actualizada exitosamente!
+          Â¡ContraseÃ±a actualizada exitosamente!
         </div>
 
         <!-- Botones -->
         <div class="form-actions">
           <button type="submit" class="btn-submit" :disabled="loading">
-            <span v-if="!loading">Actualizar Contraseña</span>
+            <span v-if="!loading">Actualizar ContraseÃ±a</span>
             <span v-else>Actualizando...</span>
           </button>
           <button type="button" @click="goBack" class="btn-cancel">
@@ -127,7 +127,7 @@ const error = ref('');
 const success = ref(false);
 const loading = ref(false);
 
-// Calcular fortaleza de contraseña
+// Calcular fortaleza de contraseÃ±a
 const passwordStrength = computed(() => {
   const pwd = form.value.newPassword;
   if (!pwd) return 'strength-empty';
@@ -153,7 +153,7 @@ const strengthIcon = computed(() => {
 });
 
 const strengthText = computed(() => {
-  if (passwordStrength.value === 'strength-weak') return 'Débil';
+  if (passwordStrength.value === 'strength-weak') return 'DÃ©bil';
   if (passwordStrength.value === 'strength-medium') return 'Media';
   if (passwordStrength.value === 'strength-strong') return 'Fuerte';
   return '';
@@ -169,17 +169,17 @@ async function handleChangePassword() {
 
   // Validaciones
   if (form.value.currentPassword === form.value.newPassword) {
-    error.value = 'La nueva contraseña debe ser diferente a la actual';
+    error.value = 'La nueva contraseÃ±a debe ser diferente a la actual';
     return;
   }
 
   if (form.value.newPassword !== form.value.confirmPassword) {
-    error.value = 'Las contraseñas no coinciden';
+    error.value = 'Las contraseÃ±as no coinciden';
     return;
   }
 
   if (form.value.newPassword.length < 8) {
-    error.value = 'La contraseña debe tener mínimo 8 caracteres';
+    error.value = 'La contraseÃ±a debe tener mÃ­nimo 8 caracteres';
     return;
   }
 
@@ -204,12 +204,12 @@ async function handleChangePassword() {
       confirmPassword: ''
     };
 
-    // Redirigir después de 2 segundos
+    // Redirigir despuÃ©s de 2 segundos
     setTimeout(() => {
       router.push('/profile');
     }, 2000);
   } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cambiar la contraseña. Intenta de nuevo.';
+    error.value = err.response?.data?.message || 'Error al cambiar la contraseÃ±a. Intenta de nuevo.';
   } finally {
     loading.value = false;
   }
@@ -222,12 +222,12 @@ async function handleChangePassword() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   padding: 2rem 1rem;
 }
 
 .change-password-card {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   padding: 3rem;
   width: 100%;
@@ -240,11 +240,11 @@ async function handleChangePassword() {
   position: absolute;
   top: 1.5rem;
   left: 1.5rem;
-  background: #f3f4f6;
+  background: var(--canvas);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  color: #6b7280;
+  border-radius: var(--r-card);
+  color: var(--slate);
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -256,19 +256,19 @@ async function handleChangePassword() {
 
 .back-btn:hover {
   background: #e5e7eb;
-  color: #667eea;
+  color: var(--ink);
 }
 
 .change-password-card h1 {
   text-align: center;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 0.5rem;
   font-size: 1.8rem;
 }
 
 .subtitle {
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   margin: 0 0 2rem;
   font-size: 0.95rem;
 }
@@ -279,7 +279,7 @@ async function handleChangePassword() {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
@@ -289,7 +289,7 @@ async function handleChangePassword() {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   transition: all 0.3s;
   box-sizing: border-box;
@@ -297,7 +297,7 @@ async function handleChangePassword() {
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -316,7 +316,7 @@ async function handleChangePassword() {
   right: 0.75rem;
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -324,7 +324,7 @@ async function handleChangePassword() {
 }
 
 .toggle-password:hover {
-  color: #667eea;
+  color: var(--ink);
 }
 
 .password-strength {
@@ -356,7 +356,7 @@ async function handleChangePassword() {
   border: 1px solid #fca;
   color: #c33;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -366,7 +366,7 @@ async function handleChangePassword() {
   border: 1px solid #aca;
   color: #3a3;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -381,7 +381,7 @@ async function handleChangePassword() {
 .btn-cancel {
   flex: 1;
   padding: 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -390,7 +390,7 @@ async function handleChangePassword() {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
 }
 
@@ -405,8 +405,8 @@ async function handleChangePassword() {
 }
 
 .btn-cancel {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--canvas);
+  color: var(--slate);
 }
 
 .btn-cancel:hover {

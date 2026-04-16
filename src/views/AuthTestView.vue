@@ -1,18 +1,18 @@
-<template>
+﻿<template>
   <div class="quick-test-container">
     <div class="test-card">
-      <h1>🧪 Test Rápido de Autenticación</h1>
+      <h1>ðŸ§ª Test RÃ¡pido de AutenticaciÃ³n</h1>
 
       <div class="test-section">
-        <h2>Estado de Autenticación</h2>
+        <h2>Estado de AutenticaciÃ³n</h2>
         <div :class="['status-box', isAuth ? 'authenticated' : 'not-authenticated']">
           <i :class="isAuth ? 'bi bi-shield-check' : 'bi bi-shield-dash'"></i>
-          <span>{{ isAuth ? '✓ Autenticado' : '✗ No autenticado' }}</span>
+          <span>{{ isAuth ? 'âœ“ Autenticado' : 'âœ— No autenticado' }}</span>
         </div>
       </div>
 
       <div class="test-section">
-        <h2>Información Almacenada</h2>
+        <h2>InformaciÃ³n Almacenada</h2>
         <div class="info-box">
           <div class="info-item">
             <strong>AccessToken:</strong>
@@ -32,7 +32,7 @@
       </div>
 
       <div class="test-section">
-        <h2>Enlaces Rápidos</h2>
+        <h2>Enlaces RÃ¡pidos</h2>
         <div class="link-grid">
           <router-link to="/login" class="link-btn">
             <i class="bi bi-box-arrow-in-right"></i> Login
@@ -41,7 +41,7 @@
             <i class="bi bi-person-plus"></i> Registro
           </router-link>
           <router-link to="/forgot-password" class="link-btn">
-            <i class="bi bi-key"></i> Olvide Contraseña
+            <i class="bi bi-key"></i> Olvide ContraseÃ±a
           </router-link>
           <router-link to="/reset-password" class="link-btn">
             <i class="bi bi-arrow-clockwise"></i> Reset Pass
@@ -142,14 +142,14 @@ async function logout() {
 <style scoped>
 .quick-test-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   padding: 2rem 1rem;
 }
 
 .test-card {
   max-width: 900px;
   margin: 0 auto;
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -157,7 +157,7 @@ async function logout() {
 
 .test-card h1 {
   text-align: center;
-  color: #1f2937;
+  color: var(--ink);
   margin-bottom: 2rem;
   font-size: 2rem;
 }
@@ -165,7 +165,7 @@ async function logout() {
 .test-section {
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .test-section:last-child {
@@ -173,7 +173,7 @@ async function logout() {
 }
 
 .test-section h2 {
-  color: #374151;
+  color: var(--charcoal);
   font-size: 1.25rem;
   margin-bottom: 1rem;
 }
@@ -207,8 +207,8 @@ async function logout() {
 
 /* Info Box */
 .info-box {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--canvas-lifted);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem;
   display: flex;
@@ -221,21 +221,21 @@ async function logout() {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem;
-  background: white;
-  border-radius: 8px;
+  background: var(--white);
+  border-radius: var(--r-card);
 }
 
 .info-item strong {
-  color: #374151;
+  color: var(--charcoal);
   min-width: 120px;
 }
 
 .info-item code {
-  background: #f3f4f6;
+  background: var(--canvas);
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
-  color: #667eea;
+  color: var(--ink);
   font-family: 'Courier New', monospace;
   word-break: break-all;
 }
@@ -257,10 +257,10 @@ async function logout() {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   text-decoration: none;
   font-weight: 600;
   cursor: pointer;
@@ -292,9 +292,9 @@ async function logout() {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-left: 4px solid #667eea;
-  border-radius: 8px;
+  border-radius: var(--r-card);
 }
 
 .method {
@@ -303,7 +303,7 @@ async function logout() {
   justify-content: center;
   min-width: 50px;
   padding: 0.25rem 0.5rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.75rem;
   font-weight: 700;
   color: white;
@@ -323,7 +323,7 @@ async function logout() {
 
 .endpoint {
   font-family: 'Courier New', monospace;
-  color: #667eea;
+  color: var(--ink);
   font-weight: 600;
   font-size: 0.9rem;
   flex: 1;

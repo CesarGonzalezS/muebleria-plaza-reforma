@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="orders-container">
     <div class="orders-header">
       <h1>
         <i class="bi bi-receipt"></i>
-        Mis Órdenes
+        Mis Ã“rdenes
       </h1>
       <p>Historial de compras</p>
     </div>
@@ -13,7 +13,7 @@
       <div class="spinner">
         <i class="bi bi-arrow-repeat"></i>
       </div>
-      <p>Cargando órdenes...</p>
+      <p>Cargando Ã³rdenes...</p>
     </div>
 
     <!-- Error -->
@@ -23,16 +23,16 @@
       <button @click="fetchOrders" class="retry-btn">Reintentar</button>
     </div>
 
-    <!-- Sin órdenes -->
+    <!-- Sin Ã³rdenes -->
     <div v-else-if="orders.length === 0" class="empty-orders">
       <i class="bi bi-inbox"></i>
-      <p>No tienes órdenes</p>
+      <p>No tienes Ã³rdenes</p>
       <router-link to="/productos-lista" class="btn-shop">
         <i class="bi bi-bag-plus"></i> Comenzar a comprar
       </router-link>
     </div>
 
-    <!-- Lista de órdenes -->
+    <!-- Lista de Ã³rdenes -->
     <div v-else class="orders-grid">
       <div v-for="order in orders" :key="order.id" class="order-card">
         <div class="order-header">
@@ -74,7 +74,7 @@
     <!-- Resumen -->
     <div v-if="orders.length > 0" class="orders-summary">
       <div class="summary-item">
-        <span class="label">Total de Órdenes:</span>
+        <span class="label">Total de Ã“rdenes:</span>
         <span class="value">{{ orders.length }}</span>
       </div>
       <div class="summary-item">
@@ -111,7 +111,7 @@ async function fetchOrders() {
       orders.value = response.data.data || [];
     }
   } catch (err) {
-    error.value = 'Error al cargar órdenes';
+    error.value = 'Error al cargar Ã³rdenes';
   } finally {
     loading.value = false;
   }
@@ -165,17 +165,17 @@ function formatPrice(price) {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
   font-size: 1.8rem;
 }
 
 .orders-header h1 i {
-  color: #667eea;
+  color: var(--ink);
 }
 
 .orders-header p {
-  color: #6b7280;
+  color: var(--slate);
   margin: 0.5rem 0 0;
 }
 
@@ -186,12 +186,12 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: var(--ink);
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
 }
@@ -209,7 +209,7 @@ function formatPrice(price) {
   border: 2px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 2rem;
 }
 
@@ -223,7 +223,7 @@ function formatPrice(price) {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s;
@@ -240,7 +240,7 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-radius: 12px;
   text-align: center;
   color: #9ca3af;
@@ -256,10 +256,10 @@ function formatPrice(price) {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   text-decoration: none;
   font-weight: 600;
   margin-top: 1rem;
@@ -280,7 +280,7 @@ function formatPrice(price) {
 }
 
 .order-card {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -299,7 +299,7 @@ function formatPrice(price) {
   align-items: flex-start;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .order-id-status {
@@ -310,14 +310,14 @@ function formatPrice(price) {
 
 .order-id-status h3 {
   margin: 0;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.1rem;
 }
 
 .status-badge {
   display: inline-flex;
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.8rem;
   font-weight: 600;
   width: fit-content;
@@ -362,7 +362,7 @@ function formatPrice(price) {
 
 .order-amount .amount {
   display: block;
-  color: #667eea;
+  color: var(--ink);
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -373,7 +373,7 @@ function formatPrice(price) {
   gap: 1rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .meta-item {
@@ -389,7 +389,7 @@ function formatPrice(price) {
 }
 
 .meta-item span:last-child {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 500;
 }
 
@@ -404,10 +404,10 @@ function formatPrice(price) {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   padding: 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.2s;
@@ -421,7 +421,7 @@ function formatPrice(price) {
 
 /* Summary */
 .orders-summary {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -438,16 +438,16 @@ function formatPrice(price) {
 }
 
 .summary-item .label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .summary-item .value {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--ink);
 }
 
 @media (max-width: 768px) {

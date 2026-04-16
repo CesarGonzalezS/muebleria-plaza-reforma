@@ -1,34 +1,34 @@
- en<template>
+﻿ en<template>
   <div class="reset-password-container">
     <div class="reset-password-card">
-      <h1>Resetear Contraseña</h1>
+      <h1>Resetear ContraseÃ±a</h1>
       <p class="subtitle">Usa el enlace que recibiste en tu email</p>
 
       <form @submit.prevent="handleResetPassword">
         <!-- Token -->
         <div class="form-group">
-          <label for="token">Token de Verificación</label>
+          <label for="token">Token de VerificaciÃ³n</label>
           <input
             v-model="token"
             id="token"
             type="text"
-            placeholder="Pega aquí el token del email"
+            placeholder="Pega aquÃ­ el token del email"
             required
             disabled
             class="token-input"
           />
-          <small class="help-text">Este se llena automáticamente desde la URL</small>
+          <small class="help-text">Este se llena automÃ¡ticamente desde la URL</small>
         </div>
 
-        <!-- Nueva Contraseña -->
+        <!-- Nueva ContraseÃ±a -->
         <div class="form-group">
-          <label for="new-password">Nueva Contraseña</label>
+          <label for="new-password">Nueva ContraseÃ±a</label>
           <div class="password-wrapper">
             <input
               v-model="newPassword"
               id="new-password"
               :type="showNewPassword ? 'text' : 'password'"
-              placeholder="Mínimo 8 caracteres"
+              placeholder="MÃ­nimo 8 caracteres"
               required
               minlength="8"
             />
@@ -42,15 +42,15 @@
           </div>
         </div>
 
-        <!-- Confirmar Contraseña -->
+        <!-- Confirmar ContraseÃ±a -->
         <div class="form-group">
-          <label for="confirm-password">Confirmar Contraseña</label>
+          <label for="confirm-password">Confirmar ContraseÃ±a</label>
           <div class="password-wrapper">
             <input
               v-model="confirmPassword"
               id="confirm-password"
               :type="showConfirmPassword ? 'text' : 'password'"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               required
               minlength="8"
             />
@@ -77,20 +77,20 @@
           {{ error }}
         </div>
 
-        <!-- Mensaje de éxito -->
+        <!-- Mensaje de Ã©xito -->
         <div v-if="success" class="success-message">
-          ¡Contraseña reseteada exitosamente! Redirigiendo...
+          Â¡ContraseÃ±a reseteada exitosamente! Redirigiendo...
         </div>
 
-        <!-- Botón enviar -->
+        <!-- BotÃ³n enviar -->
         <button type="submit" class="btn-submit" :disabled="loading || !token">
-          <span v-if="!loading">Resetear Contraseña</span>
+          <span v-if="!loading">Resetear ContraseÃ±a</span>
           <span v-else>Procesando...</span>
         </button>
 
         <!-- Link a login -->
         <div class="login-link">
-          ¿Ya recuerdas tu contraseña? <router-link to="/login">Inicia sesión aquí</router-link>
+          Â¿Ya recuerdas tu contraseÃ±a? <router-link to="/login">Inicia sesiÃ³n aquÃ­</router-link>
         </div>
       </form>
     </div>
@@ -122,7 +122,7 @@ onMounted(() => {
   }
 });
 
-// Calcular fortaleza de contraseña
+// Calcular fortaleza de contraseÃ±a
 const passwordStrength = computed(() => {
   const pwd = newPassword.value;
   if (!pwd) return 'strength-empty';
@@ -148,7 +148,7 @@ const strengthIcon = computed(() => {
 });
 
 const strengthText = computed(() => {
-  if (passwordStrength.value === 'strength-weak') return 'Débil';
+  if (passwordStrength.value === 'strength-weak') return 'DÃ©bil';
   if (passwordStrength.value === 'strength-medium') return 'Media';
   if (passwordStrength.value === 'strength-strong') return 'Fuerte';
   return '';
@@ -165,12 +165,12 @@ async function handleResetPassword() {
   }
 
   if (newPassword.value !== confirmPassword.value) {
-    error.value = 'Las contraseñas no coinciden';
+    error.value = 'Las contraseÃ±as no coinciden';
     return;
   }
 
   if (newPassword.value.length < 8) {
-    error.value = 'La contraseña debe tener mínimo 8 caracteres';
+    error.value = 'La contraseÃ±a debe tener mÃ­nimo 8 caracteres';
     return;
   }
 
@@ -189,7 +189,7 @@ async function handleResetPassword() {
       router.push('/login');
     }, 2000);
   } catch (err) {
-    error.value = err.response?.data?.message || 'Error al resetear la contraseña. El token puede estar expirado.';
+    error.value = err.response?.data?.message || 'Error al resetear la contraseÃ±a. El token puede estar expirado.';
   } finally {
     loading.value = false;
   }
@@ -202,12 +202,12 @@ async function handleResetPassword() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   padding: 2rem 1rem;
 }
 
 .reset-password-card {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   padding: 3rem;
   width: 100%;
@@ -217,14 +217,14 @@ async function handleResetPassword() {
 
 .reset-password-card h1 {
   text-align: center;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 0.5rem;
   font-size: 1.8rem;
 }
 
 .subtitle {
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   margin: 0 0 2rem;
   font-size: 0.95rem;
 }
@@ -235,7 +235,7 @@ async function handleResetPassword() {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
@@ -245,7 +245,7 @@ async function handleResetPassword() {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   transition: all 0.3s;
   box-sizing: border-box;
@@ -253,12 +253,12 @@ async function handleResetPassword() {
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
 .form-group input:disabled {
-  background: #f3f4f6;
+  background: var(--canvas);
   cursor: not-allowed;
   color: #9ca3af;
 }
@@ -290,7 +290,7 @@ async function handleResetPassword() {
   right: 0.75rem;
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -298,7 +298,7 @@ async function handleResetPassword() {
 }
 
 .toggle-password:hover {
-  color: #667eea;
+  color: var(--ink);
 }
 
 .password-strength {
@@ -330,7 +330,7 @@ async function handleResetPassword() {
   border: 1px solid #fca;
   color: #c33;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -340,18 +340,18 @@ async function handleResetPassword() {
   border: 1px solid #aca;
   color: #3a3;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
 .btn-submit {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border: none;
   padding: 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -371,12 +371,12 @@ async function handleResetPassword() {
 
 .login-link {
   text-align: center;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
 }
 
 .login-link a {
-  color: #667eea;
+  color: var(--ink);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;

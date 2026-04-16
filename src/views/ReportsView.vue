@@ -1,17 +1,17 @@
-<template>
+﻿<template>
   <div class="reports-container">
     <div class="reports-header">
       <h1>
         <i class="bi bi-graph-up"></i>
         Reportes
       </h1>
-      <p>Análisis y métricas de negocio</p>
+      <p>AnÃ¡lisis y mÃ©tricas de negocio</p>
     </div>
 
-    <!-- Navegación admin -->
+    <!-- NavegaciÃ³n admin -->
     <nav class="admin-nav">
       <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
-      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Órdenes</router-link>
+      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Ã“rdenes</router-link>
       <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
       <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
       <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
@@ -64,7 +64,7 @@
         <div class="chart-container">
           <div class="chart-placeholder">
             <i class="bi bi-bar-chart"></i>
-            Gráfico de Ventas (Integrar Chart.js o similar)
+            GrÃ¡fico de Ventas (Integrar Chart.js o similar)
           </div>
         </div>
 
@@ -74,7 +74,7 @@
             <tr>
               <th>Fecha</th>
               <th>Total de Ventas</th>
-              <th>Cantidad de Órdenes</th>
+              <th>Cantidad de Ã“rdenes</th>
               <th>Valor Promedio</th>
             </tr>
           </thead>
@@ -95,7 +95,7 @@
             <span class="value">${{ formatPrice(calculateTotalSales()) }}</span>
           </div>
           <div class="stat-card">
-            <span class="label">Total Órdenes</span>
+            <span class="label">Total Ã“rdenes</span>
             <span class="value">{{ calculateTotalOrders() }}</span>
           </div>
           <div class="stat-card">
@@ -106,9 +106,9 @@
       </div>
     </div>
 
-    <!-- Productos Más Vendidos -->
+    <!-- Productos MÃ¡s Vendidos -->
     <div v-if="activeTab === 'topProducts'" class="tab-pane">
-      <h2>Productos Más Vendidos</h2>
+      <h2>Productos MÃ¡s Vendidos</h2>
 
       <div class="filters">
         <div class="form-group">
@@ -120,7 +120,7 @@
           <input v-model="filters.topProducts.endDate" type="date" />
         </div>
         <div class="form-group">
-          <label>Límite</label>
+          <label>LÃ­mite</label>
           <input v-model.number="filters.topProducts.limit" type="number" min="1" max="50" />
         </div>
         <button @click="loadTopProducts" class="btn-filter">
@@ -192,7 +192,7 @@
               <p class="product-id">ID: {{ product.productId }}</p>
               <div class="stock-info">
                 <span>Stock Actual: <strong>{{ product.currentStock }}</strong></span>
-                <span>Stock Mínimo: <strong>{{ product.minStock }}</strong></span>
+                <span>Stock MÃ­nimo: <strong>{{ product.minStock }}</strong></span>
                 <span>Falta: <strong>{{ product.minStock - product.currentStock }}</strong></span>
               </div>
             </div>
@@ -221,9 +221,9 @@
       </div>
     </div>
 
-    <!-- Métricas Dashboard -->
+    <!-- MÃ©tricas Dashboard -->
     <div v-if="activeTab === 'metrics'" class="tab-pane">
-      <h2>Métricas del Dashboard</h2>
+      <h2>MÃ©tricas del Dashboard</h2>
 
       <div class="filters">
         <div class="form-group">
@@ -235,13 +235,13 @@
           <input v-model="filters.sales.endDate" type="date" />
         </div>
         <button @click="loadMetrics" class="btn-filter">
-          <i class="bi bi-search"></i> Cargar Métricas
+          <i class="bi bi-search"></i> Cargar MÃ©tricas
         </button>
       </div>
 
       <!-- Loading -->
       <div v-if="loading.metrics" class="loading">
-        <i class="bi bi-arrow-repeat"></i> Cargando métricas...
+        <i class="bi bi-arrow-repeat"></i> Cargando mÃ©tricas...
       </div>
 
       <!-- Error -->
@@ -249,7 +249,7 @@
         {{ errors.metrics }}
       </div>
 
-      <!-- Métricas Grid -->
+      <!-- MÃ©tricas Grid -->
       <div v-else class="report-content">
         <div class="metrics-grid">
           <div class="metric-card primary">
@@ -277,7 +277,7 @@
               <i class="bi bi-receipt"></i>
             </div>
             <div class="metric-info">
-              <span class="label">Total de Órdenes</span>
+              <span class="label">Total de Ã“rdenes</span>
               <span class="value">{{ metricsData.ordersCount }}</span>
             </div>
           </div>
@@ -317,15 +317,15 @@
               <i class="bi bi-people"></i>
             </div>
             <div class="metric-info">
-              <span class="label">Clientes Únicos</span>
+              <span class="label">Clientes Ãšnicos</span>
               <span class="value">{{ metricsData.customerCount }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Análisis y KPIs -->
+        <!-- AnÃ¡lisis y KPIs -->
         <div class="analysis-section">
-          <h3>Análisis Clave</h3>
+          <h3>AnÃ¡lisis Clave</h3>
           <div class="kpi-items">
             <div class="kpi-item">
               <span class="kpi-label">Margen de Ganancia</span>
@@ -356,7 +356,7 @@ const tabs = [
   { id: 'sales', label: 'Ventas', icon: 'bi bi-graph-up' },
   { id: 'topProducts', label: 'Productos Top', icon: 'bi bi-star' },
   { id: 'lowStock', label: 'Stock Bajo', icon: 'bi bi-exclamation-triangle' },
-  { id: 'metrics', label: 'Métricas', icon: 'bi bi-graph-up' }
+  { id: 'metrics', label: 'MÃ©tricas', icon: 'bi bi-graph-up' }
 ];
 
 const filters = ref({
@@ -483,7 +483,7 @@ async function loadMetrics() {
       metricsData.value = response.data.data;
     }
   } catch (err) {
-    errors.value.metrics = 'Error al cargar métricas';
+    errors.value.metrics = 'Error al cargar mÃ©tricas';
   } finally {
     loading.value.metrics = false;
   }
@@ -529,17 +529,17 @@ function calculateCustomersPerOrder() {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
   font-size: 2rem;
 }
 
 .reports-header h1 i {
-  color: #667eea;
+  color: var(--ink);
 }
 
 .reports-header p {
-  color: #6b7280;
+  color: var(--slate);
   margin: 0.5rem 0 0;
 }
 
@@ -558,7 +558,7 @@ function calculateCustomersPerOrder() {
   background: transparent;
   border: none;
   padding: 1rem;
-  color: #6b7280;
+  color: var(--slate);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -567,24 +567,24 @@ function calculateCustomersPerOrder() {
 }
 
 .tab-btn:hover {
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .tab-btn.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: var(--ink);
+  border-bottom-color: var(--ink);
 }
 
 /* Pane */
 .tab-pane {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .tab-pane h2 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   font-size: 1.3rem;
 }
@@ -595,8 +595,8 @@ function calculateCustomersPerOrder() {
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  background: var(--canvas-lifted);
+  border-radius: var(--r-card);
   align-items: flex-end;
   flex-wrap: wrap;
 }
@@ -608,7 +608,7 @@ function calculateCustomersPerOrder() {
 
 .form-group label {
   display: block;
-  color: #374151;
+  color: var(--charcoal);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -618,7 +618,7 @@ function calculateCustomersPerOrder() {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.9rem;
   box-sizing: border-box;
   transition: all 0.2s;
@@ -626,7 +626,7 @@ function calculateCustomersPerOrder() {
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--ink);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -634,11 +634,11 @@ function calculateCustomersPerOrder() {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -656,7 +656,7 @@ function calculateCustomersPerOrder() {
   justify-content: center;
   gap: 0.75rem;
   padding: 2rem;
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.95rem;
 }
 
@@ -675,7 +675,7 @@ function calculateCustomersPerOrder() {
   border: 1px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   margin-bottom: 1rem;
 }
 
@@ -701,9 +701,9 @@ function calculateCustomersPerOrder() {
 }
 
 .chart-placeholder {
-  background: #f3f4f6;
+  background: var(--canvas);
   border: 2px dashed #d1d5db;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   padding: 3rem;
   text-align: center;
   color: #9ca3af;
@@ -724,14 +724,14 @@ function calculateCustomersPerOrder() {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 2rem;
-  background: white;
-  border-radius: 8px;
+  background: var(--white);
+  border-radius: var(--r-card);
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .report-table thead {
-  background: #f3f4f6;
+  background: var(--canvas);
   border-bottom: 2px solid #e5e7eb;
 }
 
@@ -739,17 +739,17 @@ function calculateCustomersPerOrder() {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  color: var(--charcoal);
 }
 
 .report-table td {
   padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-  color: #1f2937;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
 }
 
 .report-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
 }
 
 .report-table .amount,
@@ -774,8 +774,8 @@ function calculateCustomersPerOrder() {
   gap: 1.5rem;
   align-items: center;
   padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
+  background: var(--white);
+  border-radius: var(--r-card);
   border-left: 4px solid #667eea;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -786,7 +786,7 @@ function calculateCustomersPerOrder() {
   justify-content: center;
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--canvas);
   color: white;
   border-radius: 50%;
   font-weight: 700;
@@ -795,7 +795,7 @@ function calculateCustomersPerOrder() {
 
 .product-info h3 {
   margin: 0 0 0.25rem;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1rem;
 }
 
@@ -825,7 +825,7 @@ function calculateCustomersPerOrder() {
 }
 
 .stat .value {
-  color: #667eea;
+  color: var(--ink);
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -844,8 +844,8 @@ function calculateCustomersPerOrder() {
   gap: 1.5rem;
   align-items: center;
   padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
+  background: var(--white);
+  border-radius: var(--r-card);
   border-left: 4px solid #f59e0b;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -869,7 +869,7 @@ function calculateCustomersPerOrder() {
 
 .alert-info h3 {
   margin: 0 0 0.25rem;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1rem;
 }
 
@@ -878,18 +878,18 @@ function calculateCustomersPerOrder() {
   flex-direction: column;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .stock-info strong {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 600;
 }
 
 .status-badge {
   display: inline-flex;
   padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
   text-align: center;
@@ -917,7 +917,7 @@ function calculateCustomersPerOrder() {
 .stat-card {
   background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   border-left: 4px solid #667eea;
   display: flex;
   flex-direction: column;
@@ -925,13 +925,13 @@ function calculateCustomersPerOrder() {
 }
 
 .stat-card .label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .stat-card .value {
-  color: #667eea;
+  color: var(--ink);
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -943,8 +943,8 @@ function calculateCustomersPerOrder() {
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  background: var(--canvas-lifted);
+  border-radius: var(--r-card);
   text-align: center;
   color: #9ca3af;
 }
@@ -1010,8 +1010,8 @@ function calculateCustomersPerOrder() {
   display: flex;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
+  background: var(--white);
+  border-radius: var(--r-card);
   border-left: 4px solid #667eea;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
@@ -1023,7 +1023,7 @@ function calculateCustomersPerOrder() {
 }
 
 .metric-card.primary {
-  border-left-color: #667eea;
+  border-left-color: var(--ink);
 }
 
 .metric-card.success {
@@ -1047,7 +1047,7 @@ function calculateCustomersPerOrder() {
 }
 
 .metric-card.dark {
-  border-left-color: #6b7280;
+  border-left-color: var(--slate);
 }
 
 .metric-icon {
@@ -1056,7 +1056,7 @@ function calculateCustomersPerOrder() {
   justify-content: center;
   width: 50px;
   height: 50px;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   font-size: 1.5rem;
   flex-shrink: 0;
 }
@@ -1092,8 +1092,8 @@ function calculateCustomersPerOrder() {
 }
 
 .metric-card.dark .metric-icon {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--canvas);
+  color: var(--charcoal);
 }
 
 .metric-info {
@@ -1103,29 +1103,29 @@ function calculateCustomersPerOrder() {
 }
 
 .metric-info .label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .metric-info .value {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.5rem;
   font-weight: 700;
 }
 
 /* Analysis Section */
 .analysis-section {
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   border-left: 4px solid #667eea;
   margin-top: 2rem;
 }
 
 .analysis-section h3 {
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   font-size: 1.1rem;
 }
@@ -1137,37 +1137,37 @@ function calculateCustomersPerOrder() {
 }
 
 .kpi-item {
-  background: white;
+  background: var(--white);
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 .kpi-label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .kpi-value {
-  color: #667eea;
+  color: var(--ink);
   font-size: 1.3rem;
   font-weight: 700;
 }
 
 .admin-nav {
   display: flex; gap: 0.25rem; padding: 0.75rem 2rem;
-  background: #fff; border-bottom: 2px solid #e9ecef; flex-wrap: wrap;
+  background: var(--white); border-bottom: 2px solid #e9ecef; flex-wrap: wrap;
 }
 .admin-nav-item {
   display: flex; align-items: center; gap: 0.4rem;
-  padding: 0.5rem 1rem; border-radius: 8px; color: #555;
+  padding: 0.5rem 1rem; border-radius: var(--r-card); color: #555;
   font-weight: 500; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;
 }
-.admin-nav-item:hover { background: #f0f4ff; color: #007bff; }
+.admin-nav-item:hover { background: #f0f4ff; color: var(--ink); }
 .admin-nav-item.router-link-active { background: #007bff; color: #fff; }
 </style>
 

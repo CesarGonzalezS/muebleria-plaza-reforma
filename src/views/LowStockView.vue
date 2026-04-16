@@ -1,16 +1,16 @@
-<template>
+﻿<template>
   <div class="low-stock-container">
     <div class="low-stock-header">
       <h1>
         <i class="bi bi-exclamation-triangle"></i>
         Productos con Stock Bajo
       </h1>
-      <p>Admin Panel - Productos que necesitan reposición</p>
+      <p>Admin Panel - Productos que necesitan reposiciÃ³n</p>
     </div>
 
     <nav class="admin-nav">
       <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
-      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Órdenes</router-link>
+      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Ã“rdenes</router-link>
       <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
       <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
       <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
@@ -32,10 +32,10 @@
       <button @click="fetchProducts" class="retry-btn">Reintentar</button>
     </div>
 
-    <!-- Lista vacía -->
+    <!-- Lista vacÃ­a -->
     <div v-else-if="products.length === 0" class="empty-state">
       <i class="bi bi-check-circle"></i>
-      <h2>¡Todo bien!</h2>
+      <h2>Â¡Todo bien!</h2>
       <p>No hay productos con stock bajo</p>
     </div>
 
@@ -66,7 +66,7 @@
             </span>
           </div>
           <div class="info-row">
-            <label>Stock Mínimo:</label>
+            <label>Stock MÃ­nimo:</label>
             <span>{{ product.minStock }} unidades</span>
           </div>
           <div class="info-row">
@@ -191,7 +191,7 @@ function calculateTotalNeeded() {
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--slate);
 }
 
 .spinner {
@@ -214,7 +214,7 @@ function calculateTotalNeeded() {
   border: 2px solid #fca;
   color: #c33;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   margin-bottom: 2rem;
 }
 
@@ -228,7 +228,7 @@ function calculateTotalNeeded() {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s;
@@ -275,7 +275,7 @@ function calculateTotalNeeded() {
 }
 
 .product-card {
-  background: white;
+  background: var(--white);
   border: 2px solid #fca;
   border-radius: 12px;
   overflow: hidden;
@@ -308,7 +308,7 @@ function calculateTotalNeeded() {
   background: #fed7aa;
   color: #92400e;
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
   margin-top: 0.5rem;
@@ -323,7 +323,7 @@ function calculateTotalNeeded() {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .info-row:last-child {
@@ -331,18 +331,18 @@ function calculateTotalNeeded() {
 }
 
 .info-row label {
-  color: #6b7280;
+  color: var(--slate);
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .info-row span {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 600;
 }
 
 .price {
-  color: #667eea;
+  color: var(--ink);
   font-size: 1.1rem;
 }
 
@@ -373,7 +373,7 @@ function calculateTotalNeeded() {
   display: flex;
   gap: 0.75rem;
   padding: 1rem;
-  background: #f9fafb;
+  background: var(--canvas-lifted);
   border-top: 1px solid #e5e7eb;
 }
 
@@ -382,7 +382,7 @@ function calculateTotalNeeded() {
   flex: 1;
   padding: 0.75rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -405,7 +405,7 @@ function calculateTotalNeeded() {
 
 .btn-view {
   background: #e5e7eb;
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .btn-view:hover {
@@ -414,7 +414,7 @@ function calculateTotalNeeded() {
 
 /* Summary */
 .summary {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -431,13 +431,13 @@ function calculateTotalNeeded() {
 }
 
 .summary-item .label {
-  color: #6b7280;
+  color: var(--slate);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .summary-item .value {
-  color: #1f2937;
+  color: var(--ink);
   font-size: 1.5rem;
   font-weight: 700;
   color: #f59e0b;

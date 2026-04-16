@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="product-detail">
     <Navbar />
     <Header />
@@ -53,7 +53,7 @@
 
         <!-- Product Content -->
         <div v-else class="product-container">
-          <!-- Galería de imágenes -->
+          <!-- GalerÃ­a de imÃ¡genes -->
           <section class="gallery" v-scroll-animate="'fade-in-left'">
             <div class="main-image-wrap">
               <div class="image-badges">
@@ -134,15 +134,15 @@
               <div class="badge-item">
                 <i class="fas fa-truck"></i>
                 <div>
-                  <strong>Entrega rápida</strong>
-                  <span>3-5 días hábiles</span>
+                  <strong>Entrega rÃ¡pida</strong>
+                  <span>3-5 dÃ­as hÃ¡biles</span>
                 </div>
               </div>
               <div class="badge-item">
                 <i class="fas fa-shield-alt"></i>
                 <div>
                   <strong>Compra segura</strong>
-                  <span>Protección garantizada</span>
+                  <span>ProtecciÃ³n garantizada</span>
                 </div>
               </div>
               <div class="badge-item">
@@ -155,12 +155,12 @@
             </div>
 
             <div class="description-section">
-              <h3><i class="fas fa-align-left"></i> Descripción</h3>
+              <h3><i class="fas fa-align-left"></i> DescripciÃ³n</h3>
               <p class="description">{{ product.description || 'Producto de excelente calidad.' }}</p>
             </div>
 
             <div class="features" v-if="product.features.length">
-              <h3><i class="fas fa-list-ul"></i> Características</h3>
+              <h3><i class="fas fa-list-ul"></i> CaracterÃ­sticas</h3>
               <ul>
                 <li v-for="(f, idx) in product.features" :key="idx">
                   <i class="fas fa-check"></i>
@@ -190,7 +190,7 @@
               <i class="fas fa-info-circle"></i>
               <div>
                 <strong>Aparta sin compromiso</strong>
-                <p>Un asesor te contactará para confirmar tu pedido y resolver tus dudas.</p>
+                <p>Un asesor te contactarÃ¡ para confirmar tu pedido y resolver tus dudas.</p>
               </div>
             </div>
           </aside>
@@ -205,7 +205,7 @@
               <i class="fas fa-tag"></i>
               Productos Relacionados
             </h2>
-            <p>Otros productos que podrían interesarte</p>
+            <p>Otros productos que podrÃ­an interesarte</p>
           </div>
 
           <div v-if="loadingRelated" class="related-loading">
@@ -324,7 +324,7 @@ async function fetchProduct() {
     const res = await axiosConfig.doGet(`/furniture/${route.params.id}`);
     const item = res.data;
 
-    // Normalizar imágenes: convertir a array
+    // Normalizar imÃ¡genes: convertir a array
     let itemImages = [];
     if (item.images && Array.isArray(item.images) && item.images.length > 0) {
       itemImages = item.images.map(img => {
@@ -350,7 +350,7 @@ async function fetchProduct() {
         item.color ? `Color: ${item.color}` : null,
         item.material ? `Material: ${item.material}` : null,
         item.dimensions ? `Dimensiones: ${item.dimensions}` : null,
-        item.category ? `Categoría: ${item.category}` : null,
+        item.category ? `CategorÃ­a: ${item.category}` : null,
         `Stock disponible: ${item.stock} unidades`
       ].filter(Boolean)
     };
@@ -462,7 +462,7 @@ function contactUs() {
 
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;
-  // Aquí podrías guardar en localStorage o enviar a una API
+  // AquÃ­ podrÃ­as guardar en localStorage o enviar a una API
 }
 </script>
 
@@ -530,7 +530,7 @@ function toggleFavorite() {
   justify-content: center;
   padding: 4rem 2rem;
   text-align: center;
-  background: white;
+  background: var(--white);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(134, 7, 52, 0.1);
 }
@@ -574,7 +574,7 @@ function toggleFavorite() {
 }
 
 .skeleton-details {
-  background: white;
+  background: var(--white);
   border-radius: 20px;
   padding: 2.5rem;
   display: flex;
@@ -588,7 +588,7 @@ function toggleFavorite() {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+  border-radius: var(--r-card);
 }
 
 .skeleton-price {
@@ -597,7 +597,7 @@ function toggleFavorite() {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+  border-radius: var(--r-card);
 }
 
 .skeleton-badges {
@@ -705,7 +705,7 @@ function toggleFavorite() {
   overflow: hidden;
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(134, 7, 52, 0.12);
-  background: white;
+  background: var(--white);
   transition: box-shadow 0.3s;
 }
 
@@ -810,7 +810,7 @@ function toggleFavorite() {
 }
 
 .fullscreen-btn:hover {
-  background: white;
+  background: var(--white);
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -869,7 +869,7 @@ function toggleFavorite() {
 }
 
 .thumb-arrow {
-  background: white;
+  background: var(--white);
   border: 2px solid var(--border);
   color: var(--primary);
   width: 36px;
@@ -897,7 +897,7 @@ function toggleFavorite() {
 
 /* Details */
 .details {
-  background: white;
+  background: var(--white);
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(134, 7, 52, 0.12);
   padding: 2.5rem;
@@ -1144,7 +1144,7 @@ function toggleFavorite() {
   color: var(--text-dark);
   font-size: 0.95rem;
   padding: 0.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-card);
   transition: all 0.3s;
 }
 
@@ -1217,7 +1217,7 @@ function toggleFavorite() {
   color: white;
 }
 
-/* Mejora específica para el botón de WhatsApp */
+/* Mejora especÃ­fica para el botÃ³n de WhatsApp */
 .cta-button.whatsapp-btn {
   background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
   border: 3px solid #1ea952;
@@ -1263,7 +1263,7 @@ function toggleFavorite() {
 }
 
 .cta-button.secondary {
-  background: white;
+  background: var(--white);
   color: var(--primary);
   border: 2px solid var(--primary);
 }
@@ -1279,7 +1279,7 @@ function toggleFavorite() {
 .related-products-section {
   margin-top: 4rem;
   padding: 3rem 0;
-  background: white;
+  background: var(--white);
   border-radius: 20px 20px 0 0;
 }
 
@@ -1316,7 +1316,7 @@ function toggleFavorite() {
 }
 
 .related-product-card {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -1449,7 +1449,7 @@ function toggleFavorite() {
 }
 
 .skeleton-product-card {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -1642,7 +1642,7 @@ function toggleFavorite() {
   max-height: 80vh;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  background: white;
+  background: var(--white);
 }
 .modal-close {
   position: absolute;
