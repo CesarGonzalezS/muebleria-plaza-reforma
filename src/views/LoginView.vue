@@ -261,43 +261,21 @@ async function handleLogin() {
   loading.value = true;
 
   try {
-    console.log("📌 INICIANDO LOGIN CON:", email.value);
-
-    // Consumir API de login
     const res = await authService.login(email.value, password.value);
-    console.log("📥 RESPUESTA LOGIN:", res.data);
 
-    // Validar respuesta
     if (res.data.success && res.data.data?.accessToken) {
       const token = res.data.data.accessToken;
-
-      console.log("✅ TOKEN RECIBIDO:", token.substring(0, 20) + "...");
-      console.log("📝 TIPO:", typeof token);
-
-      // Guardar token en localStorage
       localStorage.setItem('accessToken', token);
 
-      // Verificar que se guardó
-      const verificar = localStorage.getItem('accessToken');
-      console.log("💾 TOKEN GUARDADO EN LOCALSTORAGE:", verificar ? "✅ SÍ" : "❌ NO");
-
-      // Guardar datos del usuario
       if (res.data.data.user) {
         localStorage.setItem('user', JSON.stringify(res.data.data.user));
       }
 
-      console.log("🎉 LOGIN EXITOSO - REDIRIGIENDO A /admin");
-
-      // Redirigir al dashboard
       await router.push('/admin');
-
     } else {
       error.value = 'Respuesta inválida del servidor';
-      console.error("❌ RESPUESTA SIN SUCCESS O TOKEN");
     }
-
   } catch (e) {
-    console.error("❌ ERROR EN LOGIN:", e);
     error.value = e.response?.data?.message || 'Email o contraseña incorrectos';
   } finally {
     loading.value = false;

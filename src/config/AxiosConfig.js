@@ -21,15 +21,8 @@ instance.interceptors.request.use(
       let token = localStorage.getItem("accessToken");
 
       if (token) {
-        // ✅ LIMPIAR SI EL TOKEN VIENE ESCAPADO
-        token = token.replace(/^"|"$/g, ''); // Quitar comillas al inicio/final
-        token = token.replace(/\\\//g, '/'); // Quitar barras escapadas
-
+        token = token.replace(/^"|"$/g, '').replace(/\\\//g, '/');
         config.headers.Authorization = `Bearer ${token}`;
-        console.log(`✅ TOKEN ENVIADO (limpio): ${config.method.toUpperCase()} ${config.url}`);
-        console.log(`   TOKEN: ${token.substring(0, 30)}...`);
-      } else {
-        console.warn(`⚠️  SIN TOKEN: ${config.method.toUpperCase()} ${config.url}`);
       }
       return config;
     },
@@ -37,13 +30,9 @@ instance.interceptors.request.use(
 );
 // ✅ RESPONSE INTERCEPTOR - Manejo de errores
 instance.interceptors.response.use(
-    (response) => {
-      console.log(`✅ RESPUESTA ${response.status}: ${response.config.url}`);
-      return response;
-    },
+    (response) => response,
     (error) => {
       if (!error.response) {
-        console.error("❌ SIN RESPUESTA DEL SERVIDOR:", error.message);
         ToastError("Error de conexión", "No se pudo conectar con el servidor.");
         return Promise.reject(error);
       }
@@ -51,32 +40,17 @@ instance.interceptors.response.use(
       const { status } = error.response;
       const url = error.config?.url || '';
 
-      console.error(`❌ ERROR ${status}: ${url}`);
-
       // 🔐 CASO 401: Token inválido, expirado o no enviado
       if (status === 401) {
-        // ✅ IMPORTANTE: NO redirigir si estamos en endpoints de AUTH
-        // (login, register, forgot-password, reset-password)
-        const isAuthEndpoint = url.includes('/api/auth/');
-
-        if (isAuthEndpoint) {
-          console.warn("⚠️  Error 401 en endpoint de auth - devolviendo error sin redirigir");
-          return Promise.reject(error);
+        // No redirigir desde auth endpoints - dejar que el componente maneje
+        if (!url.includes('/api/auth/')) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
+          ToastError("Sesión expirada", "Tu token ha expirado. Por favor, inicia sesión nuevamente.");
+          // Redirige sin setTimeout para evitar race conditions
+          setTimeout(() => window.location.href = "/login", 500);
         }
-
-        // ❌ Si llegamos aquí, el token expiró o es inválido en un endpoint PROTEGIDO
-        console.error("❌ TOKEN EXPIRADO - LIMPIANDO Y REDIRIGIENDO A LOGIN");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
-
-        ToastError("Sesión expirada", "Tu token ha expirado. Por favor, inicia sesión de nuevo.");
-
-        // Redirige después de mostrar el toast
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 1500);
-
         return Promise.reject(error);
       }
 

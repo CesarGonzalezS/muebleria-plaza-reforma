@@ -80,26 +80,28 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // Actualizar título de la página
   document.title = to.meta.title ? `${to.meta.title} - Mueblería Plaza Reforma` : 'Mueblería Plaza Reforma';
 
   const token = localStorage.getItem('accessToken');
 
-  // Si la ruta requiere autenticación y no hay token
+  // Proteger rutas que requieren autenticación
   if (to.meta.requiresAuth && !token) {
-    next('/login');
-  } 
-  // Si intenta acceder a rutas admin sin token
-  else if (to.path.startsWith('/admin') && !token) {
-    next('/login');
-  } 
-  // Si está autenticado e intenta acceder a login, redirigir a admin
-  else if (to.path === '/login' && token) {
-    next('/admin');
+    return next('/login');
   }
-  else {
-    next();
+
+  // Proteger rutas admin sin token
+  if (to.path.startsWith('/admin') && !token) {
+    return next('/login');
   }
+
+  // Si está en login y tiene token válido, permitir que se quede (evita loop)
+  // El componente decidirá si redirigir a admin
+  if (to.path === '/login' && token) {
+    // NO redirigir automáticamente - dejar que LoginView maneje esto
+    return next();
+  }
+
+  next();
 });
 
 export default router;
