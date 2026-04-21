@@ -1,11 +1,11 @@
-﻿<template>
+<template>
   <div class="cart-container">
     <h1>Carrito de Compras</h1>
 
-    <!-- Carrito vacÃ­o -->
-    <div v-if="cartItems.length === 0" class="empty-cart">
+    <!-- Carrito vacío -->
+    <div v-if="store.cartItems.length === 0" class="empty-cart">
       <i class="bi bi-cart-x"></i>
-      <p>Tu carrito estÃ¡ vacÃ­o</p>
+      <p>Tu carrito está vacío</p>
       <router-link to="/productos-lista" class="btn-continue">
         <i class="bi bi-arrow-left"></i> Continuar comprando
       </router-link>
@@ -14,26 +14,26 @@
     <!-- Carrito con items -->
     <div v-else class="cart-content">
       <div class="cart-items">
-        <h2>Items ({{ cartItems.length }})</h2>
+        <h2>Items ({{ store.cartItems.length }})</h2>
 
-        <div v-for="item in cartItems" :key="item.productId" class="cart-item">
+        <div v-for="item in store.cartItems" :key="item.id" class="cart-item">
           <div class="item-info">
-            <h3>{{ item.productName }}</h3>
-            <p class="item-id">ID: {{ item.productId }}</p>
+            <h3>{{ item.name || item.productName }}</h3>
+            <p class="item-id">ID: {{ item.id }}</p>
           </div>
 
           <div class="item-quantity">
-            <button @click="decreaseQuantity(item.productId)" class="qty-btn">-</button>
-            <input v-model.number="item.quantity" type="number" min="1" class="qty-input" />
-            <button @click="increaseQuantity(item.productId)" class="qty-btn">+</button>
+            <button @click="decreaseQuantity(item.id)" class="qty-btn">-</button>
+            <input :value="item.quantity" @change="(e) => updateQuantity(item.id, parseInt(e.target.value))" type="number" min="1" class="qty-input" />
+            <button @click="increaseQuantity(item.id)" class="qty-btn">+</button>
           </div>
 
           <div class="item-price">
-            <span class="unit-price">${{ formatPrice(item.unitPrice) }}</span>
-            <span class="total-price">${{ formatPrice(item.quantity * item.unitPrice) }}</span>
+            <span class="unit-price">${{ formatPrice(item.price || item.unitPrice) }}</span>
+            <span class="total-price">${{ formatPrice((item.quantity || 1) * (item.price || item.unitPrice)) }}</span>
           </div>
 
-          <button @click="removeItem(item.productId)" class="btn-remove">
+          <button @click="removeItem(item.id)" class="btn-remove">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -58,15 +58,15 @@
           <span>${{ formatPrice(total) }}</span>
         </div>
 
-        <!-- Datos de envÃ­o -->
+        <!-- Datos de envío -->
         <div class="shipping-section">
-          <h3>DirecciÃ³n de EnvÃ­o</h3>
+          <h3>Dirección de Envío</h3>
 
           <div class="form-group">
-            <label>DirecciÃ³n *</label>
+            <label>Dirección *</label>
             <textarea
               v-model="shippingAddress"
-              placeholder="Ingresa tu direcciÃ³n completa"
+              placeholder="Ingresa tu dirección completa"
               rows="3"
               required
             ></textarea>
@@ -85,7 +85,7 @@
             </span>
           </button>
 
-          <button @click="clearCart" class="btn-clear">
+          <button @click="handleClearCart" class="btn-clear">
             <i class="bi bi-trash"></i> Limpiar Carrito
           </button>
         </div>
@@ -97,20 +97,18 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useMainStore } from '../stores/main';
 import { orderService } from '../services/orders';
 
+const store = useMainStore();
 const router = useRouter();
-const cartItems = ref([
-  // SimulaciÃ³n de items en el carrito
-  // En producciÃ³n, estos vendrÃ­an de un estado global o localStorage
-]);
 
 const shippingAddress = ref('');
 const error = ref('');
 const loading = ref(false);
 
 const subtotal = computed(() => {
-  return cartItems.value.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+  return store.cartItems.reduce((sum, item) => sum + ((item.quantity || 1) * (item.price || item.unitPrice || 0)), 0);
 });
 
 const tax = computed(() => {
@@ -122,22 +120,32 @@ const total = computed(() => {
 });
 
 function increaseQuantity(productId) {
-  const item = cartItems.value.find(i => i.productId === productId);
-  if (item) item.quantity++;
+  const item = store.cartItems.find(i => i.id === productId);
+  if (item) {
+    store.updateCartItem(productId, (item.quantity || 1) + 1);
+  }
 }
 
 function decreaseQuantity(productId) {
-  const item = cartItems.value.find(i => i.productId === productId);
-  if (item && item.quantity > 1) item.quantity--;
+  const item = store.cartItems.find(i => i.id === productId);
+  if (item && (item.quantity || 1) > 1) {
+    store.updateCartItem(productId, (item.quantity || 1) - 1);
+  }
 }
 
-function removeItem(productId) {
-  cartItems.value = cartItems.value.filter(i => i.productId !== productId);
+function updateQuantity(productId, newQuantity) {
+  if (newQuantity > 0) {
+    store.updateCartItem(productId, newQuantity);
+  }
 }
 
-function clearCart() {
-  if (confirm('Â¿EstÃ¡s seguro de que deseas limpiar el carrito?')) {
-    cartItems.value = [];
+async function removeItem(productId) {
+  await store.removeFromCart(productId);
+}
+
+async function handleClearCart() {
+  if (confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
+    await store.clearCart();
     shippingAddress.value = '';
   }
 }
@@ -146,12 +154,17 @@ async function handleCheckout() {
   error.value = '';
 
   if (!shippingAddress.value.trim()) {
-    error.value = 'Por favor ingresa una direcciÃ³n de envÃ­o';
+    error.value = 'Por favor ingresa una dirección de envío';
     return;
   }
 
-  if (cartItems.value.length === 0) {
-    error.value = 'El carrito estÃ¡ vacÃ­o';
+  if (shippingAddress.value.trim().length < 10) {
+    error.value = 'La dirección debe tener al menos 10 caracteres';
+    return;
+  }
+
+  if (store.cartItems.length === 0) {
+    error.value = 'El carrito está vacío';
     return;
   }
 
@@ -159,23 +172,20 @@ async function handleCheckout() {
 
   try {
     const orderData = {
-      customerId: 1, // En producciÃ³n, obtener del usuario autenticado
+      customerId: store.user?.id || 1,
       shippingAddress: shippingAddress.value,
-      items: cartItems.value.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice
+      items: store.cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity || 1,
+        unitPrice: item.price || item.unitPrice
       }))
     };
 
     const response = await orderService.createOrder(orderData);
 
     if (response.data.success) {
-      // Limpiar carrito
-      cartItems.value = [];
+      await store.clearCart();
       shippingAddress.value = '';
-
-      // Redirigir a pÃ¡gina de Ã©xito o detalle de orden
       router.push(`/order-detail/${response.data.data.id}`);
     }
   } catch (err) {
@@ -186,7 +196,7 @@ async function handleCheckout() {
 }
 
 function formatPrice(price) {
-  return parseFloat(price).toFixed(2);
+  return parseFloat(price || 0).toFixed(2);
 }
 </script>
 
@@ -526,4 +536,3 @@ function formatPrice(price) {
   }
 }
 </style>
-

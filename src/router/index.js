@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { isAuthenticated } from '../config/AxiosConfig';
 
 // Lazy loading para todas las vistas - mejora el initial bundle size
 const HomeView = () => import('../views/HomeView.vue');
@@ -79,25 +80,35 @@ const router = createRouter({
   },
 });
 
-router.beforeEach((to, from, next) => {
-  // Actualizar título de la página
-  document.title = to.meta.title ? `${to.meta.title} - Mueblería Plaza Reforma` : 'Mueblería Plaza Reforma';
-
-  const token = localStorage.getItem('accessToken');
-
-  // Si la ruta requiere autenticación y no hay token
-  if (to.meta.requiresAuth && !token) {
-    next('/login');
-  } 
-  // Si intenta acceder a rutas admin sin token
-  else if (to.path.startsWith('/admin') && !token) {
-    next('/login');
-  } 
-  // Si está autenticado e intenta acceder a login, redirigir a admin
-  else if (to.path === '/login' && token) {
-    next('/admin');
+function hasRole(role) {
+  try {
+    // Check directly stored role first (set on login)
+    const storedRole = localStorage.getItem('role') || sessionStorage.getItem('role');
+    if (storedRole) {
+      return storedRole.toUpperCase() === role.toUpperCase();
+    }
+    // Fallback: decode from JWT
+    const tokenStr = localStorage.getItem('accessToken') || localStorage.getItem('token');
+    if (!tokenStr) return false;
+    const decoded = JSON.parse(atob(tokenStr.split('.')[1]));
+    return decoded.role?.toUpperCase() === role.toUpperCase();
+  } catch {
+    return false;
   }
-  else {
+}
+
+router.beforeEach(async (to, from, next) => {
+  document.title = to.meta.title ? `${to.meta.title} - Muebleria Plaza Reforma` : 'Muebleria Plaza Reforma';
+
+  const authRequired = to.meta.requiresAuth || to.path.startsWith('/admin');
+  const isAuth = await isAuthenticated();
+
+  if (authRequired && !isAuth) {
+    next('/login');
+  } else if (to.path.startsWith('/admin') && !hasRole('ADMIN')) {
+    console.warn('[Router] Acceso denegado: no tienes rol ADMIN');
+    next('/');
+  } else {
     next();
   }
 });

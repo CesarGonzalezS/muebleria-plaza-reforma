@@ -1,47 +1,47 @@
-﻿<template>
+<template>
   <footer class="footer-section">
     <div class="container footer-row">
-      <!-- DirecciÃ³n y descripciÃ³n breve -->
+      <!-- Dirección y descripción breve -->
       <div class="footer-col footer-brand">
-        <h4><i class="fas fa-couch"></i> No ReelecciÃ³n Sn, Tetecala, 62620 Tetecala, Mor.</h4>
-        <p><i class="fas fa-map-marker-alt"></i> MueblerÃ­a Plaza Reforma S.A. de C.V.</p>
+        <h4><i class="fas fa-couch"></i> No Reelección Sn, Tetecala, 62620 Tetecala, Mor.</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Mueblería Plaza Reforma S.A. de C.V.</p>
         <p><i class="fas fa-phone"></i>751 396 0035</p>
         <p><i class="fas fa-clock"></i> Lunes a Domingo <span class="footer-horario">(8:00 AM - 8:00 PM)</span></p>
       </div>
-      <!-- Beneficios y MÃ©todos de pago -->
+      <!-- Beneficios y Métodos de pago -->
       <div class="footer-col footer-benefits">
         <h4><i class="fas fa-star"></i> Beneficios</h4>
         <ul>
           <li><i class="fas fa-couch"></i> Cobertura de entrega</li>
           <li><i class="fas fa-truck"></i> Entrega a domicilio programada</li>
           <li><i class="fas fa-credit-card"></i> Tarjeta, efectivo y meses sin intereses</li>
-          <li><i class="fas fa-hand-holding-heart"></i> GarantÃ­a de satisfacciÃ³n</li>
+          <li><i class="fas fa-hand-holding-heart"></i> Garantía de satisfacción</li>
         </ul>
         <div class="payment-section">
-          <span class="payment-label"><i class="fas fa-shipping-fast"></i> MÃ©todos de pago:</span>
+          <span class="payment-label"><i class="fas fa-shipping-fast"></i> Métodos de pago:</span>
           <div class="payment-icons">
             <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" title="Visa" />
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard" title="MasterCard" />
           </div>
         </div>
       </div>
-      <!-- DescripciÃ³n -->
+      <!-- Descripción -->
       <div class="footer-col footer-description">
         <h4 class="footer-title">
-          <i class="fas fa-lightbulb"></i> DiseÃ±a la vida que tÃº quieras
+          <i class="fas fa-lightbulb"></i> Diseña la vida que tú quieras
         </h4>
         <p class="footer-text">
-          La mueblerÃ­a de la reforma es la marca mexicana de muebles y accesorios de diseÃ±o.<br>
-          Compra rÃ¡pido, fÃ¡cil y seguro. SofÃ¡s, sillas, mesas, escritorios, cÃ³modas, burÃ³s, camas, colchones, lÃ¡mparas y accesorios en diferentes estilos.<br>
-          Proponemos diseÃ±os simples y modernos adaptados a tu espacio.
+          La mueblería de la reforma es la marca mexicana de muebles y accesorios de diseño.<br>
+          Compra rápido, fácil y seguro. Sofás, sillas, mesas, escritorios, cómodas, burós, camas, colchones, lámparas y accesorios en diferentes estilos.<br>
+          Proponemos diseños simples y modernos adaptados a tu espacio.
         </p>
         <p class="footer-mision">
-          <strong>Nuestra misiÃ³n:</strong> Empoderarte a seguir soÃ±ando y diseÃ±ar la vida que tÃº quieras.
+          <strong>Nuestra misión:</strong> Empoderarte a seguir soñando y diseñar la vida que tú quieras.
         </p>
       </div>
       <!-- Redes sociales -->
       <div class="footer-col footer-social">
-        <h4><i class="fas fa-share-alt"></i> SÃ­guenos</h4>
+        <h4><i class="fas fa-share-alt"></i> Síguenos</h4>
         <div class="footer-social-links">
           <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
           <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -55,7 +55,7 @@
     </div>
     <!-- Copyright centrado abajo -->
     <div class="footer-copyright">
-      &copy; {{ new Date().getFullYear() }} MueblerÃ­a Plaza Reforma. Todos los derechos reservados.
+      &copy; {{ new Date().getFullYear() }} Mueblería Plaza Reforma. Todos los derechos reservados.
     </div>
   </footer>
 </template>
@@ -64,7 +64,8 @@
 <script setup>
 </script>
 
-<style scoped>.footer-section {
+<style scoped>
+.footer-section {
   background: linear-gradient(120deg, #860734 80%, #440224 100%);
   color: #fff;
   padding: 3rem 0 1rem 0;
@@ -76,15 +77,14 @@
 
 .footer-row {
   display: flex;
-  flex-direction: row;      /* <-- siempre en fila en desktop */
-  flex-wrap: nowrap;        /* <-- no saltes a otra fila en desktop */
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 1.5rem;
   justify-content: space-between;
-  align-items: stretch;     /* <-- iguala la altura de las columnas */
+  align-items: stretch;
   width: 100%;
 }
 
-/* Haz todas las columnas iguales, pero la descripciÃ³n un poco mÃ¡s ancha */
 .footer-col {
   flex: 1 1 240px;
   min-width: 210px;
@@ -99,7 +99,6 @@
   justify-content: flex-start;
 }
 
-/* Solo la descripciÃ³n: mÃ¡s ancha */
 .footer-description {
   flex: 2.2 1 390px !important;
   min-width: 260px;
@@ -131,7 +130,7 @@
   color: #ffe6f0;
   background: rgba(255, 255, 255, 0.1);
   padding: 0.6rem 0.8rem;
-  border-radius: var(--r-card);
+  border-radius: 16px;
   border-left: 4px solid #ffd700;
 }
 
@@ -144,12 +143,12 @@
 }
 
 .payment-icons img {
-  background: var(--white);
+  background: #fff;
   border-radius: 7px;
   box-shadow: 0 1px 6px #0002;
   padding: 3px 8px;
-  height: 38px;              /* <-- TAMAÃ‘O MÃXIMO! */
-  max-width: 70px;           /* <-- Ajusta el mÃ¡ximo ancho */
+  height: 38px; /* tamaño máximo */
+  max-width: 70px;
   object-fit: contain;
   transition: box-shadow 0.2s, transform 0.16s;
   border: 1px solid #eee;
@@ -164,7 +163,7 @@
 
 @media (max-width: 1150px) {
   .footer-row {
-    flex-wrap: wrap;          /* Apila columnas en mÃ³vil/tablet */
+    flex-wrap: wrap;
   }
   .footer-col {
     min-width: 220px;
@@ -174,6 +173,7 @@
     max-width: 98vw;
   }
 }
+
 @media (max-width: 850px) {
   .footer-row {
     flex-direction: column;
@@ -191,6 +191,7 @@
     font-size: 0.99rem;
   }
 }
+
 @media (max-width: 480px) {
   .footer-section {
     padding: 1.2rem 0 0.5rem 0;

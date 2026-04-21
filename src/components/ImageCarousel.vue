@@ -1,23 +1,23 @@
-﻿<template>
-  <section class="split-slider" aria-label="Carrusel de imÃ¡genes promocionales">
+<template>
+  <section class="split-slider" aria-label="Carrusel de imágenes promocionales">
     <div class="split-left">
       <div class="content-wrapper">
-        <span class="badge-promo" aria-label="PromociÃ³n especial">âœ¨ Oferta Especial</span>
+        <span class="badge-promo" aria-label="Promoción especial">✨ Oferta Especial</span>
         <h2 class="split-title">
-          El mejor regalo para mamÃ¡
-          <span class="highlight">encuÃ©ntralo en nuestra sucursal</span>
+          El mejor regalo para mamá
+          <span class="highlight">encuéntralo en nuestra sucursal</span>
         </h2>
         <p class="split-description">
           Descubre muebles hechos a mano que transforman tu espacio en un verdadero hogar.
-          Calidad excepcional y diseÃ±os Ãºnicos.
+          Calidad excepcional y diseños únicos.
         </p>
         <div class="cta-group">
           <router-link to="/productos" class="btn-split-primary">
-            <span>Descubre mÃ¡s</span>
+            <span>Descubre más</span>
             <i class="bi bi-arrow-right"></i>
           </router-link>
           <button class="btn-split-secondary" @click="scrollToContact">
-            ContÃ¡ctanos
+            Contáctanos
           </button>
         </div>
 
@@ -47,7 +47,7 @@
       @touchmove="onDrag"
       @touchend="endDrag"
       role="region"
-      aria-label="GalerÃ­a de imÃ¡genes deslizable"
+      aria-label="Galería de imágenes deslizable"
     >
       <!-- Navigation arrows -->
       <button
@@ -77,7 +77,7 @@
           <img
             :src="images[i]"
             :alt="`Imagen promocional ${i + 1}`"
-            :title="`PromociÃ³n ${i + 1}`"
+            :title="`Promoción ${i + 1}`"
             loading="lazy"
             @load="onImageLoad(i)"
           />
@@ -86,7 +86,7 @@
       </div>
 
       <!-- Dots navigation -->
-      <nav class="slider-dots" aria-label="NavegaciÃ³n de imÃ¡genes">
+      <nav class="slider-dots" aria-label="Navegación de imágenes">
         <button
           v-for="i in indices"
           :key="`dot-${i}`"
@@ -115,7 +115,7 @@ const images = [
   "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80",
 ];
 
-// Ã­ndice reutilizable para iterar en plantillas y evitar advertencias del analizador
+// índice reutilizable para iterar en plantillas y evitar advertencias del analizador
 const indices = images.map((_, i) => i);
 
 const current = ref(0);
@@ -123,7 +123,6 @@ const progress = ref(0);
 const isPlaying = ref(true);
 const loadedImages = ref(new Set());
 
-// Navigation functions
 function goTo(i) {
   if (i >= 0 && i < images.length) {
     current.value = i;
@@ -152,7 +151,6 @@ function scrollToContact() {
   }
 }
 
-// Drag/Swipe logic
 let startX = 0;
 let dragging = false;
 
@@ -183,7 +181,6 @@ function endDrag() {
   dragging = false;
 }
 
-// Autoplay
 let autoplayInterval = null;
 let progressInterval = null;
 
@@ -230,7 +227,6 @@ function onImageLoad(index) {
   loadedImages.value.add(index);
 }
 
-// Lifecycle
 onMounted(() => {
   if (isPlaying.value) {
     startAutoplay();
@@ -245,8 +241,8 @@ onUnmounted(() => {
 <style scoped>
 .split-slider {
   display: grid;
-  grid-template-columns: 45% 75%; /* mÃ¡s ancho para las imÃ¡genes */
-  height: 760px; /* altura fija en pantallas grandes para evitar que aumente */
+  grid-template-columns: 45% 75%;
+  height: 760px;
   background: linear-gradient(135deg, #fdfbff 0%, #f8f4fc 100%);
   border-radius: 1.5rem;
   overflow: hidden;
@@ -254,13 +250,13 @@ onUnmounted(() => {
     0 10px 40px rgba(134, 7, 52, 0.1),
     0 2px 12px rgba(134, 7, 52, 0.06);
   margin: 2rem auto;
-  max-width: 1500px; /* aumentar un poco el ancho total */
+  max-width: 1500px;
   position: relative;
 }
 
 /* Left side - Content */
 .split-left {
-  padding: 1.6rem 1.2rem; /* aÃºn menos padding para ganar ancho visible */
+  padding: 1.6rem 1.2rem; /* aún menos padding para ganar ancho visible */
   display: flex;
   align-items: center;
   background: linear-gradient(135deg, #ffffff 0%, #faf8fc 100%);
@@ -347,6 +343,7 @@ onUnmounted(() => {
   background: linear-gradient(135deg, #860734 0%, #a8084a 100%);
   color: #fff;
   box-shadow: 0 4px 16px rgba(134, 7, 52, 0.3);
+  text-decoration: none;
 }
 
 .btn-split-primary:hover {
@@ -410,7 +407,7 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
   background: #1a1a1a;
-  height: 100%; /* ocupar la altura fija del contenedor */
+  height: 100%;
 }
 
 .slider-track {
@@ -425,15 +422,15 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
   display: flex;
-  align-items: center; /* centrar verticalmente la imagen */
+  align-items: center;
   justify-content: center;
 }
 
 .slider-img img {
-  width: 100%;            /* llenar el ancho de la columna */
-  height: auto;           /* mantener aspecto */
-  max-height: calc(100% - 32px); /* dejar margen para progress/dots sin crecer */
-  object-fit: cover;      /* recortar si es necesario */
+  width: 100%;
+  height: auto;
+  max-height: calc(100% - 32px);
+  object-fit: cover;
   transition: transform 0.35s ease, opacity 0.2s ease;
   border-radius: 6px;
 }
@@ -517,7 +514,7 @@ onUnmounted(() => {
 }
 
 .dot.active {
-  background: var(--white);
+  background: #ffffff;
   width: 32px;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
@@ -554,7 +551,7 @@ onUnmounted(() => {
 @media (max-width: 1024px) {
   .split-slider {
     grid-template-columns: 1fr;
-    height: auto; /* volver a comportamiento flexible en pantallas pequeÃ±as */
+    height: auto;
   }
 
   .split-left {
@@ -562,7 +559,7 @@ onUnmounted(() => {
   }
 
   .split-right {
-    min-height: 320px; /* ligeramente menor para pantallas medianas */
+    min-height: 320px;
   }
 
   .content-wrapper {

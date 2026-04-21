@@ -19,7 +19,9 @@
           <div class="card-wrapper">
             <div class="icon-container">
               <div class="icon-background"></div>
-              <div class="benefit-icon" v-html="item.icon"></div>
+              <div class="benefit-icon">
+                <component :is="item.iconComponent" />
+              </div>
             </div>
 
             <div class="card-content">
@@ -41,59 +43,62 @@
 </template>
 
 <script setup>
+import { h } from 'vue';
+
+// Icon components - safe, no v-html injection, use h() render functions
+const IconPayment = () => h('svg', { width: 64, height: 64, fill: 'none', viewBox: '0 0 64 64' }, [
+  h('rect', { x: 8, y: 18, width: 48, height: 22, rx: 4, stroke: '#860734', 'stroke-width': 3, fill: '#fff9e6' }),
+  h('circle', { cx: 18, cy: 48, r: 4, fill: '#860734' }),
+  h('circle', { cx: 46, cy: 48, r: 4, fill: '#860734' }),
+  h('rect', { x: 28, y: 12, width: 8, height: 8, rx: 2, fill: '#ffd700' }),
+  h('path', { d: 'M32 15 L28 20 L36 20 Z', fill: '#860734' })
+]);
+
+const IconShipping = () => h('svg', { width: 64, height: 64, fill: 'none', viewBox: '0 0 64 64' }, [
+  h('rect', { x: 10, y: 22, width: 44, height: 20, rx: 8, stroke: '#860734', 'stroke-width': 3, fill: '#fff9e6' }),
+  h('circle', { cx: 18, cy: 48, r: 4, fill: '#860734' }),
+  h('circle', { cx: 46, cy: 48, r: 4, fill: '#860734' }),
+  h('rect', { x: 26, y: 14, width: 12, height: 10, rx: 2, stroke: '#860734', 'stroke-width': 2, fill: '#ffd700' }),
+  h('path', { d: 'M20 28 L24 32 L28 28', stroke: '#ffd700', 'stroke-width': 2, 'stroke-linecap': 'round' })
+]);
+
+const IconOffers = () => h('svg', { width: 64, height: 64, fill: 'none', viewBox: '0 0 64 64' }, [
+  h('rect', { x: 16, y: 20, width: 32, height: 26, rx: 3, stroke: '#860734', 'stroke-width': 3, fill: '#fff9e6' }),
+  h('rect', { x: 26, y: 46, width: 6, height: 10, rx: 2, fill: '#860734' }),
+  h('rect', { x: 36, y: 46, width: 6, height: 10, rx: 2, fill: '#860734' }),
+  h('rect', { x: 20, y: 14, width: 24, height: 10, rx: 3, stroke: '#860734', 'stroke-width': 2, fill: '#ffd700' }),
+  h('circle', { cx: 28, cy: 28, r: 2, fill: '#ffd700' }),
+  h('circle', { cx: 36, cy: 28, r: 2, fill: '#ffd700' }),
+  h('path', { d: 'M28 34 Q32 38 36 34', stroke: '#ffd700', 'stroke-width': 2, fill: 'none' })
+]);
+
+const IconExperience = () => h('svg', { width: 64, height: 64, fill: 'none', viewBox: '0 0 64 64' }, [
+  h('rect', { x: 12, y: 28, width: 40, height: 18, rx: 4, stroke: '#860734', 'stroke-width': 3, fill: '#fff9e6' }),
+  h('rect', { x: 16, y: 16, width: 32, height: 18, rx: 3, stroke: '#860734', 'stroke-width': 2, fill: '#ffd700' }),
+  h('rect', { x: 16, y: 32, width: 8, height: 10, rx: 2, fill: '#860734' }),
+  h('rect', { x: 40, y: 32, width: 8, height: 10, rx: 2, fill: '#860734' }),
+  h('circle', { cx: 32, cy: 22, r: 3, fill: '#860734' }),
+  h('path', { d: 'M26 22 L32 28 L38 22', stroke: '#860734', 'stroke-width': 2, fill: 'none' })
+]);
+
 const benefits = [
   {
-    icon: `
-      <svg width="64" height="64" fill="none" viewBox="0 0 64 64">
-        <rect x="8" y="18" width="48" height="22" rx="4" stroke="#860734" stroke-width="3" fill="#fff9e6"/>
-        <circle cx="18" cy="48" r="4" fill="#860734"/>
-        <circle cx="46" cy="48" r="4" fill="#860734"/>
-        <rect x="28" y="12" width="8" height="8" rx="2" fill="#ffd700"/>
-        <path d="M32 15 L28 20 L36 20 Z" fill="#860734"/>
-      </svg>
-    `,
+    iconComponent: IconPayment,
     title: 'PAGO SEGURO',
     desc: 'Realiza de manera segura tus compras, contamos con protección 3D Secure gracias a la tecnología de VISA y Mercado Pago.'
   },
   {
-    icon: `
-      <svg width="64" height="64" fill="none" viewBox="0 0 64 64">
-        <rect x="10" y="22" width="44" height="20" rx="8" stroke="#860734" stroke-width="3" fill="#fff9e6"/>
-        <circle cx="18" cy="48" r="4" fill="#860734"/>
-        <circle cx="46" cy="48" r="4" fill="#860734"/>
-        <rect x="26" y="14" width="12" height="10" rx="2" stroke="#860734" stroke-width="2" fill="#ffd700"/>
-        <path d="M20 28 L24 32 L28 28" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    `,
+    iconComponent: IconShipping,
     title: 'ENVÍOS A TODO MÉXICO',
     desc: 'Entregas gratuitas en zona local. A toda la zona sur por solo el 5% del valor. Envíos nacionales mediante fleteras aliadas.'
   },
   {
-    icon: `
-      <svg width="64" height="64" fill="none" viewBox="0 0 64 64">
-        <rect x="16" y="20" width="32" height="26" rx="3" stroke="#860734" stroke-width="3" fill="#fff9e6"/>
-        <rect x="26" y="46" width="6" height="10" rx="2" fill="#860734"/>
-        <rect x="36" y="46" width="6" height="10" rx="2" fill="#860734"/>
-        <rect x="20" y="14" width="24" height="10" rx="3" stroke="#860734" stroke-width="2" fill="#ffd700"/>
-        <circle cx="28" cy="28" r="2" fill="#ffd700"/>
-        <circle cx="36" cy="28" r="2" fill="#ffd700"/>
-        <path d="M28 34 Q32 38 36 34" stroke="#ffd700" stroke-width="2" fill="none"/>
-      </svg>
-    `,
+    iconComponent: IconOffers,
     title: 'OFERTAS INCREÍBLES',
     desc: 'Descubre las mejores ofertas en nuestros modelos. Recibe garantía de 1 año al comprar cualquier producto.'
   },
   {
-    icon: `
-      <svg width="64" height="64" fill="none" viewBox="0 0 64 64">
-        <rect x="12" y="28" width="40" height="18" rx="4" stroke="#860734" stroke-width="3" fill="#fff9e6"/>
-        <rect x="16" y="16" width="32" height="18" rx="3" stroke="#860734" stroke-width="2" fill="#ffd700"/>
-        <rect x="16" y="32" width="8" height="10" rx="2" fill="#860734"/>
-        <rect x="40" y="32" width="8" height="10" rx="2" fill="#860734"/>
-        <circle cx="32" cy="22" r="3" fill="#860734"/>
-        <path d="M26 22 L32 28 L38 22" stroke="#860734" stroke-width="2" fill="none"/>
-      </svg>
-    `,
+    iconComponent: IconExperience,
     title: '+20 AÑOS DE EXPERIENCIA',
     desc: 'Más de 20 años ofreciendo muebles de calidad a precios justos. Sucursales en Morelos con atención personalizada.'
   },
@@ -309,7 +314,7 @@ const benefits = [
   transform: scale(1.1) rotate(-3deg);
 }
 
-.benefit-icon :deep(svg) {
+.benefit-icon svg {
   filter: drop-shadow(0 4px 8px rgba(134, 7, 52, 0.15));
 }
 
@@ -455,7 +460,7 @@ const benefits = [
     min-height: 64px;
   }
 
-  .benefit-icon :deep(svg) {
+  .benefit-icon svg {
     width: 56px;
     height: 56px;
   }
@@ -514,7 +519,7 @@ const benefits = [
     min-height: 40px;
   }
 
-  .benefit-icon :deep(svg) {
+  .benefit-icon svg {
     width: 40px;
     height: 40px;
   }

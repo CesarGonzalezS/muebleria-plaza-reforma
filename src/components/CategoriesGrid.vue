@@ -1,9 +1,9 @@
-﻿<template>
+<template>
   <div>
     <!-- Indicador de carga -->
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
-      <p>Cargando categorÃ­as...</p>
+      <p>Cargando categorías...</p>
     </div>
 
     <!-- Error message -->
@@ -27,7 +27,7 @@
         @keydown.space.prevent="onClick(item)"
       >
         <div class="tile">
-          <div class="icon-box" aria-hidden="true" v-html="item.icon || defaultIcon"></div>
+          <div class="icon-box" aria-hidden="true" v-html="sanitizeIcon(item.icon || defaultIcon)"></div>
         </div>
         <div class="label">{{ item.name }}</div>
       </li>
@@ -37,6 +37,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
+import DOMPurify from 'dompurify';
 import { getCategories } from '../services/categories';
 
 const props = defineProps({
@@ -51,15 +52,24 @@ const localItems = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Icono predeterminado para categorÃ­as sin icono
-const defaultIcon = `<i class="bi bi-grid"></i>`;
+// Icono predeterminado para categorías sin icono
+const defaultIcon = '<i class="bi bi-grid"></i>';
 
-// Determinar quÃ© items mostrar (props o datos locales)
+// Determinar qué items mostrar (props o datos locales)
 const displayItems = computed(() => {
   return props.items.length > 0 ? props.items : localItems.value;
 });
 
-// FunciÃ³n para obtener categorÃ­as
+// Sanitize HTML - remove scripts, only allow safe tags
+function sanitizeIcon(html) {
+  if (!html) return defaultIcon;
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['i', 'svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'g', 'text', 'tspan'],
+    ALLOWED_ATTR: ['class', 'width', 'height', 'viewBox', 'fill', 'stroke', 'cx', 'cy', 'r', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'd', 'points', 'transform', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'font-size', 'text-anchor', 'aria-hidden', 'role']
+  });
+}
+
+// Función para obtener categorías
 async function fetchCategories() {
   if (!props.autoLoad && props.items.length > 0) {
     return; // No cargar si no es autoload y ya tenemos items
@@ -72,8 +82,8 @@ async function fetchCategories() {
     localItems.value = data;
     emit('loaded', data);
   } catch (err) {
-    console.error('Error al cargar las categorÃ­as:', err);
-    error.value = 'No se pudieron cargar las categorÃ­as. Por favor, intente nuevamente.';
+    console.error('Error al cargar las categorías:', err);
+    error.value = 'No se pudieron cargar las categorías. Por favor, intente nuevamente.';
     emit('error', err);
   } finally {
     loading.value = false;
@@ -84,7 +94,7 @@ function onClick(item) {
   emit('select', item);
 }
 
-// Cargar categorÃ­as al montar si autoLoad estÃ¡ activado
+// Cargar categorías al montar si autoLoad está activado
 onMounted(() => {
   if (props.autoLoad) {
     fetchCategories();
@@ -273,6 +283,4 @@ defineExpose({
   gap: 0.5rem;
   transition: background 0.3s ease;
 }
-
 </style>
-

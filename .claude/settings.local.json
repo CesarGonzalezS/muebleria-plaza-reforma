@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"admin dashboard furniture ecommerce minimalist SaaS\" --design-system -p \"Muebleria Plaza Reforma Admin\" -f markdown)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"admin dashboard furniture ecommerce minimalist SaaS\" --design-system -p \"Muebleria Plaza Reforma Admin\" -f markdown)",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"furniture store ecommerce home decor elegant mexican\" --design-system -p \"Muebleria Plaza Reforma\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture store ecommerce home decor elegant mexican\" --design-system -p \"Muebleria Plaza Reforma\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture home decor ecommerce luxury\" --domain style)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"hero section ecommerce furniture\" --domain landing)",
+      "Bash(npm run *)"
+    ]
+  }
+}

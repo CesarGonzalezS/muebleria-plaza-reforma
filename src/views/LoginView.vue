@@ -1,18 +1,18 @@
-﻿<template>
+?<template>
   <div class="login-container">
 
-    <!-- Logo o TÃ­tulo principal -->
+    <!-- Logo o Título principal -->
     <div class="login-brand" v-if="!resetStep">
       <div class="brand-icon">
         <i class="bi bi-shop"></i>
       </div>
-      <h1>MueblerÃ­a Plaza Reforma</h1>
-      <p>Panel de AdministraciÃ³n</p>
+      <h1>Mueblería Plaza Reforma</h1>
+      <p>Panel de Administración</p>
     </div>
 
     <form v-if="!resetStep" class="login-form" @submit.prevent="handleLogin">
       <div class="form-header">
-        <h2>Iniciar sesiÃ³n</h2>
+        <h2>Iniciar sesión</h2>
         <p>Ingresa tus credenciales para continuar</p>
       </div>
 
@@ -20,7 +20,7 @@
         <div class="form-group">
           <label for="email">
             <i class="bi bi-envelope"></i>
-            Correo electrÃ³nico
+            Correo electrónico
           </label>
           <input
             v-model="email"
@@ -35,14 +35,14 @@
         <div class="form-group">
           <label for="password">
             <i class="bi bi-lock"></i>
-            ContraseÃ±a
+            Contraseña
           </label>
           <div class="password-wrapper">
             <input
               v-model="password"
               id="password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+              placeholder="�?��?��?��?��?��?��?��?�"
               required
               autocomplete="current-password"
             />
@@ -77,11 +77,11 @@
 
         <button type="button" class="reset-password-btn" @click="startResetPassword">
           <i class="bi bi-question-circle"></i>
-          Â¿Olvidaste tu contraseÃ±a?
+          ¿Olvidaste tu contraseña?
         </button>
 
         <div class="register-link">
-          Â¿No tienes cuenta? <router-link to="/register">RegÃ­strate aquÃ­</router-link>
+          ¿No tienes cuenta? <router-link to="/register">Regístrate aquí</router-link>
         </div>
       </div>
     </form>
@@ -95,15 +95,15 @@
         <div class="icon-circle">
           <i class="bi bi-key"></i>
         </div>
-        <h2>Restablecer contraseÃ±a</h2>
-        <p>Ingresa tu correo para recibir el cÃ³digo</p>
+        <h2>Restablecer contraseña</h2>
+        <p>Ingresa tu correo para recibir el código</p>
       </div>
 
       <div class="form-body">
         <div class="form-group">
           <label for="reset-email">
             <i class="bi bi-envelope"></i>
-            Correo electrÃ³nico
+            Correo electrónico
           </label>
           <input
             v-model="email"
@@ -124,7 +124,7 @@
         <button type="submit" class="btn-primary" :disabled="loading">
           <span v-if="!loading">
             <i class="bi bi-send"></i>
-            Enviar cÃ³digo
+            Enviar código
           </span>
           <span v-else class="loading-spinner">
             <i class="bi bi-arrow-repeat spin"></i>
@@ -143,15 +143,15 @@
         <div class="icon-circle">
           <i class="bi bi-shield-check"></i>
         </div>
-        <h2>Verificar cÃ³digo</h2>
-        <p>Revisa tu correo e ingresa el cÃ³digo</p>
+        <h2>Verificar código</h2>
+        <p>Revisa tu correo e ingresa el código</p>
       </div>
 
       <div class="form-body">
         <div class="form-group">
           <label for="code">
             <i class="bi bi-123"></i>
-            CÃ³digo de verificaciÃ³n
+            Código de verificación
           </label>
           <input
             v-model="code"
@@ -188,22 +188,22 @@
         <div class="icon-circle success">
           <i class="bi bi-lock-fill"></i>
         </div>
-        <h2>Nueva contraseÃ±a</h2>
-        <p>Crea una contraseÃ±a segura</p>
+        <h2>Nueva contraseña</h2>
+        <p>Crea una contraseña segura</p>
       </div>
 
       <div class="form-body">
         <div class="form-group">
           <label for="new-password">
             <i class="bi bi-shield-lock"></i>
-            Nueva contraseÃ±a
+            Nueva contraseña
           </label>
           <div class="password-wrapper">
             <input
               v-model="newPassword"
               id="new-password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+              placeholder="�?��?��?��?��?��?��?��?�"
               required
               minlength="6"
             />
@@ -216,7 +216,7 @@
               <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
             </button>
           </div>
-          <small class="help-text">MÃ­nimo 6 caracteres</small>
+          <small class="help-text">Mínimo 6 caracteres</small>
         </div>
 
         <Transition name="error">
@@ -244,6 +244,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useMainStore } from '../stores/main';
 import { authService } from '../services/auth';
 
 const email = ref('');
@@ -255,50 +256,54 @@ const loading = ref(false);
 const resetStep = ref(0);
 const showPassword = ref(false);
 const router = useRouter();
+const store = useMainStore();
 
 async function handleLogin() {
   error.value = '';
   loading.value = true;
 
   try {
-    console.log("📌 INICIANDO LOGIN CON:", email.value);
+    console.log("? INICIANDO LOGIN CON:", email.value);
 
     // Consumir API de login
     const res = await authService.login(email.value, password.value);
-    console.log("📥 RESPUESTA LOGIN:", res.data);
+    console.log("? RESPUESTA LOGIN:", res.data);
 
     // Validar respuesta
     if (res.data.success && res.data.data?.accessToken) {
       const token = res.data.data.accessToken;
 
-      console.log("✅ TOKEN RECIBIDO:", token.substring(0, 20) + "...");
-      console.log("📝 TIPO:", typeof token);
+      console.log("? TOKEN RECIBIDO:", token.substring(0, 20) + "...");
+      console.log("? TIPO:", typeof token);
 
-      // Guardar token en localStorage
+      // Guardar token y rol en localStorage
+      const userRole = res.data.data.role || '';
       localStorage.setItem('accessToken', token);
-
-      // Verificar que se guardó
-      const verificar = localStorage.getItem('accessToken');
-      console.log("💾 TOKEN GUARDADO EN LOCALSTORAGE:", verificar ? "✅ SÍ" : "❌ NO");
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', userRole);
 
       // Guardar datos del usuario
       if (res.data.data.user) {
         localStorage.setItem('user', JSON.stringify(res.data.data.user));
       }
 
-      console.log("🎉 LOGIN EXITOSO - REDIRIGIENDO A /admin");
+      console.log("? LOGIN EXITOSO - Rol:", userRole, "- REDIRIGIENDO...");
 
-      // Redirigir al dashboard
-      await router.push('/admin');
+      // Redirigir seg�n rol
+      if (userRole === 'ADMIN') {
+        await router.push('/admin');
+      } else {
+        await router.push('/');
+      }
 
     } else {
-      error.value = 'Respuesta inválida del servidor';
-      console.error("❌ RESPUESTA SIN SUCCESS O TOKEN");
+      error.value = 'Respuesta inv�lida del servidor';
+      console.error("? RESPUESTA SIN SUCCESS O TOKEN");
     }
 
   } catch (e) {
-    console.error("❌ ERROR EN LOGIN:", e);
-    error.value = e.response?.data?.message || 'Email o contraseña incorrectos';
+    console.error("? ERROR EN LOGIN:", e);
+    error.value = e.response?.data?.message || 'Email o contrase�a incorrectos';
   } finally {
     loading.value = false;
   }
@@ -320,7 +325,7 @@ async function requestReset() {
     await axios.doPost('/request-reset', { email: email.value });
     resetStep.value = 2;
   } catch (e) {
-    error.value = 'Error al enviar el cÃ³digo de verificaciÃ³n';
+    error.value = 'Error al enviar el código de verificación';
   } finally {
     loading.value = false;
   }
@@ -333,7 +338,7 @@ async function verifyCode() {
     await axios.doPost('/verify-code', { email: email.value, code: code.value });
     resetStep.value = 3;
   } catch (e) {
-    error.value = 'CÃ³digo de verificaciÃ³n incorrecto';
+    error.value = 'Código de verificación incorrecto';
   } finally {
     loading.value = false;
   }
@@ -345,9 +350,9 @@ async function resetPassword() {
   try {
     await axios.doPost('/reset-password', { email: email.value, code: code.value, new_password: newPassword.value });
     resetStep.value = 0;
-    alert('ContraseÃ±a restablecida con Ã©xito');
+    alert('Contraseña restablecida con éxito');
   } catch (e) {
-    error.value = 'Error al restablecer la contraseÃ±a';
+    error.value = 'Error al restablecer la contraseña';
   } finally {
     loading.value = false;
   }

@@ -1,23 +1,5 @@
-﻿<template>
-  <div class="reports-container">
-    <div class="reports-header">
-      <h1>
-        <i class="bi bi-graph-up"></i>
-        Reportes
-      </h1>
-      <p>AnÃ¡lisis y mÃ©tricas de negocio</p>
-    </div>
-
-    <!-- NavegaciÃ³n admin -->
-    <nav class="admin-nav">
-      <router-link to="/admin" class="admin-nav-item"><i class="bi bi-house-door"></i> Muebles</router-link>
-      <router-link to="/admin-orders" class="admin-nav-item"><i class="bi bi-bag-check"></i> Ã“rdenes</router-link>
-      <router-link to="/customers" class="admin-nav-item"><i class="bi bi-people"></i> Clientes</router-link>
-      <router-link to="/reports" class="admin-nav-item"><i class="bi bi-graph-up"></i> Reportes</router-link>
-      <router-link to="/inventory-adjust" class="admin-nav-item"><i class="bi bi-boxes"></i> Inventario</router-link>
-      <router-link to="/low-stock" class="admin-nav-item"><i class="bi bi-exclamation-triangle"></i> Stock Bajo</router-link>
-    </nav>
-
+<template>
+  <AdminLayout title="Reportes" subtitle="Análisis y estadísticas" icon="bi-graph-up">
     <!-- Tabs de reportes -->
     <div class="tabs">
       <button
@@ -62,10 +44,7 @@
       <!-- Chart placeholder -->
       <div v-else-if="salesReport.length > 0" class="report-content">
         <div class="chart-container">
-          <div class="chart-placeholder">
-            <i class="bi bi-bar-chart"></i>
-            GrÃ¡fico de Ventas (Integrar Chart.js o similar)
-          </div>
+          <canvas id="salesChart" ref="chartElement" style="max-height: 400px;"></canvas>
         </div>
 
         <!-- Tabla de datos -->
@@ -74,7 +53,7 @@
             <tr>
               <th>Fecha</th>
               <th>Total de Ventas</th>
-              <th>Cantidad de Ã“rdenes</th>
+              <th>Cantidad de Órdenes</th>
               <th>Valor Promedio</th>
             </tr>
           </thead>
@@ -95,7 +74,7 @@
             <span class="value">${{ formatPrice(calculateTotalSales()) }}</span>
           </div>
           <div class="stat-card">
-            <span class="label">Total Ã“rdenes</span>
+            <span class="label">Total Órdenes</span>
             <span class="value">{{ calculateTotalOrders() }}</span>
           </div>
           <div class="stat-card">
@@ -106,9 +85,9 @@
       </div>
     </div>
 
-    <!-- Productos MÃ¡s Vendidos -->
+    <!-- Productos Más Vendidos -->
     <div v-if="activeTab === 'topProducts'" class="tab-pane">
-      <h2>Productos MÃ¡s Vendidos</h2>
+      <h2>Productos Más Vendidos</h2>
 
       <div class="filters">
         <div class="form-group">
@@ -120,7 +99,7 @@
           <input v-model="filters.topProducts.endDate" type="date" />
         </div>
         <div class="form-group">
-          <label>LÃ­mite</label>
+          <label>Límite</label>
           <input v-model.number="filters.topProducts.limit" type="number" min="1" max="50" />
         </div>
         <button @click="loadTopProducts" class="btn-filter">
@@ -192,7 +171,7 @@
               <p class="product-id">ID: {{ product.productId }}</p>
               <div class="stock-info">
                 <span>Stock Actual: <strong>{{ product.currentStock }}</strong></span>
-                <span>Stock MÃ­nimo: <strong>{{ product.minStock }}</strong></span>
+                <span>Stock Mínimo: <strong>{{ product.minStock }}</strong></span>
                 <span>Falta: <strong>{{ product.minStock - product.currentStock }}</strong></span>
               </div>
             </div>
@@ -221,9 +200,9 @@
       </div>
     </div>
 
-    <!-- MÃ©tricas Dashboard -->
+    <!-- Métricas Dashboard -->
     <div v-if="activeTab === 'metrics'" class="tab-pane">
-      <h2>MÃ©tricas del Dashboard</h2>
+      <h2>Métricas del Dashboard</h2>
 
       <div class="filters">
         <div class="form-group">
@@ -235,13 +214,13 @@
           <input v-model="filters.sales.endDate" type="date" />
         </div>
         <button @click="loadMetrics" class="btn-filter">
-          <i class="bi bi-search"></i> Cargar MÃ©tricas
+          <i class="bi bi-search"></i> Cargar Métricas
         </button>
       </div>
 
       <!-- Loading -->
       <div v-if="loading.metrics" class="loading">
-        <i class="bi bi-arrow-repeat"></i> Cargando mÃ©tricas...
+        <i class="bi bi-arrow-repeat"></i> Cargando métricas...
       </div>
 
       <!-- Error -->
@@ -249,7 +228,7 @@
         {{ errors.metrics }}
       </div>
 
-      <!-- MÃ©tricas Grid -->
+      <!-- Métricas Grid -->
       <div v-else class="report-content">
         <div class="metrics-grid">
           <div class="metric-card primary">
@@ -277,7 +256,7 @@
               <i class="bi bi-receipt"></i>
             </div>
             <div class="metric-info">
-              <span class="label">Total de Ã“rdenes</span>
+              <span class="label">Total de Órdenes</span>
               <span class="value">{{ metricsData.ordersCount }}</span>
             </div>
           </div>
@@ -317,15 +296,15 @@
               <i class="bi bi-people"></i>
             </div>
             <div class="metric-info">
-              <span class="label">Clientes Ãšnicos</span>
+              <span class="label">Clientes Únicos</span>
               <span class="value">{{ metricsData.customerCount }}</span>
             </div>
           </div>
         </div>
 
-        <!-- AnÃ¡lisis y KPIs -->
+        <!-- Análisis y KPIs -->
         <div class="analysis-section">
-          <h3>AnÃ¡lisis Clave</h3>
+          <h3>Análisis Clave</h3>
           <div class="kpi-items">
             <div class="kpi-item">
               <span class="kpi-label">Margen de Ganancia</span>
@@ -343,12 +322,14 @@
         </div>
       </div>
     </div>
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
+import Chart from 'chart.js/auto';
 import { reportService } from '../services/reports';
+import AdminLayout from '../components/AdminLayout.vue';
 
 const activeTab = ref('sales');
 
@@ -356,7 +337,7 @@ const tabs = [
   { id: 'sales', label: 'Ventas', icon: 'bi bi-graph-up' },
   { id: 'topProducts', label: 'Productos Top', icon: 'bi bi-star' },
   { id: 'lowStock', label: 'Stock Bajo', icon: 'bi bi-exclamation-triangle' },
-  { id: 'metrics', label: 'MÃ©tricas', icon: 'bi bi-graph-up' }
+  { id: 'metrics', label: 'Métricas', icon: 'bi bi-graph-up' }
 ];
 
 const filters = ref({
@@ -398,6 +379,66 @@ const metricsData = ref({
   customerCount: 0
 });
 
+const chartElement = ref(null);
+const chartInstance = ref(null);
+
+function renderChart(data) {
+  if (!chartElement.value) return;
+
+  if (chartInstance.value) {
+    chartInstance.value.destroy();
+  }
+
+  const ctx = chartElement.value.getContext('2d');
+  const labels = data.map(row => formatDate(row.date));
+  const salesData = data.map(row => row.totalSales);
+
+  chartInstance.value = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Ventas Diarias',
+          data: salesData,
+          borderColor: '#667eea',
+          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 5,
+          pointBackgroundColor: '#667eea',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Gráfico de Ventas'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
 async function loadSalesReport() {
   loading.value.sales = true;
   errors.value.sales = '';
@@ -409,6 +450,11 @@ async function loadSalesReport() {
     );
     if (response.data.success) {
       salesReport.value = response.data.data || [];
+      nextTick(() => {
+        if (salesReport.value.length > 0) {
+          renderChart(salesReport.value);
+        }
+      });
     }
   } catch (err) {
     errors.value.sales = 'Error al cargar reporte de ventas';
@@ -483,7 +529,7 @@ async function loadMetrics() {
       metricsData.value = response.data.data;
     }
   } catch (err) {
-    errors.value.metrics = 'Error al cargar mÃ©tricas';
+    errors.value.metrics = 'Error al cargar métricas';
   } finally {
     loading.value.metrics = false;
   }
@@ -513,36 +559,6 @@ function calculateCustomersPerOrder() {
 </script>
 
 <style scoped>
-.reports-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.reports-header {
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.reports-header h1 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  color: var(--ink);
-  margin: 0;
-  font-size: 2rem;
-}
-
-.reports-header h1 i {
-  color: var(--ink);
-}
-
-.reports-header p {
-  color: var(--slate);
-  margin: 0.5rem 0 0;
-}
-
 /* Tabs */
 .tabs {
   display: flex;
@@ -1157,17 +1173,5 @@ function calculateCustomersPerOrder() {
   font-size: 1.3rem;
   font-weight: 700;
 }
-
-.admin-nav {
-  display: flex; gap: 0.25rem; padding: 0.75rem 2rem;
-  background: var(--white); border-bottom: 2px solid #e9ecef; flex-wrap: wrap;
-}
-.admin-nav-item {
-  display: flex; align-items: center; gap: 0.4rem;
-  padding: 0.5rem 1rem; border-radius: var(--r-card); color: #555;
-  font-weight: 500; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;
-}
-.admin-nav-item:hover { background: #f0f4ff; color: var(--ink); }
-.admin-nav-item.router-link-active { background: #007bff; color: #fff; }
 </style>
 

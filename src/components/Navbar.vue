@@ -1,7 +1,7 @@
-﻿<template>
+<template>
 
   <header class="navbar">
-    <!-- Barra principal de navegaciÃ³n -->
+    <!-- Barra principal de navegación -->
     <div class="navbar__main">
       <div class="navbar__inner">
         <div class="navbar__brand-wrap">
@@ -15,14 +15,14 @@
               </svg>
             </span>
             <div class="brand-text">
-              <span class="navbar__title">MueblerÃ­a Plaza Reforma</span>
+              <span class="navbar__title">Mueblería Plaza Reforma</span>
               <span class="navbar__subtitle">Calidad y estilo para tu hogar</span>
             </div>
           </router-link>
         </div>
 
         <nav class="navbar__nav" :class="{ 'nav-open': mobileMenuOpen }">
-          <button class="nav-close" @click="mobileMenuOpen = false" aria-label="Cerrar menÃº">
+          <button class="nav-close" @click="mobileMenuOpen = false" aria-label="Cerrar menú">
             <i class="bi bi-x-lg"></i>
           </button>
           <router-link
@@ -60,43 +60,43 @@
                 type="button"
                 class="navbar__search-clear"
                 @click="clearSearch"
-                title="Limpiar bÃºsqueda"
+                title="Limpiar búsqueda"
             >
               <i class="bi bi-x-circle-fill"></i>
             </button>
           </form>
 
-          <!-- BotÃ³n de Logout si estÃ¡ autenticado -->
+          <!-- Botón de Logout si está autenticado -->
           <button
             v-if="isAuthenticated"
             @click="handleLogout"
             class="logout-btn"
-            title="Cerrar sesiÃ³n"
-            aria-label="Cerrar sesiÃ³n"
+            title="Cerrar sesión"
+            aria-label="Cerrar sesión"
           >
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
           </button>
 
-          <!-- Link de Login si no estÃ¡ autenticado -->
+          <!-- Link de Login si no está autenticado -->
           <router-link
             v-else
             to="/login"
             class="login-btn"
-            title="Iniciar sesiÃ³n"
+            title="Iniciar sesión"
           >
             <i class="bi bi-box-arrow-in-right"></i>
             <span>Login</span>
           </router-link>
 
-          <button class="mobile-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Abrir menÃº">
+          <button class="mobile-menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Abrir menú">
             <i class="bi bi-list"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Overlay para menÃº mÃ³vil -->
+    <!-- Overlay para menú móvil -->
     <Transition name="overlay">
       <div v-if="mobileMenuOpen" class="nav-overlay" @click="mobileMenuOpen = false"></div>
     </Transition>
@@ -114,10 +114,8 @@ const searchQuery = ref('');
 const mobileMenuOpen = ref(false);
 const searchFocused = ref(false);
 
-// Verificar si el usuario estÃ¡ autenticado
 const isAuthenticated = computed(() => authService.isAuthenticated());
 
-// Sincronizar el input con el query param de la URL
 watch(() => route.query.buscar, (newSearch) => {
   if (newSearch) {
     searchQuery.value = newSearch;
@@ -126,7 +124,6 @@ watch(() => route.query.buscar, (newSearch) => {
   }
 }, { immediate: true });
 
-// Cerrar menÃº mÃ³vil al cambiar de ruta
 watch(() => route.path, () => {
   mobileMenuOpen.value = false;
 });
@@ -136,7 +133,7 @@ const nav = [
   { label: 'Sala de estar', to: { name: 'Productos', params: { categoria: 'sala de estar' } }, icon: 'bi bi-flower1' },
   { label: 'Dormitorio', to: { name: 'Productos', params: { categoria: 'dormitorio' } }, icon: 'bi bi-moon-stars-fill' },
   { label: 'Comedor', to: { name: 'Productos', params: { categoria: 'comedor' } }, icon: 'bi bi-cup-hot-fill' },
-  { label: 'Oficiona', to: { name: 'Productos', params: { categoria: 'oficina' } }, icon: 'bi bi-briefcase-fill' },
+  { label: 'Oficina', to: { name: 'Productos', params: { categoria: 'oficina' } }, icon: 'bi bi-briefcase-fill' },
   { label: 'Productos', to: { name: 'ProductosList' }, icon: 'bi bi-grid-3x3-gap-fill' },
   { label: 'Contacto', to: '/contacto', icon: 'bi bi-envelope-fill' },
 ];
@@ -201,7 +198,6 @@ async function handleLogout() {
   --nav-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Top Bar - Barra superior elegante */
 .navbar__top-bar {
   background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-primary-dark) 100%);
   color: white;
@@ -274,7 +270,6 @@ async function handleLogout() {
   background: #25d366;
 }
 
-/* Main Navbar - Barra principal mejorada */
 .navbar {
   position: sticky;
   top: 0;
@@ -297,7 +292,6 @@ async function handleLogout() {
   min-height: 80px;
 }
 
-/* Brand mejorado */
 .navbar__brand-wrap {
   flex-shrink: 0;
 }
@@ -350,7 +344,6 @@ async function handleLogout() {
   letter-spacing: 0.5px;
 }
 
-/* Navigation mejorada */
 .navbar__nav {
   display: flex;
   align-items: center;
@@ -413,7 +406,6 @@ async function handleLogout() {
   transform: translateX(-50%) scaleX(1);
 }
 
-/* Search mejorado */
 .navbar__actions {
   display: flex;
   align-items: center;
@@ -497,7 +489,7 @@ async function handleLogout() {
 .mobile-menu-toggle {
   display: none;
   background: var(--nav-primary);
-  color: #040404;
+  color: #fff;
   border: none;
   width: 44px;
   height: 44px;
@@ -518,7 +510,6 @@ async function handleLogout() {
   display: none;
 }
 
-/* Animaciones */
 .overlay-enter-active,
 .overlay-leave-active {
   transition: opacity 0.3s;
@@ -529,7 +520,6 @@ async function handleLogout() {
   opacity: 0;
 }
 
-/* Responsive mejorado */
 @media (max-width: 1024px) {
   .navbar__inner {
     gap: 1rem;
@@ -570,7 +560,6 @@ async function handleLogout() {
 
   .mobile-menu-toggle {
     display: flex;
-
   }
 
   .navbar__nav {
@@ -645,14 +634,13 @@ async function handleLogout() {
   }
 }
 
-/* Botones de Login/Logout */
 .login-btn,
 .logout-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1rem;
-  border-radius: var(--r-card);
+  border-radius: 16px;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;

@@ -74,19 +74,26 @@
       <div class="items-section">
         <h2>Items de la Orden ({{ order.items?.length || 0 }})</h2>
 
-        <div v-if="order.items && order.items.length > 0" class="items-table">
-          <div class="items-header">
-            <span>Producto ID</span>
-            <span>Cantidad</span>
-            <span>Precio Unitario</span>
-            <span>Subtotal</span>
-          </div>
-
-          <div v-for="item in order.items" :key="item.productId" class="items-row">
-            <span class="product-id">{{ item.productId }}</span>
-            <span class="quantity">{{ item.quantity }}</span>
-            <span class="unit-price">${{ formatPrice(item.unitPrice) }}</span>
-            <span class="subtotal">${{ formatPrice(item.quantity * item.unitPrice) }}</span>
+        <div v-if="order.items && order.items.length > 0" class="items-cards">
+          <div v-for="item in order.items" :key="item.productId" class="item-card">
+            <div class="item-header">
+              <h3>{{ productNames[item.productId] || `Producto ${item.productId}` }}</h3>
+              <span class="item-id">ID: {{ item.productId }}</span>
+            </div>
+            <div class="item-details">
+              <div class="detail-row">
+                <span class="label">Cantidad:</span>
+                <span class="value">{{ item.quantity }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Precio Unitario:</span>
+                <span class="value">${{ formatPrice(item.unitPrice) }}</span>
+              </div>
+              <div class="detail-row subtotal">
+                <span class="label">Subtotal:</span>
+                <span class="value">${{ formatPrice(item.quantity * item.unitPrice) }}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -143,6 +150,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { orderService } from '../services/orders';
+import axiosConfig from '../config/AxiosConfig';
 
 const route = useRoute();
 const router = useRouter();
@@ -150,6 +158,7 @@ const router = useRouter();
 const order = ref(null);
 const loading = ref(false);
 const error = ref('');
+const productNames = ref({});
 
 onMounted(() => {
   fetchOrder();
@@ -170,6 +179,7 @@ async function fetchOrder() {
     const response = await orderService.getOrderById(orderId);
     if (response.data.success) {
       order.value = response.data.data;
+      await loadProductNames();
     }
   } catch (err) {
     error.value = err.response?.data?.message || 'Error al cargar la orden';
@@ -203,6 +213,25 @@ function formatDateTime(dateString) {
 
 function formatPrice(price) {
   return parseFloat(price).toFixed(2);
+}
+
+async function loadProductNames() {
+  if (!order.value?.items) return;
+  
+  for (const item of order.value.items) {
+    if (!productNames.value[item.productId]) {
+      try {
+        const response = await axiosConfig.doGet(`/furniture/${item.productId}`);
+        if (response.data.success) {
+          productNames.value[item.productId] = response.data.data?.name || `Producto ${item.productId}`;
+        } else {
+          productNames.value[item.productId] = `Producto ${item.productId}`;
+        }
+      } catch (err) {
+        productNames.value[item.productId] = `Producto ${item.productId}`;
+      }
+    }
+  }
 }
 
 function calculateSubtotal() {
@@ -440,56 +469,84 @@ function calculateTax() {
 }
 
 /* Items Table */
-.items-table {
+.items-cards {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
-.items-header {
-  display: grid;
-  grid-template-columns: 1fr 100px 150px 150px;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--canvas);
+.item-card {
+  background: white;
+  padding: 1.5rem;
   border-radius: var(--r-card);
-  font-weight: 600;
-  color: var(--charcoal);
+  border-left: 4px solid #667eea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.items-row {
-  display: grid;
-  grid-template-columns: 1fr 100px 150px 150px;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  align-items: center;
+.item-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
-.items-row:last-child {
-  border-bottom: none;
+.item-header {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
 }
 
-.product-id {
+.item-header h3 {
+  margin: 0 0 0.5rem;
   color: var(--ink);
+  font-size: 1.1rem;
   font-weight: 600;
+}
+
+.item-id {
+  color: #9ca3af;
+  font-size: 0.85rem;
   font-family: monospace;
 }
 
-.quantity,
-.unit-price,
-.subtotal {
-  text-align: right;
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-row .label {
+  color: var(--slate);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.detail-row .value {
   color: var(--ink);
-}
-
-.quantity {
   font-weight: 600;
+  font-size: 1rem;
 }
 
-.subtotal {
+.detail-row.subtotal {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.detail-row.subtotal .label {
   font-weight: 700;
   color: var(--ink);
+}
+
+.detail-row.subtotal .value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #667eea;
 }
 
 .empty-items {

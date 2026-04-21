@@ -1,4 +1,5 @@
 import axios from '../config/AxiosConfig';
+import { saveToken, removeToken } from '../config/AxiosConfig';
 
 export const authService = {
   register(userData) {
@@ -9,39 +10,37 @@ export const authService = {
     return axios.doPost('/api/auth/login', { email, password });
   },
 
-  logout(accessToken, refreshToken) {
-    const params = new URLSearchParams();
-    if (accessToken) params.append('accessToken', accessToken);
-    if (refreshToken) params.append('refreshToken', refreshToken);
-    const query = params.toString() ? `?${params.toString()}` : '';
-    return axios.doPost(`/api/auth/logout${query}`);
+  logout() {
+    removeToken();
+    return axios.doPost(`/api/auth/logout`);
   },
 
   setTokens(accessToken, refreshToken) {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    saveToken(accessToken);
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
   },
 
   getTokens() {
     return {
-      accessToken: localStorage.getItem('accessToken'),
+      accessToken: localStorage.getItem('accessToken') || localStorage.getItem('token'),
       refreshToken: localStorage.getItem('refreshToken')
     };
   },
 
   clearTokens() {
-    localStorage.removeItem('accessToken');
+    removeToken();
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('token');
     localStorage.removeItem('role');
   },
 
   isAuthenticated() {
-    return !!localStorage.getItem('accessToken');
+    return !!localStorage.getItem('accessToken') || !!localStorage.getItem('token');
   },
 
-  changePassword(userId, currentPassword, newPassword) {
-    return axios.doPost(`/api/auth/change-password?userId=${userId}`, {
+  changePassword(currentPassword, newPassword) {
+    return axios.doPost('/api/auth/change-password', {
       currentPassword,
       newPassword,
       confirmPassword: newPassword

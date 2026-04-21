@@ -1,0 +1,59 @@
+const chartElement = ref(null);
+const chartInstance = ref(null);
+
+function renderChart(data) {
+  if (!chartElement.value) return;
+
+  if (chartInstance.value) {
+    chartInstance.value.destroy();
+  }
+
+  const ctx = chartElement.value.getContext('2d');
+  const labels = data.map(row => formatDate(row.date));
+  const salesData = data.map(row => row.totalSales);
+
+  chartInstance.value = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Ventas Diarias',
+          data: salesData,
+          borderColor: '#667eea',
+          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 5,
+          pointBackgroundColor: '#667eea',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Gráfico de Ventas'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+}
