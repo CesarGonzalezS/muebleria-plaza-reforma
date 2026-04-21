@@ -120,8 +120,9 @@
               type="number"
               class="filter-price-input"
               placeholder="Mín"
-              v-model.number="localMin"
+              v-model="localMin"
               min="0"
+              aria-label="Precio mínimo"
               @input="activePriceRange = 'custom'"
             />
             <span class="filter-price-sep">—</span>
@@ -129,8 +130,9 @@
               type="number"
               class="filter-price-input"
               placeholder="Máx"
-              v-model.number="localMax"
+              v-model="localMax"
               min="0"
+              aria-label="Precio máximo"
               @input="activePriceRange = 'custom'"
             />
           </div>
@@ -191,7 +193,10 @@ const localMin = ref(props.minPrice);
 const localMax = ref(props.maxPrice);
 
 const hasActiveFilters = computed(() =>
-  localSearch.value || localCategory.value || localMin.value !== '' || localMax.value !== ''
+  localSearch.value ||
+  localCategory.value ||
+  (localMin.value !== '' && !isNaN(Number(localMin.value))) ||
+  (localMax.value !== '' && !isNaN(Number(localMax.value)))
 );
 
 watch(localSearch, v => emit('update:searchTerm', v));
@@ -209,8 +214,10 @@ function applyPriceRange(range) {
 }
 
 function emitPrices() {
-  emit('update:minPrice', localMin.value);
-  emit('update:maxPrice', localMax.value);
+  const min = localMin.value !== '' ? parseFloat(localMin.value) : '';
+  const max = localMax.value !== '' ? parseFloat(localMax.value) : '';
+  emit('update:minPrice', min);
+  emit('update:maxPrice', max);
   emit('apply-filters');
 }
 
@@ -218,6 +225,15 @@ watch(() => props.searchTerm, v => { localSearch.value = v; });
 watch(() => props.selectedCategory, v => { localCategory.value = v; });
 watch(() => props.minPrice, v => { localMin.value = v; });
 watch(() => props.maxPrice, v => { localMax.value = v; });
+
+watch(
+  () => [props.minPrice, props.maxPrice],
+  ([min, max]) => {
+    if (min === '' && max === '') {
+      activePriceRange.value = '';
+    }
+  }
+);
 </script>
 
 <style scoped>
