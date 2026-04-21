@@ -14,7 +14,13 @@
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"layout responsive navbar hero\" --stack vue)",
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"marketplace ecommerce product listing grid filters sidebar\" --design-system -p \"Products Listing\")",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture ecommerce catalog marketplace sidebar filters grid\" --design-system -p \"Muebleria Plaza Reforma\" -f markdown)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture ecommerce catalog marketplace sidebar filters grid\" --design-system -p \"Muebleria Plaza Reforma\" -f markdown)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"ecommerce sidebar filter product grid responsive\" --domain ux -n 5)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"mobile drawer overlay animation touch\" --domain ux -n 4)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"skeleton loading cards ecommerce shimmer\" --domain ux -n 5)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"empty state no results filter ecommerce\" --domain ux -n 4)"
     ]
   }
 }

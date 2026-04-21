@@ -499,7 +499,7 @@ watch(
   margin-top: 1.5rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .filters-panel {
     position: fixed;
     top: 0;
@@ -509,6 +509,7 @@ watch(
     border-radius: 0;
     z-index: 200;
     overflow-y: auto;
+    overscroll-behavior: contain;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
