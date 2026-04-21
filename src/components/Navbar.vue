@@ -130,11 +130,6 @@ watch(() => route.path, () => {
 
 const nav = [
   { label: 'Inicio', to: '/', icon: 'bi bi-house-door-fill' },
-  { label: 'Sala de estar', to: { name: 'Productos', params: { categoria: 'sala de estar' } }, icon: 'bi bi-flower1' },
-  { label: 'Dormitorio', to: { name: 'Productos', params: { categoria: 'dormitorio' } }, icon: 'bi bi-moon-stars-fill' },
-  { label: 'Comedor', to: { name: 'Productos', params: { categoria: 'comedor' } }, icon: 'bi bi-cup-hot-fill' },
-  { label: 'Oficina', to: { name: 'Productos', params: { categoria: 'oficina' } }, icon: 'bi bi-briefcase-fill' },
-  { label: 'Productos', to: { name: 'ProductosList' }, icon: 'bi bi-grid-3x3-gap-fill' },
   { label: 'Contacto', to: '/contacto', icon: 'bi bi-envelope-fill' },
 ];
 
@@ -185,81 +180,6 @@ async function handleLogout() {
 </script>
 
 <style scoped>
-/* Variables mejoradas */
-:root {
-  --nav-primary: #860734;
-  --nav-primary-dark: #6a0529;
-  --nav-primary-light: #a91d4d;
-  --nav-bg: #ffffff;
-  --nav-text: #1f2937;
-  --nav-text-light: #6b7280;
-  --nav-border: #e5e7eb;
-  --nav-hover: #f9fafb;
-  --nav-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.navbar__top-bar {
-  background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-primary-dark) 100%);
-  color: white;
-  font-size: 0.875rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.navbar__top-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0.5rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.contact-info {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.contact-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s;
-  opacity: 0.9;
-}
-
-.contact-link:hover {
-  opacity: 1;
-  transform: translateY(-1px);
-}
-
-.contact-link i {
-  font-size: 0.9rem;
-}
-
-.social-links {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.social-link {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s;
-  font-size: 1rem;
-}
 
 .social-link:hover {
   background: rgba(255, 255, 255, 0.25);
@@ -429,7 +349,6 @@ async function handleLogout() {
   border-color: var(--nav-primary);
   background: var(--white);
   box-shadow: 0 0 0 4px rgba(134, 7, 52, 0.1);
-  transform: translateY(-2px);
 }
 
 .search-submit {

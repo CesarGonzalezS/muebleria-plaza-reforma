@@ -7,7 +7,14 @@
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture store ecommerce home decor elegant mexican\" --design-system -p \"Muebleria Plaza Reforma\")",
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture home decor ecommerce luxury\" --domain style)",
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"hero section ecommerce furniture\" --domain landing)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"furniture home decor ecommerce elegant premium retail mexico\" --design-system -p \"Muebleria Plaza Reforma\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"furniture home decor ecommerce elegant premium retail mexico\" --design-system -p \"Muebleria Plaza Reforma\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation accessibility hover loading\" --domain ux -n 8)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"layout responsive navbar hero\" --stack vue)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"marketplace ecommerce product listing grid filters sidebar\" --design-system -p \"Products Listing\")",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
