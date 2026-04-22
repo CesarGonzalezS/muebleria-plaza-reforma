@@ -16,7 +16,9 @@ app.use(router);
 
 // Initialize store on app start
 import { useMainStore } from './stores/main';
+import { useFavoritesStore } from './stores/favoritesStore';
 const mainStore = useMainStore();
 mainStore.init().catch(e => console.error('[App] Init error:', e));
+useFavoritesStore().load();
 
 app.mount('#app');
