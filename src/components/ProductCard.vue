@@ -6,6 +6,7 @@
   >
     <div class="product-image-wrap">
       <img :src="imgSrc" :alt="product.name || 'Producto'" class="product-image" loading="lazy" />
+      <FavoriteButton :product="product" class="fav-btn-corner" />
       <div class="product-overlay" aria-hidden="true">
         <span class="product-overlay-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -26,6 +27,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import FavoriteButton from './FavoriteButton.vue';
 const props = defineProps({ product: Object });
 const router = useRouter();
 
@@ -152,5 +154,12 @@ function handleClick(event) {
   font-weight: 800;
   font-size: 1.15rem;
   margin: 0;
+}
+
+.fav-btn-corner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
 }
 </style>
