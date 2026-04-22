@@ -1,5 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { getDB } from './db.js';
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -26,34 +27,11 @@ const instance = axios.create({
 });
 
 // ===== IndexedDB HELPERS =====
-const DB_NAME = 'MuebleriaDB';
 const STORE_NAME = 'auth';
-
-async function initDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 4);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-    request.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains('cart')) {
-        const s = db.createObjectStore('cart', { keyPath: 'id' });
-        s.createIndex('timestamp', 'timestamp', { unique: false });
-      }
-      if (!db.objectStoreNames.contains('auth')) {
-        db.createObjectStore('auth');
-      }
-      if (!db.objectStoreNames.contains('favorites')) {
-        const s = db.createObjectStore('favorites', { keyPath: 'id' });
-        s.createIndex('timestamp', 'timestamp', { unique: false });
-      }
-    };
-  });
-}
 
 async function setInDB(key, value) {
   try {
-    const db = await initDB();
+    const db = await getDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
     return new Promise((resolve, reject) => {
@@ -68,7 +46,7 @@ async function setInDB(key, value) {
 
 async function getFromDB(key) {
   try {
-    const db = await initDB();
+    const db = await getDB();
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
     return new Promise((resolve, reject) => {
@@ -84,7 +62,7 @@ async function getFromDB(key) {
 
 async function removeFromDB(key) {
   try {
-    const db = await initDB();
+    const db = await getDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
     return new Promise((resolve, reject) => {
