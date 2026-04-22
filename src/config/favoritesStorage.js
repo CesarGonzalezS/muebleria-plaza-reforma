@@ -8,7 +8,7 @@ async function addFavorite(product) {
     const db = await getDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
-    const item = { ...product, timestamp: Date.now() };
+    const item = { id: product.id, ...product, timestamp: Date.now() };
     return new Promise((resolve, reject) => {
       const req = store.put(item);
       req.onerror = () => reject(req.error);
@@ -16,6 +16,7 @@ async function addFavorite(product) {
     });
   } catch (e) {
     console.error('[FavoritesStorage] Error adding:', e);
+    throw e;
   }
 }
 
@@ -31,6 +32,7 @@ async function removeFavorite(productId) {
     });
   } catch (e) {
     console.error('[FavoritesStorage] Error removing:', e);
+    throw e;
   }
 }
 
@@ -81,6 +83,7 @@ async function clearFavorites() {
     });
   } catch (e) {
     console.error('[FavoritesStorage] Error clearing:', e);
+    throw e;
   }
 }
 
