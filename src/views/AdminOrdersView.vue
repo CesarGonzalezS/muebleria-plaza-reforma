@@ -1,14 +1,15 @@
 <template>
-  <AdminLayout title="Órdenes" subtitle="Gestión de órdenes" icon="bi-bag-check">
+  <AdminLayout title="Ventas" subtitle="Gestión de ventas y reservaciones" icon="bi-bag-check">
     <template #actions>
       <select v-model="selectedStatus" class="filter-select">
         <option value="">Todos los estados</option>
-        <option value="PENDING">Pendiente</option>
-        <option value="PROCESSING">Procesando</option>
-        <option value="SHIPPED">Enviado</option>
-        <option value="DELIVERED">Entregado</option>
-        <option value="CANCELLED">Cancelado</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="CONFIRMADA">Confirmada</option>
+        <option value="CANCELADA">Cancelada</option>
       </select>
+      <button @click="showNewSaleModal = true" class="btn-primary">
+        <i class="bi bi-plus-lg"></i> Nueva Venta
+      </button>
       <button @click="fetchOrders" class="btn-secondary">
         <i class="bi bi-arrow-clockwise"></i> Refrescar
       </button>
@@ -17,7 +18,7 @@
     <!-- Loading -->
     <div v-if="loading" class="admin-loading">
       <div class="admin-spinner"></div>
-      <p>Cargando órdenes...</p>
+      <p>Cargando ventas...</p>
     </div>
 
     <!-- Error -->
@@ -26,7 +27,7 @@
       <h3>{{ error }}</h3>
     </div>
 
-    <!-- Tabla de órdenes -->
+    <!-- Tabla de ventas -->
     <div v-else-if="filteredOrders.length > 0" class="admin-table-wrap">
       <table class="admin-table">
         <thead>
@@ -42,7 +43,7 @@
         <tbody>
           <tr v-for="order in filteredOrders" :key="order.id">
             <td class="id-cell">#{{ order.id }}</td>
-            <td>ID: {{ order.customerId }}</td>
+            <td>{{ order.customerName || `Cliente #${order.customerId}` }}</td>
             <td><strong>${{ formatPrice(order.totalAmount) }}</strong></td>
             <td>
               <span :class="['badge', statusBadgeClass(order.status)]">
@@ -50,18 +51,26 @@
               </span>
             </td>
             <td>{{ formatDate(order.createdAt) }}</td>
-            <td>
-              <div class="row-actions">
-                <button @click="openStatusModal(order)" class="btn-icon btn-edit" title="Cambiar estado">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-                <button @click="deleteOrder(order.id)" class="btn-icon btn-delete" title="Cancelar orden">
-                  <i class="bi bi-trash"></i>
-                </button>
-                <router-link :to="`/order-detail/${order.id}`" class="btn-icon btn-view" title="Ver detalles">
-                  <i class="bi bi-eye"></i>
-                </router-link>
-              </div>
+            <td class="actions-cell">
+              <button @click="downloadPDF(order)" class="btn-icon" title="Descargar nota de venta">
+                <i class="bi bi-file-earmark-pdf"></i>
+              </button>
+              <button
+                v-if="order.status === 'PENDIENTE'"
+                @click="confirmOrder(order.id)"
+                class="btn-icon btn-success"
+                title="Confirmar entrega"
+              >
+                <i class="bi bi-check-lg"></i>
+              </button>
+              <button
+                v-if="order.status !== 'CANCELADA' && order.status !== 'CONFIRMADA'"
+                @click="cancelOrder(order.id)"
+                class="btn-icon btn-danger"
+                title="Cancelar"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -70,230 +79,374 @@
 
     <!-- Empty -->
     <div v-else class="admin-empty">
-      <i class="bi bi-inbox"></i>
-      <h3>No hay órdenes para mostrar</h3>
-      <p>Las órdenes aparecerán aquí cuando los clientes realicen compras</p>
+      <i class="bi bi-bag-x"></i>
+      <h3>Sin ventas</h3>
+      <p>No hay ventas registradas aún.</p>
+      <button @click="showNewSaleModal = true" class="btn-primary">Registrar primera venta</button>
     </div>
+  </AdminLayout>
 
-    <!-- Modal cambiar estado -->
-    <div v-if="showStatusModal" class="admin-modal-overlay" @click.self="closeModal">
-      <div class="admin-modal">
-        <div class="admin-modal__header">
-          <h3>Cambiar Estado — Orden #{{ selectedOrder?.id }}</h3>
-          <button @click="closeModal" class="btn-icon"><i class="bi bi-x"></i></button>
+  <!-- Modal: Nueva Venta -->
+  <Teleport to="body">
+    <div v-if="showNewSaleModal" class="modal-overlay" @click.self="closeNewSaleModal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2><i class="bi bi-bag-plus"></i> Nueva Venta</h2>
+          <button @click="closeNewSaleModal" class="modal-close"><i class="bi bi-x-lg"></i></button>
         </div>
-        <div class="admin-modal__body">
+        <div class="modal-body">
+          <!-- Producto -->
           <div class="form-group">
-            <label>Nuevo Estado</label>
-            <select v-model="newStatus">
-              <option value="">Seleccionar estado</option>
-              <option v-for="status in validNextStates" :key="status" :value="status">
-                {{ formatStatus(status) }}
+            <label>Producto *</label>
+            <select v-model="newSale.productId" @change="onProductChange" class="form-control" required>
+              <option value="">Seleccionar producto</option>
+              <option v-for="p in products" :key="p.id" :value="p.id">
+                {{ p.name }} — ${{ formatPrice(p.price) }} (Stock: {{ p.stock }})
               </option>
             </select>
-            <p v-if="validNextStates.length === 0" class="info-msg">
-              Este pedido no puede cambiar de estado (ya está en estado final)
-            </p>
           </div>
-          <div v-if="statusError" class="error-msg">{{ statusError }}</div>
+          <div class="form-group">
+            <label>Precio de venta *</label>
+            <input v-model.number="newSale.price" type="number" class="form-control" min="0" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Cantidad *</label>
+            <input v-model.number="newSale.quantity" type="number" class="form-control" min="1" />
+          </div>
+          <div class="sale-total" v-if="newSale.price && newSale.quantity">
+            Total: <strong>${{ formatPrice(newSale.price * newSale.quantity) }}</strong>
+          </div>
+
+          <hr class="divider" />
+
+          <!-- Cliente -->
+          <div class="form-group">
+            <label>Buscar cliente existente</label>
+            <input
+              v-model="customerSearch"
+              @input="searchCustomers"
+              type="text"
+              class="form-control"
+              placeholder="Nombre o teléfono..."
+            />
+            <ul v-if="customerResults.length > 0" class="customer-dropdown">
+              <li
+                v-for="c in customerResults"
+                :key="c.id"
+                @click="selectCustomer(c)"
+              >
+                {{ c.name }} — {{ c.phone || 'Sin teléfono' }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="form-row" v-if="!newSale.customerId">
+            <div class="form-group">
+              <label>Nombre del cliente *</label>
+              <input v-model="newSale.customerName" type="text" class="form-control" placeholder="Nombre completo" />
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input v-model="newSale.customerPhone" type="text" class="form-control" placeholder="Teléfono" />
+            </div>
+          </div>
+          <div v-else class="selected-customer">
+            <i class="bi bi-person-check"></i>
+            Cliente seleccionado: <strong>{{ newSale.customerName }}</strong>
+            <button @click="clearCustomer" class="btn-link">Cambiar</button>
+          </div>
+
+          <div class="form-group">
+            <label>Notas</label>
+            <textarea v-model="newSale.notes" class="form-control" rows="2" placeholder="Notas adicionales..."></textarea>
+          </div>
         </div>
-        <div class="admin-modal__footer">
-          <button @click="closeModal" class="btn-secondary">Cancelar</button>
-          <button @click="updateOrderStatus" class="btn-primary" :disabled="statusLoading || !newStatus">
-            <i class="bi bi-check-circle"></i>
-            {{ statusLoading ? 'Procesando...' : 'Actualizar' }}
+        <div class="modal-footer">
+          <button @click="closeNewSaleModal" class="btn-secondary">Cancelar</button>
+          <button @click="createSale" :disabled="savingOrder" class="btn-primary">
+            <span v-if="savingOrder"><i class="bi bi-hourglass-split"></i> Guardando...</span>
+            <span v-else><i class="bi bi-check-lg"></i> Registrar Venta</span>
           </button>
         </div>
       </div>
     </div>
-  </AdminLayout>
+  </Teleport>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { orderService } from '../services/orders';
-import AdminLayout from '../components/AdminLayout.vue';
+import { ref, computed, onMounted } from 'vue';
+import AdminLayout from '@/components/AdminLayout.vue';
+import axiosConfig from '@/config/AxiosConfig.js';
+import { generateSalesPDF } from '@/utils/pdfGenerator.js';
 
 const orders = ref([]);
 const loading = ref(false);
 const error = ref('');
 const selectedStatus = ref('');
+const showNewSaleModal = ref(false);
+const savingOrder = ref(false);
+const products = ref([]);
+const customerSearch = ref('');
+const customerResults = ref([]);
 
-const showStatusModal = ref(false);
-const selectedOrder = ref(null);
-const newStatus = ref('');
-const statusLoading = ref(false);
-const statusError = ref('');
+const newSale = ref({
+  productId: '',
+  price: 0,
+  quantity: 1,
+  customerId: null,
+  customerName: '',
+  customerPhone: '',
+  notes: ''
+});
 
 const filteredOrders = computed(() => {
   if (!selectedStatus.value) return orders.value;
   return orders.value.filter(o => o.status === selectedStatus.value);
 });
 
-const validTransitions = {
-  'PENDING': ['PROCESSING', 'CANCELLED'],
-  'PROCESSING': ['SHIPPED', 'CANCELLED'],
-  'SHIPPED': ['DELIVERED'],
-  'DELIVERED': [],
-  'CANCELLED': []
-};
-
-function canTransitionTo(fromStatus, toStatus) {
-  if (fromStatus === toStatus) return false;
-  return (validTransitions[fromStatus] || []).includes(toStatus);
+function formatPrice(val) {
+  return (val || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
 }
 
-const validNextStates = computed(() => {
-  return selectedOrder.value ? (validTransitions[selectedOrder.value.status] || []) : [];
-});
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function formatStatus(status) {
+  const map = {
+    PENDIENTE: 'Pendiente',
+    CONFIRMADA: 'Confirmada',
+    ENVIADA: 'Enviada',
+    ENTREGADA: 'Entregada',
+    CANCELADA: 'Cancelada'
+  };
+  return map[status] || status;
+}
+
+function statusBadgeClass(status) {
+  const map = {
+    PENDIENTE: 'badge-warning',
+    CONFIRMADA: 'badge-success',
+    ENVIADA: 'badge-info',
+    ENTREGADA: 'badge-success',
+    CANCELADA: 'badge-danger'
+  };
+  return map[status] || 'badge-secondary';
+}
 
 async function fetchOrders() {
   loading.value = true;
   error.value = '';
   try {
-    const response = await orderService.listOrders();
-    if (response.data.success) {
-      orders.value = response.data.data || [];
-    }
-  } catch (err) {
-    error.value = 'Error al cargar órdenes';
+    const res = await axiosConfig.doGet('/api/orders');
+    orders.value = res.data.data || res.data || [];
+  } catch (e) {
+    error.value = 'No se pudieron cargar las ventas';
   } finally {
     loading.value = false;
   }
 }
 
-function openStatusModal(order) {
-  selectedOrder.value = order;
-  newStatus.value = '';
-  showStatusModal.value = true;
-  statusError.value = '';
+async function fetchProducts() {
+  try {
+    const res = await axiosConfig.doGet('/api/products');
+    products.value = res.data.data || res.data || [];
+  } catch (e) {
+    console.error('Error cargando productos:', e);
+  }
 }
 
-function closeModal() {
-  showStatusModal.value = false;
-  selectedOrder.value = null;
-  newStatus.value = '';
-  statusError.value = '';
+function onProductChange() {
+  const product = products.value.find(p => p.id === newSale.value.productId);
+  if (product) {
+    newSale.value.price = product.price || 0;
+  }
 }
 
-async function updateOrderStatus() {
-  if (!selectedOrder.value || !newStatus.value) return;
-  statusError.value = '';
-
-  if (!canTransitionTo(selectedOrder.value.status, newStatus.value)) {
-    statusError.value = `Transición no permitida: ${selectedOrder.value.status} → ${newStatus.value}`;
+async function searchCustomers() {
+  if (customerSearch.value.length < 2) {
+    customerResults.value = [];
     return;
   }
-
-  statusLoading.value = true;
   try {
-    await orderService.updateOrderStatus(selectedOrder.value.id, newStatus.value);
-    closeModal();
-    await fetchOrders();
-  } catch (err) {
-    statusError.value = err.response?.data?.message || 'Error al actualizar estado';
-  } finally {
-    statusLoading.value = false;
+    const res = await axiosConfig.doGet(`/api/customers?search=${encodeURIComponent(customerSearch.value)}`);
+    customerResults.value = (res.data.data || res.data || []).slice(0, 5);
+  } catch {
+    customerResults.value = [];
   }
 }
 
-async function deleteOrder(orderId) {
-  if (!confirm('¿Estás seguro de que deseas cancelar esta orden?')) return;
-  loading.value = true;
-  error.value = '';
+function selectCustomer(c) {
+  newSale.value.customerId = c.id;
+  newSale.value.customerName = c.name;
+  newSale.value.customerPhone = c.phone || '';
+  customerSearch.value = '';
+  customerResults.value = [];
+}
+
+function clearCustomer() {
+  newSale.value.customerId = null;
+  newSale.value.customerName = '';
+  newSale.value.customerPhone = '';
+  customerSearch.value = '';
+  customerResults.value = [];
+}
+
+function closeNewSaleModal() {
+  showNewSaleModal.value = false;
+  newSale.value = { productId: '', price: 0, quantity: 1, customerId: null, customerName: '', customerPhone: '', notes: '' };
+  customerSearch.value = '';
+  customerResults.value = [];
+}
+
+async function createSale() {
+  if (!newSale.value.productId) { alert('Selecciona un producto'); return; }
+  if (!newSale.value.customerName.trim()) { alert('Ingresa el nombre del cliente'); return; }
+  if (newSale.value.quantity < 1) { alert('La cantidad debe ser al menos 1'); return; }
+
+  savingOrder.value = true;
   try {
-    await orderService.cancelOrder(orderId);
+    let customerId = newSale.value.customerId;
+
+    // Si no hay cliente seleccionado, crear uno nuevo
+    if (!customerId) {
+      const cRes = await axiosConfig.doPost('/api/customers', {
+        name: newSale.value.customerName,
+        phone: newSale.value.customerPhone
+      });
+      customerId = (cRes.data.data || cRes.data).id;
+    }
+
+    const payload = {
+      customerId,
+      items: [{
+        productId: newSale.value.productId,
+        quantity: newSale.value.quantity,
+        price: newSale.value.price
+      }],
+      notes: newSale.value.notes
+    };
+
+    await axiosConfig.doPost('/api/orders', payload);
     await fetchOrders();
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cancelar orden';
+    closeNewSaleModal();
+  } catch (e) {
+    alert('Error al registrar la venta: ' + (e.response?.data?.message || e.message));
   } finally {
-    loading.value = false;
+    savingOrder.value = false;
   }
 }
 
-function statusBadgeClass(status) {
-  const map = {
-    'PENDING': 'badge-yellow',
-    'PROCESSING': 'badge-blue',
-    'SHIPPED': 'badge-gray',
-    'DELIVERED': 'badge-green',
-    'CANCELLED': 'badge-red'
-  };
-  return map[status] || 'badge-gray';
+async function confirmOrder(id) {
+  if (!confirm('¿Confirmar entrega de esta venta?')) return;
+  try {
+    await axiosConfig.doPut(`/api/orders/${id}/status?status=CONFIRMADA`);
+    await fetchOrders();
+  } catch (e) {
+    alert('Error al confirmar la venta');
+  }
 }
 
-function formatStatus(status) {
-  const statuses = {
-    'PENDING': 'Pendiente',
-    'PROCESSING': 'Procesando',
-    'SHIPPED': 'Enviado',
-    'DELIVERED': 'Entregado',
-    'CANCELLED': 'Cancelado'
-  };
-  return statuses[status] || status;
+async function cancelOrder(id) {
+  if (!confirm('¿Cancelar esta venta?')) return;
+  try {
+    await axiosConfig.doDelete(`/api/orders/${id}`);
+    await fetchOrders();
+  } catch (e) {
+    alert('Error al cancelar la venta');
+  }
 }
 
-function formatDate(dateString) {
-  if (!dateString) return '-';
-  return new Date(dateString).toLocaleDateString('es-ES');
+function downloadPDF(order) {
+  try {
+    generateSalesPDF(order);
+  } catch (e) {
+    alert('Error al generar PDF: ' + e.message);
+  }
 }
 
-function formatPrice(price) {
-  return parseFloat(price).toFixed(2);
-}
-
-fetchOrders();
+onMounted(async () => {
+  await Promise.all([fetchOrders(), fetchProducts()]);
+});
 </script>
 
 <style scoped>
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-size: 0.875rem;
-  font-family: var(--font);
-  background: #fff;
-  color: var(--ink);
-  transition: border-color .15s;
-}
-.filter-select:focus { outline: none; border-color: var(--ink); }
-
-.id-cell { font-weight: 600; font-family: monospace; font-size: 0.8125rem; color: var(--charcoal); }
-
-.row-actions { display: flex; gap: 4px; }
-
-.btn-view {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
+.sale-total {
+  background: #faf7f4;
+  border: 1px solid #e0d0e0;
   border-radius: 8px;
-  background: transparent;
-  color: var(--slate);
-  font-size: 0.875rem;
-  transition: all .15s;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #141413;
+  margin-top: -0.5rem;
+}
+
+.sale-total strong {
+  color: #860734;
+  font-size: 1.2rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #e0d0e0;
+  margin: 1rem 0;
+}
+
+.customer-dropdown {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  border: 1px solid #e0d0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.customer-dropdown li {
+  padding: 0.6rem 1rem;
   cursor: pointer;
-}
-.btn-view:hover { background: #dcfce7; color: #16a34a; border-color: #86efac; }
-
-.error-msg {
-  background: #fee2e2;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+  transition: background 0.15s;
 }
 
-.info-msg {
-  color: #0ea5e9;
-  font-size: 0.8125rem;
-  margin: 4px 0 0;
-  padding: 8px 10px;
-  background: rgba(14,165,233,0.08);
-  border-radius: 6px;
+.customer-dropdown li:hover {
+  background: #faf7f4;
+}
+
+.selected-customer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #059669;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #860734;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  margin-left: auto;
+  padding: 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

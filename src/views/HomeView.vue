@@ -94,7 +94,7 @@ import Testimonials from '../components/Testimonials.vue';
 import CtaSection from '../components/CtaSection.vue';
 import MapSection from '../components/MapSection.vue';
 import { ref, onMounted } from 'vue';
-import axiosConfig from '../config/AxiosConfig.js';
+import { getFurniture } from '../services/furniture.js';
 import Gallery from "@/components/assets/Gallery.vue";
 
 const carouselImages = [
@@ -128,15 +128,21 @@ const loadingFeatured = ref(false);
 async function fetchFeaturedProducts() {
   loadingFeatured.value = true;
   try {
-    const res = await axiosConfig.doGet('/furniture');
-    featuredProducts.value = res.data.slice(0, 6).map(item => {
+    const res = await getFurniture();
+    const productsData = Array.isArray(res) ? res : (res.data || []);
+    featuredProducts.value = productsData.slice(0, 6).map(item => {
       let mainImage = '/assets/img/products/default.jpg';
-      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+
+      // Usar imageUrl del backend (URL completa como: http://localhost:8080/uploads/images/...)
+      if (item.imageUrl) {
+        mainImage = item.imageUrl;
+      } else if (item.images && Array.isArray(item.images) && item.images.length > 0) {
         const firstImage = item.images[0];
         mainImage = typeof firstImage === 'string' ? firstImage : (firstImage.img_base64 || firstImage.url || mainImage);
       } else if (item.img_base64) {
         mainImage = item.img_base64;
       }
+
       return {
         id: item.id,
         name: item.name,

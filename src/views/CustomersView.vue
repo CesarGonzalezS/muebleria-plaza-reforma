@@ -55,9 +55,9 @@
                 <button @click="openEdit(c)" class="btn-icon btn-edit" title="Editar">
                   <i class="bi bi-pencil"></i>
                 </button>
-                <router-link :to="`/customer-stats/${c.id}`" class="btn-icon btn-view" title="Estadísticas">
-                  <i class="bi bi-bar-chart"></i>
-                </router-link>
+                <button @click="openHistory(c)" class="btn-icon btn-view" title="Ver historial de compras">
+                  <i class="bi bi-clock-history"></i>
+                </button>
               </div>
             </td>
           </tr>
@@ -80,8 +80,8 @@
                 <input v-model="form.name" required placeholder="Juan Pérez" />
               </div>
               <div class="form-group">
-                <label>Email *</label>
-                <input v-model="form.email" type="email" required placeholder="juan@email.com" />
+                <label>Email</label>
+                <input v-model="form.email" type="email" placeholder="juan@email.com (opcional)" />
               </div>
               <div class="form-group">
                 <label>Teléfono</label>
@@ -116,10 +116,62 @@
       </div>
     </Transition>
   </AdminLayout>
+
+  <!-- Modal: Historial de compras -->
+  <Teleport to="body">
+    <div v-if="showHistory" class="modal-overlay" @click.self="closeHistory">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2><i class="bi bi-clock-history"></i> Historial — {{ historyCustomer?.name }}</h2>
+          <button @click="closeHistory" class="modal-close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+          <div v-if="historyLoading" class="admin-loading" style="padding:2rem 0">
+            <div class="admin-spinner"></div>
+          </div>
+          <div v-else-if="historyOrders.length === 0" class="history-empty">
+            <i class="bi bi-bag-x"></i>
+            <p>Este cliente no tiene ventas registradas.</p>
+          </div>
+          <div v-else>
+            <p class="history-summary">
+              <strong>{{ historyOrders.length }}</strong> venta(s) &nbsp;·&nbsp;
+              Total: <strong>${{ formatPrice(historyTotal) }}</strong>
+            </p>
+            <table class="admin-table" style="margin-top:0.75rem">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="o in historyOrders" :key="o.id">
+                  <td class="id-cell">#{{ o.id }}</td>
+                  <td><strong>${{ formatPrice(o.totalAmount) }}</strong></td>
+                  <td>
+                    <span :class="['badge', historyStatusClass(o.status)]">
+                      {{ historyStatusLabel(o.status) }}
+                    </span>
+                  </td>
+                  <td>{{ formatDate(o.createdAt) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="closeHistory" class="btn-secondary">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { customersService } from '../services/customers';
 import axiosConfig from '../config/AxiosConfig';
 import AdminLayout from '../components/AdminLayout.vue';
@@ -130,6 +182,15 @@ const error = ref('');
 const showModal = ref(false);
 const editing = ref(false);
 const saving = ref(false);
+
+// History
+const showHistory = ref(false);
+const historyCustomer = ref(null);
+const historyOrders = ref([]);
+const historyLoading = ref(false);
+const historyTotal = computed(() =>
+  historyOrders.value.reduce((sum, o) => sum + (o.totalAmount || 0), 0)
+);
 
 const emptyForm = () => ({ id: null, name: '', email: '', phone: '', address: '', city: '', state: '', postalCode: '' });
 const form = ref(emptyForm());
@@ -197,6 +258,42 @@ function formatPrice(val) {
   if (!val && val !== 0) return '0.00';
   return parseFloat(val).toLocaleString('es-MX', { minimumFractionDigits: 2 });
 }
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function historyStatusLabel(status) {
+  const map = { PENDIENTE: 'Pendiente', CONFIRMADA: 'Confirmada', CANCELADA: 'Cancelada', ENTREGADA: 'Entregada' };
+  return map[status] || status;
+}
+
+function historyStatusClass(status) {
+  const map = { PENDIENTE: 'badge-warning', CONFIRMADA: 'badge-success', CANCELADA: 'badge-danger', ENTREGADA: 'badge-success' };
+  return map[status] || 'badge-secondary';
+}
+
+async function openHistory(customer) {
+  historyCustomer.value = customer;
+  showHistory.value = true;
+  historyOrders.value = [];
+  historyLoading.value = true;
+  try {
+    const res = await axiosConfig.doGet(`/api/orders?customerId=${customer.id}`);
+    historyOrders.value = res.data.data || res.data || [];
+  } catch (e) {
+    historyOrders.value = [];
+  } finally {
+    historyLoading.value = false;
+  }
+}
+
+function closeHistory() {
+  showHistory.value = false;
+  historyCustomer.value = null;
+  historyOrders.value = [];
+}
 </script>
 
 <style scoped>
@@ -229,6 +326,96 @@ function formatPrice(val) {
 
 .modal-enter-active, .modal-leave-active { transition: opacity .2s; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
+
+/* History modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e0d0e0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #860734;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0.25rem;
+}
+
+.modal-close:hover { color: #141413; }
+
+.modal-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0d0e0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+}
+
+.history-empty i {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.history-summary {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #faf7f4;
+  border-radius: 8px;
+}
+
+.history-summary strong {
+  color: #141413;
+}
 
 @media (max-width: 600px) {
   .form-grid { grid-template-columns: 1fr; }

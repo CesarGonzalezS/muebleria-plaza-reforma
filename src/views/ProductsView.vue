@@ -325,27 +325,34 @@ async function fetchProducts() {
   loadingProducts.value = true;
   try {
     const res = await axiosConfig.doGet('/api/products');
-    products.value = res.data.map(item => {
+    const productsData = res.data.data || res.data || [];
+    products.value = productsData.map(item => {
       let mainImage = '/assets/img/products/default.jpg';
-      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+
+      // Usar imageUrl del backend (URL completa)
+      if (item.imageUrl) {
+        mainImage = item.imageUrl;
+      } else if (item.images && Array.isArray(item.images) && item.images.length > 0) {
         const firstImage = item.images[0];
         mainImage = typeof firstImage === 'string' ? firstImage : (firstImage.img_base64 || firstImage.url || mainImage);
       } else if (item.img_base64) {
         mainImage = item.img_base64;
       }
+
       return {
         id: item.id,
         name: item.name,
-        price: item.price,
-        brand: item.brand || '',
-        category: item.category_name || '',
+        price: item.price || 0,
+        brand: item.brandName || item.brand || '',
+        category: item.categoryName || item.category_name || '',
         stock: item.stock ?? null,
         minStock: item.min_stock ?? item.minStock ?? 0,
         img: mainImage,
         images: item.images || []
       };
     });
-  } catch {
+  } catch (error) {
+    console.error('Error cargando productos:', error);
     products.value = [];
   } finally {
     loadingProducts.value = false;

@@ -1,393 +1,294 @@
-¯»¿<template>
-  <AdminLayout title=¢Stock Bajo¢ subtitle=¢Productos que necesitan reposición¢ icon=¢bi-exclamation-triangle¢>
-    <!-- Loading -->
-    <div v-if="loading" class="loading">
-      <div class="spinner">
-        <i class="bi bi-arrow-repeat"></i>
-      </div>
-      <p>Cargando productos...</p>
-    </div>
-
-    <!-- Error -->
-    <div v-else-if="error" class="error-message">
-      <i class="bi bi-exclamation-circle"></i>
-      {{ error }}
-      <button @click="fetchProducts" class="retry-btn">Reintentar</button>
-    </div>
-
-    <!-- Lista vacía -->
-    <div v-else-if="products.length === 0" class="empty-state">
-      <i class="bi bi-check-circle"></i>
-      <h2>¡Todo bien!</h2>
-      <p>No hay productos con stock bajo</p>
-    </div>
-
-    <!-- Lista de productos -->
-    <div v-else class="products-grid">
-      <div v-for="product in products" :key="product.id" class="product-card">
-        <div class="card-header">
-          <h3>{{ product.name }}</h3>
-          <span class="low-stock-badge">
-            <i class="bi bi-exclamation-triangle"></i>
-            Stock: {{ product.stock }} / Min: {{ product.minStock }}
-          </span>
-        </div>
-
-        <div class="card-body">
-          <div class="info-row">
-            <label>ID:</label>
-            <span>{{ product.id }}</span>
-          </div>
-          <div class="info-row">
-            <label>Precio:</label>
-            <span class="price">${{ formatPrice(product.price) }}</span>
-          </div>
-          <div class="info-row">
-            <label>Stock Actual:</label>
-            <span :class="['stock-value', product.stock <= product.minStock ? 'critical' : '']">
-              {{ product.stock }} unidades
-            </span>
-          </div>
-          <div class="info-row">
-            <label>Stock Mínimo:</label>
-            <span>{{ product.minStock }} unidades</span>
-          </div>
-          <div class="info-row">
-            <label>Falta por Reabastecer:</label>
-            <span class="needed">{{ product.minStock - product.stock }} unidades</span>
-          </div>
-        </div>
-
-        <div class="card-footer">
-          <button class="btn-restock">
-            <i class="bi bi-arrow-repeat"></i> Reabastecer
-          </button>
-          <router-link :to="`/producto-detalle/${product.id}`" class="btn-view">
-            <i class="bi bi-eye"></i> Ver
-          </router-link>
-        </div>
-      </div>
-    </div>
-
-    <!-- Resumen -->
-    <div v-if="products.length > 0" class="summary">
-      <div class="summary-item">
-        <span class="label">Total de productos bajo stock:</span>
-        <span class="value">{{ products.length }}</span>
-      </div>
-      <div class="summary-item">
-        <span class="label">Total de unidades faltantes:</span>
-        <span class="value">{{ calculateTotalNeeded() }}</span>
-      </div>
-    </div>
-  </AdminLayout>
-</template>
-
-<script setup>
-import { ref, onMounted } from 'vue';
-import { productService } from '../services/products';
-import AdminLayout from '../components/AdminLayout.vue';
-
-const products = ref([]);
-const loading = ref(false);
-const error = ref('');
-
-onMounted(() => {
-  fetchProducts();
-});
-
-async function fetchProducts() {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    const response = await productService.getLowStockProducts();
-    if (response.data.success) {
-      products.value = response.data.data || [];
-    } else {
-      error.value = 'No se pudieron cargar los productos';
-    }
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cargar productos con stock bajo';
-  } finally {
-    loading.value = false;
-  }
-}
-
-function formatPrice(price) {
-  return parseFloat(price).toFixed(2);
-}
-
-function calculateTotalNeeded() {
-  return products.value.reduce((total, product) => {
-    const needed = Math.max(0, product.minStock - product.stock);
-    return total + needed;
-  }, 0);
-}
-</script>
-
-<style scoped>
-/* Loading */
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 2rem;
-  color: var(--slate);
-}
-
-.spinner {
-  font-size: 3rem;
-  color: #f59e0b;
-  margin-bottom: 1rem;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Error */
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: #fee;
-  border: 2px solid #fca;
-  color: #c33;
-  padding: 1rem;
-  border-radius: var(--r-card);
-  margin-bottom: 2rem;
-}
-
-.error-message i {
-  font-size: 1.5rem;
-}
-
-.retry-btn {
-  margin-left: auto;
-  background: #c33;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.retry-btn:hover {
-  background: #a00;
-}
-
-/* Empty State */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 2rem;
-  background: #d1fae5;
-  border-radius: 12px;
-  text-align: center;
-  color: #065f46;
-}
-
-.empty-state i {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.empty-state h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.empty-state p {
-  margin: 0.5rem 0 0;
-  opacity: 0.8;
-}
-
-/* Grid de productos */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.product-card {
-  background: var(--white);
-  border: 2px solid #fca;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
-}
-
-.product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-  border-color: #f59e0b;
-}
-
-.card-header {
-  background: #fef3c7;
-  padding: 1rem;
-  border-bottom: 1px solid #fde68a;
-}
-
-.card-header h3 {
-  margin: 0;
-  color: #92400e;
-  font-size: 1.1rem;
-}
-
-.low-stock-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #fed7aa;
-  color: #92400e;
-  padding: 0.5rem 0.75rem;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-}
-
-.card-body {
-  padding: 1rem;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row label {
-  color: var(--slate);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.info-row span {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.price {
-  color: var(--ink);
-  font-size: 1.1rem;
-}
-
-.stock-value {
-  color: #10b981;
-  font-size: 1rem;
-}
-
-.stock-value.critical {
-  color: #dc2626;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.needed {
-  background: #fee;
-  color: #c33;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-weight: 700;
-}
-
-.card-footer {
-  display: flex;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: var(--canvas-lifted);
-  border-top: 1px solid #e5e7eb;
-}
-
-.btn-restock,
-.btn-view {
-  flex: 1;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-
-.btn-restock {
-  background: #f59e0b;
-  color: white;
-}
-
-.btn-restock:hover {
-  background: #d97706;
-}
-
-.btn-view {
-  background: #e5e7eb;
-  color: var(--ink);
-}
-
-.btn-view:hover {
-  background: #d1d5db;
-}
-
-/* Summary */
-.summary {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  border-top: 4px solid #f59e0b;
-}
-
-.summary-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.summary-item .label {
-  color: var(--slate);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.summary-item .value {
-  color: var(--ink);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f59e0b;
-}
-
-@media (max-width: 768px) {
-  .products-grid { grid-template-columns: 1fr; }
-}
-</style>
-
+<template>
+  <AdminLayout title="Stock Bajo" subtitle="Productos que necesitan reposicion" icon="bi-exclamation-triangle">
+    <template #actions>
+      <button @click="fetchProducts" class="btn-secondary">
+        <i class="bi bi-arrow-clockwise"></i> Refrescar
+      </button>
+    </template>
+
+    <!-- Loading -->
+    <div v-if="loading" class="admin-loading">
+      <div class="admin-spinner"></div>
+      <p>Cargando...</p>
+    </div>
+
+    <!-- Todo bien -->
+    <div v-else-if="products.length === 0" class="admin-empty">
+      <i class="bi bi-check-circle" style="color:#059669"></i>
+      <h3>Todo en orden</h3>
+      <p>No hay productos con stock bajo en este momento.</p>
+    </div>
+
+    <!-- Tabla de productos con stock bajo -->
+    <div v-else class="admin-table-wrap">
+      <div class="alert-banner">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        {{ products.length }} producto(s) necesitan reposicion de stock
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoria</th>
+            <th>Stock Actual</th>
+            <th>Stock Minimo</th>
+            <th>Estado</th>
+            <th>Accion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="product in products" :key="product.id" :class="rowClass(product)">
+            <td>
+              <div class="product-name">{{ product.name }}</div>
+            </td>
+            <td>{{ product.categoryName || '—' }}</td>
+            <td>
+              <span class="stock-badge" :class="stockBadgeClass(product)">
+                {{ product.stock ?? 0 }} uds.
+              </span>
+            </td>
+            <td class="min-stock">{{ product.minStock ?? 5 }} uds.</td>
+            <td>
+              <span :class="['badge', product.stock === 0 ? 'badge-danger' : 'badge-warning']">
+                {{ product.stock === 0 ? 'Agotado' : 'Stock bajo' }}
+              </span>
+            </td>
+            <td>
+              <button @click="openRestock(product)" class="btn-restock">
+                <i class="bi bi-plus-lg"></i> Reponer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </AdminLayout>
+
+  <!-- Modal de reposicion -->
+  <Teleport to="body">
+    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-box modal-sm">
+        <div class="modal-header">
+          <h2><i class="bi bi-plus-circle"></i> Reponer Stock</h2>
+          <button @click="closeModal" class="modal-close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-product-name">{{ selectedProduct?.name }}</p>
+          <p class="modal-current-stock">
+            Stock actual: <strong :class="selectedProduct?.stock === 0 ? 'text-danger' : 'text-warning'">
+              {{ selectedProduct?.stock ?? 0 }} uds.
+            </strong>
+          </p>
+
+          <div class="form-group">
+            <label>Cantidad a agregar *</label>
+            <input
+              v-model.number="quantity"
+              type="number"
+              class="form-control"
+              min="1"
+              placeholder="Ej: 10"
+            />
+          </div>
+          <div class="form-group">
+            <label>Motivo</label>
+            <select v-model="reason" class="form-control">
+              <option value="Compra de mercancia">Compra de mercancia</option>
+              <option value="Devolucion de cliente">Devolucion de cliente</option>
+              <option value="Ajuste de inventario">Ajuste de inventario</option>
+            </select>
+          </div>
+
+          <div class="stock-preview preview-add">
+            <span>Nuevo stock:</span>
+            <strong>{{ (selectedProduct?.stock ?? 0) + (quantity || 0) }} uds.</strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="closeModal" class="btn-secondary">Cancelar</button>
+          <button @click="applyRestock" :disabled="saving" class="btn-primary">
+            <span v-if="saving"><i class="bi bi-hourglass-split"></i> Guardando...</span>
+            <span v-else><i class="bi bi-check-lg"></i> Confirmar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import AdminLayout from '@/components/AdminLayout.vue';
+import axiosConfig from '@/config/AxiosConfig.js';
+
+const products = ref([]);
+const loading = ref(false);
+const showModal = ref(false);
+const selectedProduct = ref(null);
+const quantity = ref(1);
+const reason = ref('Compra de mercancia');
+const saving = ref(false);
+
+function rowClass(product) {
+  return product.stock === 0 ? 'row-danger' : 'row-warning';
+}
+
+function stockBadgeClass(product) {
+  return product.stock === 0 ? 'stock-zero' : 'stock-low';
+}
+
+async function fetchProducts() {
+  loading.value = true;
+  try {
+    const res = await axiosConfig.doGet('/api/products/low-stock');
+    products.value = res.data.data || res.data || [];
+  } catch (e) {
+    console.error('Error cargando stock bajo:', e);
+    products.value = [];
+  } finally {
+    loading.value = false;
+  }
+}
+
+function openRestock(product) {
+  selectedProduct.value = product;
+  quantity.value = 1;
+  reason.value = 'Compra de mercancia';
+  showModal.value = true;
+}
+
+function closeModal() {
+  showModal.value = false;
+  selectedProduct.value = null;
+}
+
+async function applyRestock() {
+  if (!quantity.value || quantity.value < 1) {
+    alert('La cantidad debe ser al menos 1');
+    return;
+  }
+  saving.value = true;
+  try {
+    await axiosConfig.doPost('/api/inventory/movements', {
+      productId: selectedProduct.value.id,
+      quantity: quantity.value,
+      type: 'ENTRADA',
+      reason: reason.value
+    });
+    await fetchProducts();
+    closeModal();
+  } catch (e) {
+    alert('Error al reponer stock: ' + (e.response?.data?.message || e.message));
+  } finally {
+    saving.value = false;
+  }
+}
+
+onMounted(fetchProducts);
+</script>
+
+<style scoped>
+.alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 10px;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.row-danger { background: rgba(220, 38, 38, 0.03); }
+.row-warning { background: rgba(217, 119, 6, 0.03); }
+
+.product-name {
+  font-weight: 600;
+  color: #141413;
+}
+
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.stock-zero {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+.stock-low {
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+}
+
+.min-stock {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.btn-restock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  background: #860734;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-restock:hover {
+  background: #6a0529;
+}
+
+/* Modal */
+.modal-sm { max-width: 420px; }
+
+.modal-product-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #141413;
+  margin: 0 0 0.25rem;
+}
+
+.modal-current-stock {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 1.25rem;
+}
+
+.text-danger { color: #dc2626; }
+.text-warning { color: #d97706; }
+
+.stock-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+}
+
+.preview-add {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+
+.preview-add strong {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+</style>
