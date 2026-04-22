@@ -1,4 +1,5 @@
 <template>
+  <div>
   <AdminLayout title="Clientes" subtitle="Gestión de clientes registrados" icon="bi-people">
     <template #actions>
       <button @click="openCreate" class="btn-primary">
@@ -168,6 +169,7 @@
       </div>
     </div>
   </Teleport>
+  </div>
 </template>
 
 <script setup>

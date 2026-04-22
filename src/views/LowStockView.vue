@@ -1,4 +1,5 @@
 <template>
+  <div>
   <AdminLayout title="Stock Bajo" subtitle="Productos que necesitan reposicion" icon="bi-exclamation-triangle">
     <template #actions>
       <button @click="fetchProducts" class="btn-secondary">
@@ -115,12 +116,14 @@
       </div>
     </div>
   </Teleport>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
 import axiosConfig from '@/config/AxiosConfig.js';
+import { inventoryService } from '@/services/inventory.js';
 
 const products = ref([]);
 const loading = ref(false);
@@ -170,12 +173,7 @@ async function applyRestock() {
   }
   saving.value = true;
   try {
-    await axiosConfig.doPost('/api/inventory/movements', {
-      productId: selectedProduct.value.id,
-      quantity: quantity.value,
-      type: 'ENTRADA',
-      reason: reason.value
-    });
+    await inventoryService.addStock(selectedProduct.value.id, quantity.value, 'MANUAL', reason.value);
     await fetchProducts();
     closeModal();
   } catch (e) {
@@ -189,6 +187,95 @@ onMounted(fetchProducts);
 </script>
 
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e0d0e0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #860734;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0.25rem;
+}
+
+.modal-close:hover { color: #141413; }
+
+.modal-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0d0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-control {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0d0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus { border-color: #860734; }
+
 .alert-banner {
   display: flex;
   align-items: center;

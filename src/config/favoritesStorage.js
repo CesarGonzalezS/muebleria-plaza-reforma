@@ -8,7 +8,7 @@ async function addFavorite(product) {
     const db = await getDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
-    const item = { id: product.id, ...product, timestamp: Date.now() };
+    const item = JSON.parse(JSON.stringify({ id: product.id, ...product, timestamp: Date.now() }));
     return new Promise((resolve, reject) => {
       const req = store.put(item);
       req.onerror = () => reject(req.error);

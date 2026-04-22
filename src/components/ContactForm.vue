@@ -1,406 +1,466 @@
-¯»¿<template>
-    <main>
-        <!-- Formulario -->
-        <section class="contact-form-col">
-          <!-- Solo la parte del formulario mejorada -->
-            <h2><i class="fas fa-paper-plane"></i> Envíanos un mensaje</h2>
-            <form class="contact-form" @submit.prevent="handleSubmit" autocomplete="off">
-              <div class="form-group">
-                <label for="name"><i class="fas fa-user"></i> Nombre</label>
-                <input type="text" id="name" name="name" v-model="form.name" @blur="validateField('name')"
-                  :class="{ error: errors.name }" autocomplete="name" placeholder="Tu nombre completo" />
-                <span class="error-message" v-if="errors.name">{{ errors.name }}</span>
-              </div>
-
-              <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> Correo</label>
-                <input type="email" id="email" name="email" v-model="form.email" @blur="validateField('email')"
-                  :class="{ error: errors.email }" autocomplete="email" placeholder="tucorreo@ejemplo.com" />
-                <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
-              </div>
-
-              <div class="form-group">
-                <label for="phone"><i class="fas fa-phone"></i> Teléfono</label>
-                <input type="tel" id="phone" name="phone" v-model="form.phone" @blur="validateField('phone')"
-                  :class="{ error: errors.phone }" autocomplete="tel" placeholder="10 dígitos" />
-                <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
-              </div>
-
-              <div class="form-group">
-                <label for="message"><i class="fas fa-comment-alt"></i> Mensaje</label>
-                <textarea id="message" name="message" v-model="form.message" @blur="validateField('message')"
-                  :class="{ error: errors.message }" rows="4" placeholder="¿En qué podemos ayudarte?"></textarea>
-                <span class="error-message" v-if="errors.message">{{ errors.message }}</span>
-              </div>
-
-              <button type="submit" :disabled="isSubmitting">
-                {{ isSubmitting ? 'Enviando...' : 'Enviar mensaje' }}
-              </button>
-              <div class="form-note">
-                <i class="fas fa-shield-alt"></i> Tus datos están protegidos y no serán compartidos.
-              </div>
-            </form>
-
-          </section>
-
-    </main>
-
-    
-
-</template>
-
-<script setup>
-import { ref } from 'vue';
-
-const form = ref({
-  name: '',
-  email: '',
-  phone: '',
-  message: ''
-});
-
-const errors = ref({
-  name: '',
-  email: '',
-  phone: '',
-  message: ''
-});
-
-const isSubmitting = ref(false);
-
-const validateField = (field) => {
-  const value = form.value[field];
-  switch (field) {
-    case 'name':
-      errors.value.name = value.trim() === '' ? 'El nombre es requerido' : '';
-      break;
-    case 'email':
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      errors.value.email = !emailRegex.test(value) ? 'Correo inválido' : '';
-      break;
-    case 'phone':
-      const phoneRegex = /^[0-9]{10}$/;
-      errors.value.phone = !phoneRegex.test(value) ? 'Teléfono debe tener 10 dígitos' : '';
-      break;
-    case 'message':
-      errors.value.message = value.trim().length < 10 ? 'Mínimo 10 caracteres' : '';
-      break;
-  }
-};
-
-const handleSubmit = async () => {
-  Object.keys(form.value).forEach(field => validateField(field));
-  if (Object.values(errors.value).some(error => error !== '')) {
-    return;
-  }
-  isSubmitting.value = true;
-  try {
-    // Construir el mensaje para WhatsApp
-    const message = `Hola, mi nombre es ${form.value.name}. Mi correo es ${form.value.email}, mi teléfono es ${form.value.phone}. Quiero decir: ${form.value.message}`;
-    const encodedMessage = encodeURIComponent(message);
-    // Usar el enlace web de WhatsApp (evita intentar abrir el esquema nativo que falla en algunos navegadores)
-    const phoneNumber = '7341218621';
-    const webWhatsappLink = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
-
-    // Abrir en una nueva pestaña/ventana (más seguro en escritorio y móviles)
-    const newWin = window.open(webWhatsappLink, '_blank');
-    // Si el navegador bloquea popups, forzar la navegación en la misma ventana como fallback
-    if (!newWin) {
-      window.location.href = webWhatsappLink;
-    }
-  } catch (error) {
-    alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.');
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-</script>
-
-<style scoped>
-.contact-view {
-  background: #f6f6fb;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.contact-header {
-  background: linear-gradient(135deg, #860734 80%, #d59fa9 100%);
-  color: #fff;
-  text-align: center;
-  padding: 2.3rem 0 1.6rem;
-  border-radius: 0 0 2.2rem 2.2rem;
-  margin-bottom: 1.3rem;
-  box-shadow: 0 6px 36px #860733;
-}
-
-.contact-header h1 {
-  font-size: 2.25rem;
-  font-weight: 900;
-  margin-bottom: 0.7rem;
-}
-
-.contact-header p {
-  font-size: 1.07rem;
-  font-weight: 600;
-  margin-bottom: 0;
-  color: #fffde6;
-}
-
-.container {
-  width: 100%;
-  max-width: 1150px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.contact-main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-@media (max-width: 900px) {
-  .contact-main {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-/* --- Formulario --- */
-.contact-form-col {
-  border-radius: 1.4rem;
-  background: #ffffff !important;
-  box-shadow: 0 6px 28px #ff025a98;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 8rem;
-  padding: 2.5rem 2rem 2rem 2rem; /* Espaciado interno para separar el contenido del borde */
-  box-sizing: border-box;
-}
-
-@media (max-width: 900px) {
-  .contact-form-col {
-    margin-top: 4rem;
-    padding: 1.5rem 0.7rem 1.2rem 0.7rem; /* Menos padding en móvil */
-  }
-}
-
-input, textarea {
-  background: #fffdfa !important;
-  color: #fff8fe !important;
-}
-
-.contact-form-col h2 {
-  color: #a81552;
-  margin-bottom: 1.05rem;
-  font-size: 1.27rem;
-  font-weight: 800;
-}
-
-.contact-form {
-  width: 100%;
-  max-width: 900px; /* Aumentado para inputs más anchos */
-  margin: 0 auto;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.07rem;
-}
-
-
-.contact-form-col, .contact-form {
-  background: #ffffff !important;
-}
-.contact-form, .contact-form * {
-  background: transparent !important;
-}
-input, textarea, select, button {
-  background: #ffffff !important;
-  color: #22081e !important;
-}
-
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.18rem;
-}
-
-label {
-  color: #a81552;
-  font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 0.13rem;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 0.7em 1em;
-  border: 1.5px solid #ecd5e7;
-  border-radius: var(--r-card);
-  background: #faf6fa;
-  font-size: 1.07rem;
-  font-family: inherit;
-  transition: border-color 0.16s, box-shadow 0.15s;
-  box-sizing: border-box;
-  resize: vertical;
-}
-
-input:focus,
-textarea:focus {
-  border-color: #a81552;
-  outline: none;
-  background: var(--white);
-  box-shadow: 0 2px 9px #fffefe;
-}
-
-input.error,
-textarea.error {
-  border-color: #e94e77;
-  background: #fff0f3;
-}
-
-.error-message {
-  color: #e94e77;
-  font-size: 0.92em;
-  margin-top: 2px;
-  margin-bottom: 0;
-  min-height: 1em;
-}
-
-button[type="submit"] {
-  background: linear-gradient(90deg, #a81552 65%, #860734 100%);
-  color: #ff23146e;
-  font-weight: 700;
-  font-size: 1.09rem;
-  border: none;
-  border-radius: 22px;
-  padding: 0.82rem 0;
-  cursor: pointer;
-  margin-top: 0.3em;
-  transition: background 0.15s, color 0.13s, box-shadow 0.16s, transform 0.13s;
-  box-shadow: 0 2px 9px #963b3b;
-  width: 100%;
-}
-
-button[type="submit"]:hover:not(:disabled) {
-  background: linear-gradient(90deg, #d59fa9 5%, #a81552 80%);
-  color: #860734;
-  transform: translateY(-2px) scale(1.03);
-}
-
-button[type="submit"]:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
-  background: #c0b7be;
-}
-
-.form-note {
-  color: #a81552;
-  font-size: 1.07rem;
-  font-weight: 500;
-  margin-top: 0.3em;
-  min-height: 1em;
-}
-
-/* Responsive mejorado */
-@media (max-width: 768px) {
-  .contact-form-col {
-    margin-top: 2rem;
-    padding: 1.5rem 1rem;
-    border-radius: 16px;
-  }
-
-  .contact-form-col h2 {
-    font-size: 1.15rem;
-    margin-bottom: 0.9rem;
-  }
-
-  .contact-form {
-    gap: 0.9rem;
-  }
-
-  label {
-    font-size: 0.95rem;
-  }
-
-  input,
-  textarea {
-    font-size: 1rem;
-    padding: 0.6rem 0.85rem;
-  }
-
-  button[type="submit"] {
-    font-size: 1rem;
-    padding: 0.75rem 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .contact-form-col {
-    margin-top: 1rem;
-    padding: 1.2rem 0.75rem;
-    border-radius: 12px;
-  }
-
-  .contact-form-col h2 {
-    font-size: 1.05rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .contact-form {
-    gap: 0.8rem;
-  }
-
-  label {
-    font-size: 0.9rem;
-    margin-bottom: 0.1rem;
-  }
-
-  input,
-  textarea {
-    font-size: 0.95rem;
-    padding: 0.55rem 0.75rem;
-    border-radius: 6px;
-  }
-
-  textarea {
-    /* removed invalid CSS property 'rows' */
-  }
-
-  button[type="submit"] {
-    font-size: 0.95rem;
-    padding: 0.7rem 0;
-    border-radius: 18px;
-  }
-
-  .error-message {
-    font-size: 0.85rem;
-  }
-
-  .form-note {
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-  }
-}
-
-/* Fix box-sizing y elimina scroll lateral */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100vw;
-  max-width: 100vw;
-  overflow-x: hidden;
-  padding: 0;
-  margin: 0;
-}
-</style>
+<template>
+  <section class="form-card">
+    <!-- Success state -->
+    <div v-if="submitted" class="success-state">
+      <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h3>¡Mensaje enviado!</h3>
+      <p>Te redirigimos a WhatsApp para continuar la conversación.</p>
+      <button class="btn-secondary" @click="resetForm">Enviar otro mensaje</button>
+    </div>
+
+    <!-- Form -->
+    <template v-else>
+      <div class="form-header">
+        <div class="icon-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+        </div>
+        <div>
+          <h2>Envíanos un mensaje</h2>
+          <p class="form-subtitle">Te responderemos vía WhatsApp</p>
+        </div>
+      </div>
+
+      <form class="contact-form" @submit.prevent="handleSubmit" autocomplete="off" novalidate>
+        <div class="form-group">
+          <label for="name">Nombre completo</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            v-model="form.name"
+            @blur="validateField('name')"
+            :class="{ error: errors.name, valid: form.name && !errors.name }"
+            autocomplete="name"
+            placeholder="Tu nombre completo"
+          />
+          <span class="error-message" v-if="errors.name" role="alert">{{ errors.name }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            v-model="form.email"
+            @blur="validateField('email')"
+            :class="{ error: errors.email, valid: form.email && !errors.email }"
+            autocomplete="email"
+            placeholder="tucorreo@ejemplo.com"
+          />
+          <span class="error-message" v-if="errors.email" role="alert">{{ errors.email }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Teléfono</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            v-model="form.phone"
+            @blur="validateField('phone')"
+            :class="{ error: errors.phone, valid: form.phone && !errors.phone }"
+            autocomplete="tel"
+            placeholder="10 dígitos"
+          />
+          <span class="error-message" v-if="errors.phone" role="alert">{{ errors.phone }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Mensaje</label>
+          <textarea
+            id="message"
+            name="message"
+            v-model="form.message"
+            @blur="validateField('message')"
+            :class="{ error: errors.message, valid: form.message && !errors.message }"
+            rows="4"
+            placeholder="¿En qué podemos ayudarte?"
+          ></textarea>
+          <span class="error-message" v-if="errors.message" role="alert">{{ errors.message }}</span>
+        </div>
+
+        <button type="submit" class="btn-submit" :disabled="isSubmitting" :aria-busy="isSubmitting">
+          <span v-if="isSubmitting" class="btn-loading">
+            <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/>
+            </svg>
+            Enviando...
+          </span>
+          <span v-else class="btn-content">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+            </svg>
+            Enviar mensaje
+          </span>
+        </button>
+
+        <p class="form-note">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          Tus datos están protegidos
+        </p>
+      </form>
+    </template>
+  </section>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const form = ref({ name: '', email: '', phone: '', message: '' });
+const errors = ref({ name: '', email: '', phone: '', message: '' });
+const isSubmitting = ref(false);
+const submitted = ref(false);
+
+const validateField = (field) => {
+  const value = form.value[field];
+  switch (field) {
+    case 'name':
+      errors.value.name = value.trim() === '' ? 'El nombre es requerido' : '';
+      break;
+    case 'email':
+      errors.value.email = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Correo inválido' : '';
+      break;
+    case 'phone':
+      errors.value.phone = !/^[0-9]{10}$/.test(value) ? 'Debe tener 10 dígitos' : '';
+      break;
+    case 'message':
+      errors.value.message = value.trim().length < 10 ? 'Mínimo 10 caracteres' : '';
+      break;
+  }
+};
+
+const handleSubmit = async () => {
+  Object.keys(form.value).forEach(field => validateField(field));
+  if (Object.values(errors.value).some(e => e !== '')) return;
+
+  isSubmitting.value = true;
+  try {
+    const text = `Hola, mi nombre es ${form.value.name}. Mi correo es ${form.value.email}, mi teléfono es ${form.value.phone}. Quiero decir: ${form.value.message}`;
+    const url = `https://api.whatsapp.com/send?phone=7341218621&text=${encodeURIComponent(text)}`;
+    const win = window.open(url, '_blank');
+    if (!win) window.location.href = url;
+    submitted.value = true;
+  } catch {
+    alert('Error al enviar. Por favor inténtalo de nuevo.');
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const resetForm = () => {
+  form.value = { name: '', email: '', phone: '', message: '' };
+  errors.value = { name: '', email: '', phone: '', message: '' };
+  submitted.value = false;
+};
+</script>
+
+<style scoped>
+.form-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 1px 3px rgba(134, 7, 52, 0.08),
+    0 8px 32px rgba(134, 7, 52, 0.12);
+  border: 1px solid rgba(134, 7, 52, 0.08);
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header */
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.icon-wrap {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #860734, #a81552);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.icon-wrap svg {
+  width: 24px;
+  height: 24px;
+}
+
+.form-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a0a12;
+  margin: 0 0 0.15rem;
+  line-height: 1.3;
+}
+
+.form-subtitle {
+  font-size: 0.875rem;
+  color: #6b4055;
+  margin: 0;
+}
+
+/* Form groups */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3d1525;
+  letter-spacing: 0.01em;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #e2d4da;
+  border-radius: 0.625rem;
+  background: #fafafa;
+  color: #1a0a12;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  box-sizing: border-box;
+  resize: vertical;
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #b09aa6;
+}
+
+input:hover,
+textarea:hover {
+  border-color: #c4899e;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #860734;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(134, 7, 52, 0.1);
+}
+
+input.valid,
+textarea.valid {
+  border-color: #16a34a;
+}
+
+input.error,
+textarea.error {
+  border-color: #dc2626;
+  background: #fff8f8;
+}
+
+input.error:focus,
+textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.error-message {
+  font-size: 0.8125rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Submit button */
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: linear-gradient(135deg, #860734 0%, #a81552 100%);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(134, 7, 52, 0.35);
+  margin-top: 0.25rem;
+  letter-spacing: 0.01em;
+}
+
+.btn-submit svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-content,
+.btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-submit:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(134, 7, 52, 0.4);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-submit:focus-visible {
+  outline: 3px solid #860734;
+  outline-offset: 2px;
+}
+
+/* Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Privacy note */
+.form-note {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #6b4055;
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.form-note svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: #860734;
+}
+
+/* Success state */
+.success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0;
+  gap: 1rem;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #860734, #a81552);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.success-icon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.success-state h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a0a12;
+  margin: 0;
+}
+
+.success-state p {
+  font-size: 0.9375rem;
+  color: #6b4055;
+  margin: 0;
+  max-width: 280px;
+}
+
+.btn-secondary {
+  padding: 0.625rem 1.5rem;
+  border: 1.5px solid #860734;
+  background: transparent;
+  color: #860734;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #860734;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .form-card {
+    border-radius: 1.125rem;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .form-header h2 {
+    font-size: 1.125rem;
+  }
+
+  .icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .form-card {
+    padding: 1.25rem 1rem;
+    border-radius: 0.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  input, textarea, .btn-submit, .btn-secondary {
+    transition: none;
+  }
+  .spinner {
+    animation: none;
+  }
+}
+</style>
