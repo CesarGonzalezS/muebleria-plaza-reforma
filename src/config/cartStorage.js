@@ -8,15 +8,21 @@ const STORE_NAME = 'cart';
 
 async function initDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 2); // Version 2 to add cart store
+    const request = indexedDB.open(DB_NAME, 4);
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
-      // Create/update cart store
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-        store.createIndex('timestamp', 'timestamp', { unique: false });
+      if (!db.objectStoreNames.contains('cart')) {
+        const s = db.createObjectStore('cart', { keyPath: 'id' });
+        s.createIndex('timestamp', 'timestamp', { unique: false });
+      }
+      if (!db.objectStoreNames.contains('auth')) {
+        db.createObjectStore('auth');
+      }
+      if (!db.objectStoreNames.contains('favorites')) {
+        const s = db.createObjectStore('favorites', { keyPath: 'id' });
+        s.createIndex('timestamp', 'timestamp', { unique: false });
       }
     };
   });
