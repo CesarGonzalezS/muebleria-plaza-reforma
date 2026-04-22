@@ -66,6 +66,13 @@
             </button>
           </form>
 
+          <router-link to="/favoritos" class="navbar__fav-btn" title="Mis favoritos" aria-label="Mis favoritos">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span v-if="favStore.count" class="navbar__fav-badge">{{ favStore.count }}</span>
+          </router-link>
+
           <!-- Botón de Logout si está autenticado -->
           <button
             v-if="isAuthenticated"
@@ -107,6 +114,8 @@
 import { ref, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { authService } from '../services/auth';
+import { useFavoritesStore } from '../stores/favoritesStore';
+const favStore = useFavoritesStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -132,6 +141,7 @@ const nav = [
   { label: 'Inicio', to: '/', icon: 'bi bi-house-door-fill' },
   { label: 'Contacto', to: '/contacto', icon: 'bi bi-envelope-fill' },
 ];
+
 
 function handleSearch() {
   if (searchQuery.value.trim()) {
@@ -622,5 +632,42 @@ async function handleLogout() {
   .navbar__search-input {
     font-size: 0.875rem;
   }
+}
+
+.navbar__fav-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #141413;
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+
+.navbar__fav-btn:hover {
+  color: #860734;
+  background: rgba(134, 7, 52, 0.06);
+}
+
+.navbar__fav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  background: #860734;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
 }
 </style>

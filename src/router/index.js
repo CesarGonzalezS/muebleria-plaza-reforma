@@ -21,6 +21,7 @@ const LowStockView = () => import('../views/LowStockView.vue');
 const InventoryMovementsView = () => import('../views/InventoryMovementsView.vue');
 const InventoryAdjustView = () => import('../views/InventoryAdjustView.vue');
 const CartView = () => import('../views/CartView.vue');
+const FavoritesView = () => import('../views/FavoritesView.vue');
 const MyOrdersView = () => import('../views/MyOrdersView.vue');
 const OrderDetailView = () => import('../views/OrderDetailView.vue');
 const ReportsView = () => import('../views/ReportsView.vue');
@@ -49,6 +50,7 @@ const routes = [
   { path: '/inventory-movements/:productId', component: InventoryMovementsView, meta: { requiresAuth: true, title: 'Movimientos de Inventario' } },
   { path: '/inventory-adjust', component: InventoryAdjustView, meta: { requiresAuth: true, title: 'Ajustar Inventario' } },
   { path: '/cart', component: CartView, meta: { requiresAuth: true, title: 'Carrito de Compras' } },
+  { path: '/favoritos', component: FavoritesView, meta: { title: 'Mis Favoritos' } },
   { path: '/my-orders', component: MyOrdersView, meta: { requiresAuth: true, title: 'Mis Órdenes' } },
   { path: '/order-detail/:id', component: OrderDetailView, meta: { requiresAuth: true, title: 'Detalle de Orden' } },
   { path: '/reports', component: ReportsView, meta: { requiresAuth: true, title: 'Reportes' } },
