@@ -28,6 +28,7 @@ const ReportsView = () => import('../views/ReportsView.vue');
 const AdminOrdersView = () => import('../views/AdminOrdersView.vue');
 const AdminDashboard = () => import('../views/AdminDashboard.vue');
 const CustomersView = () => import('../views/CustomersView.vue');
+const AdminHomeSettingsView = () => import('../views/AdminHomeSettingsView.vue');
 const NotFound = () => import('../views/NotFound.vue');
 
 const routes = [
@@ -57,6 +58,7 @@ const routes = [
   { path: '/admin-orders', component: AdminOrdersView, meta: { requiresAuth: true, title: 'Gestión de Órdenes' } },
   { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, title: 'Panel de Administración' } },
   { path: '/customers', component: CustomersView, meta: { requiresAuth: true, title: 'Clientes' } },
+  { path: '/admin-home-settings', component: AdminHomeSettingsView, meta: { requiresAuth: true, title: 'Configurar Home' } },
   {
     path: '/productos/:categoria',
     name: 'Productos',

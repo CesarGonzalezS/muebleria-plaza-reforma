@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="split-slider" aria-label="Carrusel de imágenes promocionales">
     <div class="split-left">
       <div class="content-wrapper">
@@ -62,7 +62,7 @@
         class="nav-arrow next"
         @click="next"
         aria-label="Siguiente imagen"
-        :disabled="current === images.length - 1"
+        :disabled="current === props.images.length - 1"
       >
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -75,7 +75,7 @@
           :class="{ active: i === current }"
         >
           <img
-            :src="images[i]"
+            :src="props.images[i]"
             :alt="`Imagen promocional ${i + 1}`"
             :title="`Promoción ${i + 1}`"
             loading="lazy"
@@ -106,17 +106,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-const images = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80",
-];
+const props = defineProps({
+  images: {
+    type: Array,
+    default: () => [
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80',
+    ]
+  }
+});
 
-// índice reutilizable para iterar en plantillas y evitar advertencias del analizador
-const indices = images.map((_, i) => i);
+const indices = computed(() => props.images.map((_, i) => i));
 
 const current = ref(0);
 const progress = ref(0);
@@ -124,14 +128,14 @@ const isPlaying = ref(true);
 const loadedImages = ref(new Set());
 
 function goTo(i) {
-  if (i >= 0 && i < images.length) {
+  if (i >= 0 && i < props.images.length) {
     current.value = i;
     progress.value = 0;
   }
 }
 
 function next() {
-  if (current.value < images.length - 1) {
+  if (current.value < props.images.length - 1) {
     current.value++;
     progress.value = 0;
   }
@@ -188,7 +192,7 @@ function startAutoplay() {
   if (autoplayInterval) return;
 
   autoplayInterval = setInterval(() => {
-    if (current.value < images.length - 1) {
+    if (current.value < props.images.length - 1) {
       current.value++;
     } else {
       current.value = 0;

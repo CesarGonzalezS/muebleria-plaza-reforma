@@ -136,6 +136,32 @@ const stats = ref({
 
 const topProducts = ref([]);
 const recentOrders = ref([]);
+const customersMap = ref({});
+const productsMap = ref({});
+
+function normalizeOrder(order) {
+  const customer = order.customer || {};
+  const cId = order.customerId ?? customer.id;
+  const cached = customersMap.value[cId] || {};
+  const items = (order.items || order.orderItems || []).map(item => {
+    const product = item.product || {};
+    const pId = item.productId ?? product.id;
+    const cachedP = productsMap.value[pId] || {};
+    return {
+      ...item,
+      productId: pId,
+      productName: item.productName ?? product.name ?? cachedP.name ?? item.name,
+      price: item.price ?? item.unitPrice ?? product.price ?? cachedP.price ?? 0,
+      quantity: item.quantity ?? 1,
+    };
+  });
+  return {
+    ...order,
+    customerId: cId,
+    customerName: order.customerName ?? customer.name ?? cached.name,
+    items,
+  };
+}
 
 function formatNum(val) {
   return (val || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
@@ -159,14 +185,26 @@ function statusBadgeClass(status) {
 async function fetchAll() {
   loading.value = true;
   try {
-    const [ordersRes, lowStockRes] = await Promise.allSettled([
+    const [ordersRes, lowStockRes, customersRes, productsRes] = await Promise.allSettled([
       axiosConfig.doGet('/api/orders'),
-      axiosConfig.doGet('/api/products/low-stock')
+      axiosConfig.doGet('/api/products/low-stock'),
+      axiosConfig.doGet('/api/customers'),
+      axiosConfig.doGet('/api/products'),
     ]);
 
-    const orders = ordersRes.status === 'fulfilled'
+    if (customersRes.status === 'fulfilled') {
+      const list = customersRes.value.data.data || customersRes.value.data || [];
+      customersMap.value = Object.fromEntries(list.map(c => [c.id, c]));
+    }
+    if (productsRes.status === 'fulfilled') {
+      const list = productsRes.value.data.data || productsRes.value.data || [];
+      productsMap.value = Object.fromEntries(list.map(p => [p.id, p]));
+    }
+
+    const rawOrders = ordersRes.status === 'fulfilled'
       ? (ordersRes.value.data.data || ordersRes.value.data || [])
       : [];
+    const orders = rawOrders.map(normalizeOrder);
 
     const lowStock = lowStockRes.status === 'fulfilled'
       ? (lowStockRes.value.data.data || lowStockRes.value.data || [])

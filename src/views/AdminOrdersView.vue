@@ -188,6 +188,7 @@ const selectedStatus = ref('');
 const showNewSaleModal = ref(false);
 const savingOrder = ref(false);
 const products = ref([]);
+const customersMap = ref({});
 const customerSearch = ref('');
 const customerResults = ref([]);
 
@@ -237,16 +238,52 @@ function statusBadgeClass(status) {
   return map[status] || 'badge-secondary';
 }
 
+function normalizeOrder(order) {
+  const customer = order.customer || {};
+  const cId = order.customerId ?? customer.id;
+  const cachedCustomer = customersMap.value[cId] || {};
+  const items = (order.items || order.orderItems || []).map(item => {
+    const product = item.product || {};
+    const pId = item.productId ?? product.id;
+    const cachedProduct = products.value.find(p => p.id === pId) || {};
+    return {
+      ...item,
+      productId: pId,
+      productName: item.productName ?? product.name ?? cachedProduct.name ?? item.name,
+      unitPrice: item.unitPrice ?? item.price ?? product.price ?? cachedProduct.price,
+      price: item.price ?? item.unitPrice ?? product.price ?? cachedProduct.price,
+      quantity: item.quantity ?? 1,
+    };
+  });
+  return {
+    ...order,
+    customerId: cId,
+    customerName: order.customerName ?? customer.name ?? cachedCustomer.name,
+    customerPhone: order.customerPhone ?? customer.phone ?? cachedCustomer.phone,
+    items,
+  };
+}
+
 async function fetchOrders() {
   loading.value = true;
   error.value = '';
   try {
     const res = await axiosConfig.doGet('/api/orders');
-    orders.value = res.data.data || res.data || [];
+    orders.value = (res.data.data || res.data || []).map(normalizeOrder);
   } catch (e) {
     error.value = 'No se pudieron cargar las ventas';
   } finally {
     loading.value = false;
+  }
+}
+
+async function fetchCustomers() {
+  try {
+    const res = await axiosConfig.doGet('/api/customers');
+    const list = res.data.data || res.data || [];
+    customersMap.value = Object.fromEntries(list.map(c => [c.id, c]));
+  } catch (e) {
+    console.error('Error cargando clientes:', e);
   }
 }
 
@@ -324,10 +361,9 @@ async function createSale() {
       customerId,
       items: [{
         productId: newSale.value.productId,
-        quantity: newSale.value.quantity,
-        price: newSale.value.price
+        quantity: newSale.value.quantity
       }],
-      notes: newSale.value.notes
+      notes: newSale.value.notes || null
     };
 
     await axiosConfig.doPost('/api/orders', payload);
@@ -369,7 +405,9 @@ function downloadPDF(order) {
 }
 
 onMounted(async () => {
-  await Promise.all([fetchOrders(), fetchProducts()]);
+  // Customers y products primero para que normalizeOrder tenga datos de referencia
+  await Promise.all([fetchCustomers(), fetchProducts()]);
+  await fetchOrders();
 });
 </script>
 

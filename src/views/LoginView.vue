@@ -246,6 +246,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '../stores/main';
 import { authService } from '../services/auth';
+import { saveToken } from '../config/AxiosConfig';
 
 const email = ref('');
 const password = ref('');
@@ -272,22 +273,21 @@ async function handleLogin() {
     // Validar respuesta
     if (res.data.success && res.data.data?.accessToken) {
       const token = res.data.data.accessToken;
+      const userData = res.data.data.user || {};
+      const userRole = res.data.data.role || userData.role || '';
 
-      console.log("? TOKEN RECIBIDO:", token.substring(0, 20) + "...");
-      console.log("? TIPO:", typeof token);
-
-      // Guardar token y rol en localStorage
-      const userRole = res.data.data.role || '';
-      localStorage.setItem('accessToken', token);
-      localStorage.setItem('token', token);
+      // Guardar token en todos los almacenes (memoryStore, localStorage, IndexedDB)
+      await saveToken(token);
       localStorage.setItem('role', userRole);
-
-      // Guardar datos del usuario
-      if (res.data.data.user) {
-        localStorage.setItem('user', JSON.stringify(res.data.data.user));
+      if (userData && Object.keys(userData).length > 0) {
+        localStorage.setItem('user', JSON.stringify(userData));
       }
 
-      console.log("? LOGIN EXITOSO - Rol:", userRole, "- REDIRIGIENDO...");
+      // Actualizar store
+      await store.setAuth({
+        accessToken: token,
+        user: { ...userData, role: userRole }
+      });
 
       // Redirigir seg�n rol
       if (userRole === 'ADMIN') {

@@ -95,32 +95,39 @@ import CtaSection from '../components/CtaSection.vue';
 import MapSection from '../components/MapSection.vue';
 import { ref, onMounted } from 'vue';
 import { getFurniture } from '../services/furniture.js';
+import { homeSettingsService } from '../services/homeSettings.js';
 import Gallery from "@/components/assets/Gallery.vue";
 
-const carouselImages = [
+const DEFAULT_BANNERS = [
   '/assets/img/banner1.jpg',
   '/assets/img/banner2.jpg',
   '/assets/img/banner3.jpg'
 ];
-
-const galleryImages = [
+const DEFAULT_GALLERY = [
   '/assets/img/inspiracion1.jpg',
   '/assets/img/inspiracion2.jpg',
   '/assets/img/inspiracion3.jpg'
 ];
-
-const testimonialsList = [
-  {
-    name: 'Laura Gómez',
-    text: 'Excelente atención y muebles de calidad. Recomiendo mucho la tienda.',
-    img: '/assets/img/testimonios/laura.jpg'
-  },
-  {
-    name: 'Pedro Martínez',
-    text: 'Me encantó la variedad y el servicio postventa, ¡gracias!',
-    img: '/assets/img/testimonios/pedro.jpg'
-  }
+const DEFAULT_TESTIMONIALS = [
+  { name: 'Laura Gómez', text: 'Excelente atención y muebles de calidad. Recomiendo mucho la tienda.', img: '/assets/img/testimonios/laura.jpg' },
+  { name: 'Pedro Martínez', text: 'Me encantó la variedad y el servicio postventa, ¡gracias!', img: '/assets/img/testimonios/pedro.jpg' }
 ];
+
+const carouselImages = ref(DEFAULT_BANNERS);
+const galleryImages = ref(DEFAULT_GALLERY);
+const testimonialsList = ref(DEFAULT_TESTIMONIALS);
+
+async function fetchHomeSettings() {
+  try {
+    const res = await homeSettingsService.getSettings();
+    const data = res.data?.data || res.data || {};
+    if (data.banners?.length) carouselImages.value = data.banners;
+    if (data.gallery?.length) galleryImages.value = data.gallery;
+    if (data.testimonials?.length) testimonialsList.value = data.testimonials;
+  } catch {
+    // fallback to defaults silently
+  }
+}
 
 const featuredProducts = ref([]);
 const loadingFeatured = ref(false);
@@ -158,7 +165,10 @@ async function fetchFeaturedProducts() {
   }
 }
 
-onMounted(fetchFeaturedProducts);
+onMounted(() => {
+  fetchHomeSettings();
+  fetchFeaturedProducts();
+});
 
 const whatsAppUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20sobre%20los%20productos.";
 </script>

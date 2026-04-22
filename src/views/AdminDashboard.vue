@@ -47,6 +47,17 @@
         </div>
       </div>
 
+      <!-- Acceso rápido a configuración del Home -->
+      <div class="admin-card" style="margin-bottom:1.5rem;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+        <div>
+          <h3 style="margin:0 0 0.25rem;font-size:1rem;color:#860734;"><i class="bi bi-house-gear"></i> Configuración del Home</h3>
+          <p style="margin:0;font-size:0.85rem;color:#999;">Actualiza banners, galería de inspiración y testimonios del sitio público.</p>
+        </div>
+        <router-link to="/admin-home-settings" class="btn-primary" style="white-space:nowrap;text-decoration:none;">
+          <i class="bi bi-pencil-square"></i> Editar Home
+        </router-link>
+      </div>
+
       <!-- Sección de categorías -->
       <div class="admin-card categories-section">
         <div class="section-header">
