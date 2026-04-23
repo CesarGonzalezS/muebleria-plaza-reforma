@@ -314,6 +314,7 @@ async function deleteCategoryRequest(id) {
 
 async function handleFurnitureSuccess() {
   showForm.value = false;
+
   await fetchFurniture();
 }
 

@@ -84,14 +84,6 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="imageUrl">
-                      <i class="bi bi-link-45deg"></i>
-                      URL de imagen
-                    </label>
-                    <input id="imageUrl" v-model="formData.imageUrl" type="text" placeholder="https://... o sube un archivo abajo" />
-                  </div>
-
-                  <div class="form-group">
                     <label for="brand">
                       <i class="bi bi-award"></i>
                       Marca
@@ -138,14 +130,32 @@
                   <div class="form-section-images">
                     <h3>
                       <i class="bi bi-images"></i>
-                      Imagen del mueble
+                      Imágenes del mueble
+                      <span v-if="formData.imageUrls.length > 0" class="img-count">{{ formData.imageUrls.length }}/10</span>
                     </h3>
 
-                    <div v-if="formData.imageUrl" class="image-preview-current">
-                      <img :src="formData.imageUrl" alt="Imagen del mueble" />
-                      <button type="button" class="btn-remove-img" @click="formData.imageUrl = ''" title="Quitar imagen">
-                        <i class="bi bi-x-circle-fill"></i>
-                      </button>
+                    <div v-if="formData.imageUrl || formData.imageUrls.length > 0" class="image-preview-current">
+                      <img :src="formData.imageUrl || formData.imageUrls[0]" alt="Imagen principal" />
+                      <span class="primary-label"><i class="bi bi-star-fill"></i> Principal</span>
+                    </div>
+
+                    <div v-if="formData.imageUrls.length > 0" class="image-gallery-grid">
+                      <div
+                        v-for="(url, idx) in formData.imageUrls"
+                        :key="idx"
+                        class="gallery-thumb"
+                        :class="{ 'is-primary': url === formData.imageUrl }"
+                      >
+                        <img :src="url" :alt="`Imagen ${idx + 1}`" @click="formData.imageUrl = url" />
+                        <div class="thumb-actions">
+                          <button type="button" class="thumb-btn thumb-set-primary" v-if="url !== formData.imageUrl" @click="formData.imageUrl = url" title="Principal">
+                            <i class="bi bi-star"></i>
+                          </button>
+                          <button type="button" class="thumb-btn thumb-remove" @click="removeImage(idx)" title="Eliminar">
+                            <i class="bi bi-x"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div
@@ -157,16 +167,17 @@
                     >
                       <template v-if="isUploadingImage">
                         <i class="bi bi-arrow-repeat spin"></i>
-                        <p>Subiendo imagen...</p>
+                        <p>Subiendo imagen(es)...</p>
                       </template>
                       <template v-else>
                         <i class="bi bi-cloud-upload"></i>
-                        <p>Arrastra una imagen o haz clic para seleccionar</p>
-                        <span class="hint">JPG, PNG, WEBP · máx. 5 MB</span>
+                        <p>Arrastra imágenes o haz clic para seleccionar</p>
+                        <span class="hint">JPG, PNG, WEBP · máx. 5 MB · hasta 10 imágenes</span>
                       </template>
                       <input
                         type="file"
                         accept="image/*"
+                        multiple
                         ref="fileInput"
                         class="hidden-file-input"
                         @change="handleImageUpload"
@@ -228,6 +239,7 @@ const formData = ref({
   costPrice: 0,
   category_id: null,
   imageUrl: '',
+  imageUrls: [],
   images: [],
   stock: 0,
   minStock: 0,
@@ -266,6 +278,18 @@ watch(() => props.isOpen, (newVal) => {
         itemImages = [normalizedData.img_base64];
       }
       normalizedData.images = itemImages;
+      let imageUrls = [];
+      if (normalizedData.imageUrls && Array.isArray(normalizedData.imageUrls)) {
+        imageUrls = normalizedData.imageUrls.filter(Boolean);
+      } else if (normalizedData.product_images && Array.isArray(normalizedData.product_images)) {
+        imageUrls = normalizedData.product_images.map(img =>
+          typeof img === 'string' ? img : (img.url || img.img_base64 || '')
+        ).filter(Boolean);
+      }
+      if (imageUrls.length === 0 && normalizedData.imageUrl) {
+        imageUrls = [normalizedData.imageUrl];
+      }
+      normalizedData.imageUrls = imageUrls;
       formData.value = normalizedData;
     } else {
       resetForm();
@@ -277,7 +301,7 @@ watch(() => props.isOpen, (newVal) => {
 function resetForm() {
   formData.value = {
     id: null, name: '', description: '', price: 0, costPrice: 0,
-    category_id: null, imageUrl: '', images: [], stock: 0, minStock: 0,
+    category_id: null, imageUrl: '', imageUrls: [], images: [], stock: 0, minStock: 0,
     brand: '', color: '', material: '', dimensions: ''
   };
 }
@@ -324,7 +348,8 @@ async function handleSubmit() {
     stock: parseInt(formData.value.stock) || 0,
     minStock: parseInt(formData.value.minStock) || 0,
     categoryId: formData.value.category_id ? parseInt(formData.value.category_id) : undefined,
-    imageUrl: formData.value.imageUrl || (formData.value.images && formData.value.images[0]) || undefined,
+    imageUrl: formData.value.imageUrl || (formData.value.imageUrls && formData.value.imageUrls[0]) || (formData.value.images && formData.value.images[0]) || undefined,
+    imageUrls: formData.value.imageUrls?.length > 0 ? formData.value.imageUrls : undefined,
     brand: formData.value.brand || undefined,
     color: formData.value.color || undefined,
     material: formData.value.material || undefined,
@@ -353,54 +378,69 @@ async function handleSubmit() {
   }
 }
 
-async function uploadImageFile(file) {
-  if (!file.type.startsWith('image/')) {
-    imageErrors.value = [`${file.name} no es una imagen válida.`];
-    return;
-  }
-  if (file.size > maxFileSizeMB * 1024 * 1024) {
-    imageErrors.value = [`${file.name} supera el tamaño máximo de ${maxFileSizeMB} MB.`];
+async function uploadImageFiles(files) {
+  const errors = [];
+  const validFiles = Array.from(files).filter(f => {
+    if (!f.type.startsWith('image/')) { errors.push(`${f.name} no es imagen válida.`); return false; }
+    if (f.size > maxFileSizeMB * 1024 * 1024) { errors.push(`${f.name} supera ${maxFileSizeMB} MB.`); return false; }
+    return true;
+  });
+  if (errors.length) imageErrors.value = errors;
+  if (!validFiles.length) return;
+  const remaining = 10 - (formData.value.imageUrls?.length || 0);
+  if (remaining <= 0) {
+    imageErrors.value = ['Máximo 10 imágenes por producto.'];
     return;
   }
   imageErrors.value = [];
   isUploadingImage.value = true;
   try {
     const fd = new FormData();
-    fd.append('file', file);
+    validFiles.slice(0, remaining).forEach(f => fd.append('files', f));
     const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
-    const { data } = await axios.post('/api/images/upload', fd, {
+    const { data } = await axios.post('/api/images/upload-multiple', fd, {
       baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
       headers: {
         'Content-Type': 'multipart/form-data',
         ...(token ? { Authorization: `Bearer ${token}` } : {})
       }
     });
-    const url = data?.data || data?.url || data;
-    if (typeof url === 'string' && url.startsWith('http')) {
-      formData.value.imageUrl = url;
-      axiosConfig.ToastSuccess('Imagen subida', 'La imagen se subió correctamente');
+    const urls = Array.isArray(data?.data) ? data.data : [];
+    if (urls.length > 0) {
+      const newUrls = [...(formData.value.imageUrls || []), ...urls];
+      formData.value.imageUrls = newUrls;
+      if (!formData.value.imageUrl) formData.value.imageUrl = newUrls[0];
+      axiosConfig.ToastSuccess('Imágenes subidas', `${urls.length} imagen(es) subida(s)`);
     } else {
-      imageErrors.value = ['La respuesta del servidor no contiene una URL válida.'];
+      imageErrors.value = ['El servidor no devolvió URLs válidas.'];
     }
   } catch (err) {
-    console.error('Error al subir imagen:', err);
-    imageErrors.value = ['No se pudo subir la imagen. Verifica tu conexión o ingresa una URL manualmente.'];
+    console.error('Error al subir imágenes:', err);
+    imageErrors.value = ['No se pudieron subir las imágenes.'];
   } finally {
     isUploadingImage.value = false;
   }
 }
 
 async function handleImageUpload(e) {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  await uploadImageFile(file);
+  const files = e.target.files;
+  if (!files?.length) return;
+  await uploadImageFiles(files);
   e.target.value = '';
 }
 
 async function handleDrop(e) {
-  const file = e.dataTransfer.files?.[0];
-  if (!file) return;
-  await uploadImageFile(file);
+  const files = e.dataTransfer.files;
+  if (!files?.length) return;
+  await uploadImageFiles(files);
+}
+
+function removeImage(idx) {
+  const url = formData.value.imageUrls[idx];
+  formData.value.imageUrls.splice(idx, 1);
+  if (formData.value.imageUrl === url) {
+    formData.value.imageUrl = formData.value.imageUrls[0] || '';
+  }
 }
 </script>
 
@@ -706,6 +746,84 @@ async function handleDrop(e) {
 }
 .btn-primary:hover { opacity: 0.85; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.img-count {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--slate);
+  margin-left: 6px;
+}
+
+.primary-label {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(0,0,0,0.6);
+  color: #ffd700;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.image-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 6px;
+}
+
+.gallery-thumb {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--dust);
+  cursor: pointer;
+  aspect-ratio: 1;
+  transition: border-color 0.15s;
+}
+
+.gallery-thumb.is-primary { border-color: var(--ink); }
+
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumb-actions {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 3px;
+  padding: 4px;
+  background: rgba(0,0,0,0.4);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.gallery-thumb:hover .thumb-actions { opacity: 1; }
+
+.thumb-btn {
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.65rem;
+  color: var(--ink);
+  padding: 0;
+}
+
+.thumb-remove { color: #dc2626; }
 
 .modal-enter-active, .modal-leave-active { transition: opacity 0.2s; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }

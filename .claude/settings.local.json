@@ -30,7 +30,9 @@
       "Bash(python3 *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5175/)",
       "Bash(git checkout *)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(grep -E \"\\\\.\\(js|vue\\)$\")",
+      "Bash(xargs grep *)"
     ]
   }
 }

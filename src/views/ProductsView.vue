@@ -158,6 +158,11 @@
                       <span v-if="product.brand" class="product-brand">{{ product.brand }}</span>
                     </div>
                     <h3 class="product-name">{{ product.name }}</h3>
+                    <div v-if="product.color || product.material || product.dimensions" class="product-specs">
+                      <span v-if="product.color" class="spec-tag"><i class="bi bi-palette"></i> {{ product.color }}</span>
+                      <span v-if="product.material" class="spec-tag"><i class="bi bi-tree"></i> {{ product.material }}</span>
+                      <span v-if="product.dimensions" class="spec-tag"><i class="bi bi-rulers"></i> {{ product.dimensions }}</span>
+                    </div>
                     <div class="product-footer">
                       <span class="product-price">
                         ${{ product.price.toLocaleString('es-MX') }}
@@ -348,7 +353,10 @@ async function fetchProducts() {
         stock: item.stock ?? null,
         minStock: item.min_stock ?? item.minStock ?? 0,
         img: mainImage,
-        images: item.images || []
+        images: item.images || [],
+        color: item.color || '',
+        material: item.material || '',
+        dimensions: item.dimensions || ''
       };
     });
   } catch (error) {
@@ -835,6 +843,27 @@ function applyFilters() {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.product-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.spec-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.69rem;
+  color: #4a3440;
+  background: #f5eff5;
+  padding: 0.18rem 0.45rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.spec-tag i { font-size: 0.62rem; color: #860734; }
 
 .product-footer {
   display: flex;
