@@ -127,7 +127,7 @@ const whatsappUrl = "https://wa.me/7513960035?text=Hola,%20quiero%20informes%20s
   position: absolute;
   top: -120px;
   right: -120px;
-  width: 520px;
+  width: 50px;
   height: 520px;
   background: radial-gradient(circle, rgba(134, 7, 52, 0.07) 0%, transparent 70%);
   border-radius: 50%;

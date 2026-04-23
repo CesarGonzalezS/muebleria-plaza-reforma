@@ -251,6 +251,10 @@ watch(() => props.isOpen, (newVal) => {
       normalizedData.costPrice = normalizedData.costPrice || normalizedData.cost_price || 0;
       normalizedData.minStock = normalizedData.minStock || normalizedData.min_stock || 0;
       normalizedData.imageUrl = normalizedData.imageUrl || '';
+      normalizedData.brand = normalizedData.brand || normalizedData.brandName || '';
+      normalizedData.color = normalizedData.color || '';
+      normalizedData.material = normalizedData.material || '';
+      normalizedData.dimensions = normalizedData.dimensions || '';
       let itemImages = [];
       if (normalizedData.images && Array.isArray(normalizedData.images) && normalizedData.images.length > 0) {
         itemImages = normalizedData.images.map(img =>
@@ -321,6 +325,10 @@ async function handleSubmit() {
     minStock: parseInt(formData.value.minStock) || 0,
     categoryId: formData.value.category_id ? parseInt(formData.value.category_id) : undefined,
     imageUrl: formData.value.imageUrl || (formData.value.images && formData.value.images[0]) || undefined,
+    brand: formData.value.brand || undefined,
+    color: formData.value.color || undefined,
+    material: formData.value.material || undefined,
+    dimensions: formData.value.dimensions || undefined,
   };
   try {
     if (props.isEditing && formData.value.id) {

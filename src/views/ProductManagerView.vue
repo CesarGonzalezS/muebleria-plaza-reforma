@@ -1,4 +1,4 @@
-¯»¿<template>
+﻿¯»¿<template>
   <div class="product-manager-container">
     <div class="manager-header">
       <h1>
@@ -256,7 +256,17 @@ async function fetchProducts() {
 function editProduct(product) {
   isEditing.value = true;
   editingId.value = product.id;
-  form.value = { ...product };
+  form.value = {
+    name: product.name || '',
+    description: product.description || '',
+    price: product.price ?? null,
+    costPrice: product.costPrice ?? product.cost_price ?? null,
+    stock: product.stock ?? null,
+    minStock: product.minStock ?? product.min_stock ?? null,
+    imageUrl: product.imageUrl || product.image_url || '',
+    brandId: product.brandId ?? product.brand_id ?? '',
+    categoryId: product.categoryId ?? product.category_id ?? '',
+  };
   showFormModal.value = true;
 }
 

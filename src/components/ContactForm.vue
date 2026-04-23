@@ -27,19 +27,35 @@
       </div>
 
       <form class="contact-form" @submit.prevent="handleSubmit" autocomplete="off" novalidate>
-        <div class="form-group">
-          <label for="name">Nombre completo</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            v-model="form.name"
-            @blur="validateField('name')"
-            :class="{ error: errors.name, valid: form.name && !errors.name }"
-            autocomplete="name"
-            placeholder="Tu nombre completo"
-          />
-          <span class="error-message" v-if="errors.name" role="alert">{{ errors.name }}</span>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              v-model="form.name"
+              @blur="validateField('name')"
+              :class="{ error: errors.name, valid: form.name && !errors.name }"
+              autocomplete="name"
+              placeholder="Tu nombre"
+            />
+            <span class="error-message" v-if="errors.name" role="alert">{{ errors.name }}</span>
+          </div>
+          <div class="form-group">
+            <label for="phone">Teléfono</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              v-model="form.phone"
+              @blur="validateField('phone')"
+              :class="{ error: errors.phone, valid: form.phone && !errors.phone }"
+              autocomplete="tel"
+              placeholder="10 dígitos"
+            />
+            <span class="error-message" v-if="errors.phone" role="alert">{{ errors.phone }}</span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -55,21 +71,6 @@
             placeholder="tucorreo@ejemplo.com"
           />
           <span class="error-message" v-if="errors.email" role="alert">{{ errors.email }}</span>
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Teléfono</label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            v-model="form.phone"
-            @blur="validateField('phone')"
-            :class="{ error: errors.phone, valid: form.phone && !errors.phone }"
-            autocomplete="tel"
-            placeholder="10 dígitos"
-          />
-          <span class="error-message" v-if="errors.phone" role="alert">{{ errors.phone }}</span>
         </div>
 
         <div class="form-group">
@@ -166,61 +167,60 @@ const resetForm = () => {
 <style scoped>
 .form-card {
   background: #ffffff;
-  border-radius: 1.5rem;
-  padding: 2.5rem 2rem;
-  box-shadow:
-    0 1px 3px rgba(134, 7, 52, 0.08),
-    0 8px 32px rgba(134, 7, 52, 0.12);
-  border: 1px solid rgba(134, 7, 52, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(134, 7, 52, 0.05), 0 8px 32px rgba(134, 7, 52, 0.08);
+  border: 1px solid rgba(134, 7, 52, 0.07);
   max-width: 520px;
   width: 100%;
   margin: 0 auto;
 }
 
-/* Header */
 .form-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.875rem;
   margin-bottom: 1.75rem;
 }
 
 .icon-wrap {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #860734, #a81552);
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  background: rgba(134, 7, 52, 0.09);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #860734;
 }
 
-.icon-wrap svg {
-  width: 24px;
-  height: 24px;
-}
+.icon-wrap svg { width: 22px; height: 22px; }
 
 .form-header h2 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: #1a0a12;
+  color: #141413;
   margin: 0 0 0.15rem;
   line-height: 1.3;
 }
 
 .form-subtitle {
-  font-size: 0.875rem;
-  color: #6b4055;
+  font-size: 0.8125rem;
+  color: #696969;
   margin: 0;
 }
 
-/* Form groups */
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .form-group {
@@ -230,237 +230,159 @@ const resetForm = () => {
 }
 
 label {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: #3d1525;
+  color: #262627;
   letter-spacing: 0.01em;
 }
 
 input,
 textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1.5px solid #e2d4da;
-  border-radius: 0.625rem;
-  background: #fafafa;
-  color: #1a0a12;
+  padding: 0.6875rem 0.875rem;
+  border: 1.5px solid #E0DAD7;
+  border-radius: 10px;
+  background: #FAFAF9;
+  color: #141413;
   font-size: 0.9375rem;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
   box-sizing: border-box;
   resize: vertical;
   outline: none;
 }
 
 input::placeholder,
-textarea::placeholder {
-  color: #b09aa6;
-}
+textarea::placeholder { color: #B0A8A5; }
 
-input:hover,
-textarea:hover {
-  border-color: #c4899e;
-}
+input:hover, textarea:hover { border-color: #BBA8A0; }
 
-input:focus,
-textarea:focus {
+input:focus, textarea:focus {
   border-color: #860734;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(134, 7, 52, 0.1);
+  box-shadow: 0 0 0 3px rgba(134, 7, 52, 0.08);
 }
 
-input.valid,
-textarea.valid {
-  border-color: #16a34a;
-}
+input.valid, textarea.valid { border-color: #16a34a; }
 
-input.error,
-textarea.error {
-  border-color: #dc2626;
-  background: #fff8f8;
-}
+input.error, textarea.error { border-color: #dc2626; background: #fff9f9; }
 
-input.error:focus,
-textarea.error:focus {
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+input.error:focus, textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
 }
 
 .error-message {
-  font-size: 0.8125rem;
+  font-size: 0.78125rem;
   color: #dc2626;
   font-weight: 500;
 }
 
-/* Submit button */
 .btn-submit {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
-  padding: 0.875rem 1rem;
-  background: linear-gradient(135deg, #860734 0%, #a81552 100%);
+  padding: 0.8125rem 1rem;
+  background: #860734;
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 600;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px rgba(134, 7, 52, 0.35);
+  transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+  box-shadow: 0 4px 14px rgba(134, 7, 52, 0.28);
   margin-top: 0.25rem;
   letter-spacing: 0.01em;
 }
 
-.btn-submit svg {
-  width: 18px;
-  height: 18px;
-}
-
-.btn-content,
-.btn-loading {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+.btn-submit svg { width: 17px; height: 17px; }
+.btn-content, .btn-loading { display: flex; align-items: center; gap: 0.5rem; }
 
 .btn-submit:hover:not(:disabled) {
-  opacity: 0.92;
+  background: #9e0840;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(134, 7, 52, 0.4);
+  box-shadow: 0 6px 20px rgba(134, 7, 52, 0.36);
 }
 
-.btn-submit:active:not(:disabled) {
-  transform: translateY(0);
-}
+.btn-submit:active:not(:disabled) { transform: translateY(0); }
+.btn-submit:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.btn-submit:focus-visible { outline: 3px solid #860734; outline-offset: 2px; }
 
-.btn-submit:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-  box-shadow: none;
-}
+.spinner { width: 17px; height: 17px; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.btn-submit:focus-visible {
-  outline: 3px solid #860734;
-  outline-offset: 2px;
-}
-
-/* Spinner */
-.spinner {
-  width: 18px;
-  height: 18px;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Privacy note */
 .form-note {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  color: #6b4055;
-  font-size: 0.8125rem;
+  color: #696969;
+  font-size: 0.78125rem;
   margin: 0;
 }
 
-.form-note svg {
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
-  color: #860734;
-}
+.form-note svg { width: 14px; height: 14px; flex-shrink: 0; color: #860734; }
 
-/* Success state */
 .success-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 1rem 0;
+  padding: 1.5rem 0;
   gap: 1rem;
 }
 
 .success-icon {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #860734, #a81552);
+  width: 60px;
+  height: 60px;
+  background: rgba(134, 7, 52, 0.09);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #860734;
 }
 
-.success-icon svg {
-  width: 34px;
-  height: 34px;
-}
+.success-icon svg { width: 32px; height: 32px; }
 
 .success-state h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: #1a0a12;
+  color: #141413;
   margin: 0;
 }
 
 .success-state p {
   font-size: 0.9375rem;
-  color: #6b4055;
+  color: #696969;
   margin: 0;
-  max-width: 280px;
+  max-width: 260px;
+  line-height: 1.55;
 }
 
 .btn-secondary {
-  padding: 0.625rem 1.5rem;
+  padding: 0.6rem 1.5rem;
   border: 1.5px solid #860734;
   background: transparent;
   color: #860734;
   font-size: 0.875rem;
   font-weight: 600;
-  border-radius: 0.625rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.18s, color 0.18s;
 }
 
-.btn-secondary:hover {
-  background: #860734;
-  color: #fff;
-}
+.btn-secondary:hover { background: #860734; color: #fff; }
 
-/* Responsive */
+@media (max-width: 580px) { .form-row { grid-template-columns: 1fr; } }
+
 @media (max-width: 640px) {
-  .form-card {
-    border-radius: 1.125rem;
-    padding: 1.75rem 1.25rem;
-  }
-
-  .form-header h2 {
-    font-size: 1.125rem;
-  }
-
-  .icon-wrap {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-  }
-}
-
-@media (max-width: 400px) {
-  .form-card {
-    padding: 1.25rem 1rem;
-    border-radius: 0.875rem;
-  }
+  .form-card { border-radius: 14px; padding: 1.5rem 1.25rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  input, textarea, .btn-submit, .btn-secondary {
-    transition: none;
-  }
-  .spinner {
-    animation: none;
-  }
+  input, textarea, .btn-submit, .btn-secondary { transition: none; }
+  .spinner { animation: none; }
 }
 </style>

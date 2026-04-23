@@ -117,23 +117,34 @@ async function fetchProduct() {
     const res = await axiosConfig.doGet(`/api/products/${route.params.id}`);
     const item = res.data.data;
 
+    const resolveImage = (item) => {
+      if (item.imageUrl) return item.imageUrl;
+      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        const first = item.images[0];
+        return typeof first === 'string' ? first : (first.img_base64 || first.url || '');
+      }
+      return '';
+    };
+
+    const brandName = item.brandName || item.brand || '';
+    const categoryName = item.categoryName || item.category || '';
+
     product.value = {
       id: item.id,
       name: item.name,
       price: item.price || 0,
       inStock: (item.stock || 0) > 0,
       description: item.description || '',
-      imageUrl: item.imageUrl || '',
+      imageUrl: resolveImage(item),
       stock: item.stock || 0,
       features: [
-        item.brandName ? `Marca: ${item.brandName}` : null,
-        `Stock: ${item.stock || 0} unidades`,
-        item.categoryName ? `Categoría: ${item.categoryName}` : null
+        brandName ? `Marca: ${brandName}` : null,
+        categoryName ? `Categoría: ${categoryName}` : null,
+        `Disponibles: ${item.stock || 0} unidades`,
       ].filter(Boolean)
     };
 
-    // Usar la URL de imagen del backend
-    currentImage.value = item.imageUrl || '/assets/img/products/default.jpg';
+    currentImage.value = resolveImage(item) || '/assets/img/products/default.jpg';
   } catch (e) {
     error.value = 'No se pudo cargar el producto';
     console.error('Error:', e);
