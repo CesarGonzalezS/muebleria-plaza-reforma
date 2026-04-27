@@ -11,7 +11,7 @@
             <div class="header-icon">
               <i class="bi bi-question-circle"></i>
             </div>
-            <h1>¿Tienes dudas?</h1>
+            <h1>¿Tienes dudas?</h1>
             <p>Estamos aquí para ayudarte. Contáctanos por el medio que prefieras</p>
           </div>
         </div>

@@ -40,25 +40,30 @@
         </thead>
         <tbody>
           <tr v-for="product in products" :key="product.id" :class="rowClass(product)">
-            <td>
+            <td data-label="Producto">
               <div class="product-name">{{ product.name }}</div>
             </td>
-            <td>{{ product.categoryName || '—' }}</td>
-            <td>
+            <td data-label="Categoría">{{ product.categoryName || '—' }}</td>
+            <td data-label="Stock Actual">
               <span class="stock-badge" :class="stockBadgeClass(product)">
                 {{ product.stock ?? 0 }} uds.
               </span>
             </td>
-            <td class="min-stock">{{ product.minStock ?? 5 }} uds.</td>
-            <td>
+            <td data-label="Stock Mínimo" class="min-stock">{{ product.minStock ?? 5 }} uds.</td>
+            <td data-label="Estado">
               <span :class="['badge', product.stock === 0 ? 'badge-danger' : 'badge-warning']">
                 {{ product.stock === 0 ? 'Agotado' : 'Stock bajo' }}
               </span>
             </td>
-            <td>
-              <button @click="openRestock(product)" class="btn-restock">
-                <i class="bi bi-plus-lg"></i> Reponer
-              </button>
+            <td data-label="Acción">
+              <div class="action-btns">
+                <button @click="openRestock(product)" class="btn-restock">
+                  <i class="bi bi-plus-lg"></i> Reponer
+                </button>
+                <button @click="openReduce(product)" class="btn-reduce" :disabled="product.stock === 0">
+                  <i class="bi bi-dash-lg"></i> Reducir
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -66,7 +71,7 @@
     </div>
   </AdminLayout>
 
-  <!-- Modal de reposicion -->
+  <!-- Modal Reponer -->
   <Teleport to="body">
     <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal-box modal-sm">
@@ -81,16 +86,9 @@
               {{ selectedProduct?.stock ?? 0 }} uds.
             </strong>
           </p>
-
           <div class="form-group">
             <label>Cantidad a agregar *</label>
-            <input
-              v-model.number="quantity"
-              type="number"
-              class="form-control"
-              min="1"
-              placeholder="Ej: 10"
-            />
+            <input v-model.number="quantity" type="number" class="form-control" min="1" placeholder="Ej: 10" />
           </div>
           <div class="form-group">
             <label>Motivo</label>
@@ -100,7 +98,6 @@
               <option value="Ajuste de inventario">Ajuste de inventario</option>
             </select>
           </div>
-
           <div class="stock-preview preview-add">
             <span>Nuevo stock:</span>
             <strong>{{ (selectedProduct?.stock ?? 0) + (quantity || 0) }} uds.</strong>
@@ -116,30 +113,79 @@
       </div>
     </div>
   </Teleport>
+
+  <!-- Modal Reducir -->
+  <Teleport to="body">
+    <div v-if="showReduceModal" class="modal-overlay" @click.self="closeReduceModal">
+      <div class="modal-box modal-sm">
+        <div class="modal-header">
+          <h2 class="modal-title-reduce"><i class="bi bi-dash-circle"></i> Reducir Stock</h2>
+          <button @click="closeReduceModal" class="modal-close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-product-name">{{ selectedProduct?.name }}</p>
+          <p class="modal-current-stock">
+            Stock actual: <strong :class="selectedProduct?.stock === 0 ? 'text-danger' : 'text-warning'">
+              {{ selectedProduct?.stock ?? 0 }} uds.
+            </strong>
+          </p>
+          <div class="form-group">
+            <label>Cantidad a reducir *</label>
+            <input
+              v-model.number="quantity"
+              type="number"
+              class="form-control"
+              min="1"
+              :max="selectedProduct?.stock ?? 0"
+              placeholder="Ej: 5"
+            />
+          </div>
+          <div class="form-group">
+            <label>Motivo</label>
+            <select v-model="reason" class="form-control">
+              <option value="Merma">Merma</option>
+              <option value="Producto danado">Producto danado</option>
+              <option value="Ajuste de inventario">Ajuste de inventario</option>
+              <option value="Venta no registrada">Venta no registrada</option>
+            </select>
+          </div>
+          <div class="stock-preview preview-remove">
+            <span>Nuevo stock:</span>
+            <strong>{{ Math.max(0, (selectedProduct?.stock ?? 0) - (quantity || 0)) }} uds.</strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="closeReduceModal" class="btn-secondary">Cancelar</button>
+          <button @click="applyReduce" :disabled="saving" class="btn-danger">
+            <span v-if="saving"><i class="bi bi-hourglass-split"></i> Guardando...</span>
+            <span v-else><i class="bi bi-check-lg"></i> Confirmar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import Swal from 'sweetalert2';
 import AdminLayout from '@/components/AdminLayout.vue';
 import axiosConfig from '@/config/AxiosConfig.js';
 import { inventoryService } from '@/services/inventory.js';
 
 const products = ref([]);
 const loading = ref(false);
-const showModal = ref(false);
+const saving = ref(false);
 const selectedProduct = ref(null);
 const quantity = ref(1);
 const reason = ref('Compra de mercancia');
-const saving = ref(false);
 
-function rowClass(product) {
-  return product.stock === 0 ? 'row-danger' : 'row-warning';
-}
+const showModal = ref(false);
+const showReduceModal = ref(false);
 
-function stockBadgeClass(product) {
-  return product.stock === 0 ? 'stock-zero' : 'stock-low';
-}
+function rowClass(p) { return p.stock === 0 ? 'row-danger' : 'row-warning'; }
+function stockBadgeClass(p) { return p.stock === 0 ? 'stock-zero' : 'stock-low'; }
 
 async function fetchProducts() {
   loading.value = true;
@@ -166,18 +212,54 @@ function closeModal() {
   selectedProduct.value = null;
 }
 
+function openReduce(product) {
+  selectedProduct.value = product;
+  quantity.value = 1;
+  reason.value = 'Merma';
+  showReduceModal.value = true;
+}
+
+function closeReduceModal() {
+  showReduceModal.value = false;
+  selectedProduct.value = null;
+}
+
 async function applyRestock() {
   if (!quantity.value || quantity.value < 1) {
-    alert('La cantidad debe ser al menos 1');
+    Swal.fire({ icon: 'warning', title: 'Cantidad inválida', text: 'La cantidad debe ser al menos 1', confirmButtonColor: '#860734' });
     return;
   }
   saving.value = true;
   try {
     await inventoryService.addStock(selectedProduct.value.id, quantity.value, 'MANUAL', reason.value);
-    await fetchProducts();
     closeModal();
+    await fetchProducts();
+    Swal.fire({ icon: 'success', title: 'Stock repuesto', text: `Se agregaron ${quantity.value} unidades correctamente.`, timer: 2000, showConfirmButton: false });
   } catch (e) {
-    alert('Error al reponer stock: ' + (e.response?.data?.message || e.message));
+    Swal.fire({ icon: 'error', title: 'Error', text: e.response?.data?.message || e.message || 'No se pudo reponer el stock', confirmButtonColor: '#860734' });
+  } finally {
+    saving.value = false;
+  }
+}
+
+async function applyReduce() {
+  const currentStock = selectedProduct.value?.stock ?? 0;
+  if (!quantity.value || quantity.value < 1) {
+    Swal.fire({ icon: 'warning', title: 'Cantidad inválida', text: 'La cantidad debe ser al menos 1', confirmButtonColor: '#860734' });
+    return;
+  }
+  if (quantity.value > currentStock) {
+    Swal.fire({ icon: 'warning', title: 'Stock insuficiente', text: `No puedes reducir más de ${currentStock} unidades`, confirmButtonColor: '#860734' });
+    return;
+  }
+  saving.value = true;
+  try {
+    await inventoryService.removeStock(selectedProduct.value.id, quantity.value, reason.value);
+    closeReduceModal();
+    await fetchProducts();
+    Swal.fire({ icon: 'success', title: 'Stock reducido', text: `Se quitaron ${quantity.value} unidades correctamente.`, timer: 2000, showConfirmButton: false });
+  } catch (e) {
+    Swal.fire({ icon: 'error', title: 'Error', text: e.response?.data?.message || e.message || 'No se pudo reducir el stock', confirmButtonColor: '#860734' });
   } finally {
     saving.value = false;
   }
@@ -322,24 +404,39 @@ onMounted(fetchProducts);
   font-size: 0.9rem;
 }
 
-.btn-restock {
+.action-btns {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.btn-restock,
+.btn-reduce {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.9rem;
-  background: #860734;
-  color: white;
+  padding: 0.4rem 0.75rem;
   border: none;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  white-space: nowrap;
 }
 
-.btn-restock:hover {
-  background: #6a0529;
+.btn-restock {
+  background: #860734;
+  color: white;
 }
+.btn-restock:hover { background: #6a0529; }
+
+.btn-reduce {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.btn-reduce:hover:not(:disabled) { background: #fecaca; }
+.btn-reduce:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* Modal */
 .modal-sm { max-width: 420px; }
@@ -377,5 +474,134 @@ onMounted(fetchProducts);
 .preview-add strong {
   font-size: 1.4rem;
   font-weight: 800;
+}
+
+.preview-remove {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}
+
+.preview-remove strong {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.modal-title-reduce { color: #dc2626; }
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-danger:hover:not(:disabled) { background: #b91c1c; }
+.btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  /* Table → card layout */
+  .admin-table-wrap {
+    overflow-x: visible;
+  }
+
+  .admin-table thead {
+    display: none;
+  }
+
+  .admin-table tbody,
+  .admin-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-table tr {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(134, 7, 52, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .row-danger { border-left: 3px solid #dc2626; }
+  .row-warning { border-left: 3px solid #d97706; }
+
+  .admin-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border: none;
+    font-size: 0.875rem;
+    gap: 0.5rem;
+  }
+
+  .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    min-width: 90px;
+  }
+
+  .admin-table td[data-label="Acción"] {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 0.6rem;
+    margin-top: 0.25rem;
+    border-top: 1px solid #f0e8f0;
+  }
+
+  .admin-table td[data-label="Acción"]::before {
+    display: none;
+  }
+
+  .action-btns {
+    width: 100%;
+  }
+
+  .btn-restock,
+  .btn-reduce {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Modals on mobile */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-box,
+  .modal-sm {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .alert-banner {
+    font-size: 0.82rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-body,
+  .modal-header,
+  .modal-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 </style>

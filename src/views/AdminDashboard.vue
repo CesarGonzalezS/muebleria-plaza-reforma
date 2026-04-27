@@ -122,7 +122,7 @@
               <td>
                 <span :class="['badge', getStockBadgeClass(item.stock)]">{{ item.stock }}</span>
               </td>
-              <td>{{ item.brandName || item.brand || '-' }}</td>
+              <td>{{ item.brandName || item.brand_name || (typeof item.brand === 'object' ? item.brand?.name : item.brand) || '-' }}</td>
               <td>
                 <span class="color-dot" :style="{ background: item.color || '#ccc' }"></span>
                 {{ item.color || '-' }}
@@ -161,9 +161,11 @@
       :is-editing="isEditing"
       :furniture-data="form"
       :categories="categories"
+      :brands="brands"
       @close="showForm = false"
       @success="handleFurnitureSuccess"
       @open-category-form="openCreateCategory"
+      @brand-created="(b) => { brands.push(b); fetchBrands(); }"
     />
 
     <!-- Modal Categoría -->
@@ -179,9 +181,11 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
+import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import axiosConfig from '../config/AxiosConfig.js';
 import * as categoriesService from '../services/categories';
+import { brandsService } from '../services/brands';
 import FurnitureFormModal from '../components/FurnitureFormModal.vue';
 import CategoryFormModal from '../components/CategoryFormModal.vue';
 import AdminLayout from '../components/AdminLayout.vue';
@@ -207,6 +211,7 @@ const form = reactive({
 });
 
 const categories = ref([]);
+const brands = ref([]);
 const activeProducts = computed(() => furnitureList.value.length);
 const criticalStock = computed(() => {
   return furnitureList.value.filter(item => {
@@ -230,6 +235,16 @@ async function fetchCategories() {
   }
 }
 
+async function fetchBrands() {
+  try {
+    const res = await brandsService.getBrands();
+    const data = res.data?.data || res.data || [];
+    brands.value = Array.isArray(data) ? data : [];
+  } catch {
+    brands.value = [];
+  }
+}
+
 async function fetchFurniture() {
   loading.value = true;
   try {
@@ -245,7 +260,7 @@ async function fetchFurniture() {
 
 async function openCreateForm() {
   isEditing.value = false;
-  await fetchCategories();
+  await Promise.all([fetchCategories(), fetchBrands()]);
   Object.assign(form, {
     id: null, name: '', description: '', price: 0,
     category_id: null, images: [], stock: 0,
@@ -292,9 +307,18 @@ async function handleCategorySuccess() {
   await fetchCategories();
 }
 
-function confirmDeleteCategory(cat) {
-  if (!confirm(`Eliminar la categoría "${cat.name}"?`)) return;
-  deleteCategoryRequest(cat.id);
+async function confirmDeleteCategory(cat) {
+  const result = await Swal.fire({
+    icon: 'warning',
+    title: '¿Eliminar categoría?',
+    text: `Se eliminará "${cat.name}" permanentemente.`,
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280'
+  });
+  if (result.isConfirmed) deleteCategoryRequest(cat.id);
 }
 
 async function deleteCategoryRequest(id) {
@@ -319,19 +343,31 @@ async function handleFurnitureSuccess() {
 }
 
 async function deleteFurniture(id) {
-  if (!confirm('¿Seguro que deseas eliminar este mueble?')) return;
+  const result = await Swal.fire({
+    icon: 'warning',
+    title: '¿Eliminar mueble?',
+    text: 'Esta acción no se puede deshacer.',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280'
+  });
+  if (!result.isConfirmed) return;
   try {
     await axiosConfig.doDelete(`/api/products/${id}`);
     axiosConfig.ToastSuccess('Éxito', 'Mueble eliminado correctamente.');
     fetchFurniture();
   } catch (e) {
     console.error('Error al eliminar:', e);
+    axiosConfig.ToastError('Error', 'No se pudo eliminar el mueble.');
   }
 }
 
 onMounted(() => {
   fetchFurniture();
   fetchCategories();
+  fetchBrands();
 });
 
 function getCategoryLabel(value) {

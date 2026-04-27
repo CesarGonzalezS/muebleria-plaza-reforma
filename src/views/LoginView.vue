@@ -1,16 +1,16 @@
 ?<template>
   <div class="login-container">
 
-    <!-- Logo o Título principal -->
-    <div class="login-brand" v-if="!resetStep">
+    <!-- Logo -->
+    <div class="login-brand">
       <div class="brand-icon">
         <i class="bi bi-shop"></i>
       </div>
       <h1>Mueblería Plaza Reforma</h1>
-      <p>Panel de Administración</p>
+      <p>Inicia sesión para continuar</p>
     </div>
 
-    <form v-if="!resetStep" class="login-form" @submit.prevent="handleLogin">
+    <form class="login-form" @submit.prevent="handleLogin">
       <div class="form-header">
         <h2>Iniciar sesión</h2>
         <p>Ingresa tus credenciales para continuar</p>
@@ -42,7 +42,7 @@
               v-model="password"
               id="password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="�?��?��?��?��?��?��?��?�"
+              placeholder="Contraseña"
               required
               autocomplete="current-password"
             />
@@ -75,7 +75,7 @@
           </span>
         </button>
 
-        <button type="button" class="reset-password-btn" @click="startResetPassword">
+        <button type="button" class="reset-password-btn" @click="router.push('/forgot-password')">
           <i class="bi bi-question-circle"></i>
           ¿Olvidaste tu contraseña?
         </button>
@@ -83,159 +83,6 @@
         <div class="register-link">
           ¿No tienes cuenta? <router-link to="/register">Regístrate aquí</router-link>
         </div>
-      </div>
-    </form>
-
-    <form v-else-if="resetStep === 1" class="login-form" @submit.prevent="requestReset">
-      <button type="button" class="back-btn" @click="resetStep = 0">
-        <i class="bi bi-arrow-left"></i>
-      </button>
-
-      <div class="form-header">
-        <div class="icon-circle">
-          <i class="bi bi-key"></i>
-        </div>
-        <h2>Restablecer contraseña</h2>
-        <p>Ingresa tu correo para recibir el código</p>
-      </div>
-
-      <div class="form-body">
-        <div class="form-group">
-          <label for="reset-email">
-            <i class="bi bi-envelope"></i>
-            Correo electrónico
-          </label>
-          <input
-            v-model="email"
-            id="reset-email"
-            type="email"
-            placeholder="tu@email.com"
-            required
-          />
-        </div>
-
-        <Transition name="error">
-          <div v-if="error" class="login-error">
-            <i class="bi bi-exclamation-circle"></i>
-            {{ error }}
-          </div>
-        </Transition>
-
-        <button type="submit" class="btn-primary" :disabled="loading">
-          <span v-if="!loading">
-            <i class="bi bi-send"></i>
-            Enviar código
-          </span>
-          <span v-else class="loading-spinner">
-            <i class="bi bi-arrow-repeat spin"></i>
-            Enviando...
-          </span>
-        </button>
-      </div>
-    </form>
-
-    <form v-else-if="resetStep === 2" class="login-form" @submit.prevent="verifyCode">
-      <button type="button" class="back-btn" @click="resetStep = 1">
-        <i class="bi bi-arrow-left"></i>
-      </button>
-
-      <div class="form-header">
-        <div class="icon-circle">
-          <i class="bi bi-shield-check"></i>
-        </div>
-        <h2>Verificar código</h2>
-        <p>Revisa tu correo e ingresa el código</p>
-      </div>
-
-      <div class="form-body">
-        <div class="form-group">
-          <label for="code">
-            <i class="bi bi-123"></i>
-            Código de verificación
-          </label>
-          <input
-            v-model="code"
-            id="code"
-            type="text"
-            placeholder="000000"
-            required
-            class="code-input"
-          />
-        </div>
-
-        <Transition name="error">
-          <div v-if="error" class="login-error">
-            <i class="bi bi-exclamation-circle"></i>
-            {{ error }}
-          </div>
-        </Transition>
-
-        <button type="submit" class="btn-primary" :disabled="loading">
-          <span v-if="!loading">
-            <i class="bi bi-check-circle"></i>
-            Verificar
-          </span>
-          <span v-else class="loading-spinner">
-            <i class="bi bi-arrow-repeat spin"></i>
-            Verificando...
-          </span>
-        </button>
-      </div>
-    </form>
-
-    <form v-else-if="resetStep === 3" class="login-form" @submit.prevent="resetPassword">
-      <div class="form-header">
-        <div class="icon-circle success">
-          <i class="bi bi-lock-fill"></i>
-        </div>
-        <h2>Nueva contraseña</h2>
-        <p>Crea una contraseña segura</p>
-      </div>
-
-      <div class="form-body">
-        <div class="form-group">
-          <label for="new-password">
-            <i class="bi bi-shield-lock"></i>
-            Nueva contraseña
-          </label>
-          <div class="password-wrapper">
-            <input
-              v-model="newPassword"
-              id="new-password"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="�?��?��?��?��?��?��?��?�"
-              required
-              minlength="6"
-            />
-            <button
-              type="button"
-              class="toggle-password"
-              @click="showPassword = !showPassword"
-              tabindex="-1"
-            >
-              <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-            </button>
-          </div>
-          <small class="help-text">Mínimo 6 caracteres</small>
-        </div>
-
-        <Transition name="error">
-          <div v-if="error" class="login-error">
-            <i class="bi bi-exclamation-circle"></i>
-            {{ error }}
-          </div>
-        </Transition>
-
-        <button type="submit" class="btn-primary" :disabled="loading">
-          <span v-if="!loading">
-            <i class="bi bi-check-circle"></i>
-            Restablecer
-          </span>
-          <span v-else class="loading-spinner">
-            <i class="bi bi-arrow-repeat spin"></i>
-            Procesando...
-          </span>
-        </button>
       </div>
     </form>
   </div>
@@ -250,11 +97,8 @@ import { saveToken } from '../config/AxiosConfig';
 
 const email = ref('');
 const password = ref('');
-const code = ref('');
-const newPassword = ref('');
 const error = ref('');
 const loading = ref(false);
-const resetStep = ref(0);
 const showPassword = ref(false);
 const router = useRouter();
 const store = useMainStore();
@@ -297,7 +141,7 @@ async function handleLogin() {
       }
 
     } else {
-      error.value = 'Respuesta inv�lida del servidor';
+      error.value = 'Respuesta invalida del servidor';
       console.error("? RESPUESTA SIN SUCCESS O TOKEN");
     }
 
@@ -309,54 +153,6 @@ async function handleLogin() {
   }
 }
 
-function handleForgotPassword() {
-  router.push('/forgot-password');
-}
-
-function startResetPassword() {
-  resetStep.value = 1;
-  error.value = '';
-}
-
-async function requestReset() {
-  error.value = '';
-  loading.value = true;
-  try {
-    await axios.doPost('/request-reset', { email: email.value });
-    resetStep.value = 2;
-  } catch (e) {
-    error.value = 'Error al enviar el código de verificación';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function verifyCode() {
-  error.value = '';
-  loading.value = true;
-  try {
-    await axios.doPost('/verify-code', { email: email.value, code: code.value });
-    resetStep.value = 3;
-  } catch (e) {
-    error.value = 'Código de verificación incorrecto';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function resetPassword() {
-  error.value = '';
-  loading.value = true;
-  try {
-    await axios.doPost('/reset-password', { email: email.value, code: code.value, new_password: newPassword.value });
-    resetStep.value = 0;
-    alert('Contraseña restablecida con éxito');
-  } catch (e) {
-    error.value = 'Error al restablecer la contraseña';
-  } finally {
-    loading.value = false;
-  }
-}
 </script>
 
 <style scoped>

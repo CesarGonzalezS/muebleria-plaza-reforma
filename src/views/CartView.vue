@@ -1,5 +1,7 @@
 <template>
-  <div class="cart-container">
+  <div class="cart-page">
+    <Navbar />
+    <div class="cart-container">
     <h1>Carrito de Compras</h1>
 
     <!-- Carrito vacío -->
@@ -92,13 +94,16 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 import { useMainStore } from '../stores/main';
 import { orderService } from '../services/orders';
+import Navbar from '../components/Navbar.vue';
 
 const store = useMainStore();
 const router = useRouter();
@@ -144,7 +149,17 @@ async function removeItem(productId) {
 }
 
 async function handleClearCart() {
-  if (confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
+  const result = await Swal.fire({
+    icon: 'warning',
+    title: '¿Limpiar carrito?',
+    text: 'Se eliminarán todos los productos del carrito.',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, limpiar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280'
+  });
+  if (result.isConfirmed) {
     await store.clearCart();
     shippingAddress.value = '';
   }
@@ -201,6 +216,11 @@ function formatPrice(price) {
 </script>
 
 <style scoped>
+.cart-page {
+  min-height: 100vh;
+  background: #faf7f4;
+}
+
 .cart-container {
   max-width: 1200px;
   margin: 0 auto;

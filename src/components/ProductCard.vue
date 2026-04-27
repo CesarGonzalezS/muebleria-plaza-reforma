@@ -162,4 +162,19 @@ function handleClick(event) {
   right: 8px;
   z-index: 2;
 }
+
+@media (hover: none) {
+  .product-card:hover {
+    transform: none;
+    box-shadow: 0 2px 12px rgba(134, 7, 52, 0.07);
+  }
+  .product-overlay { display: none; }
+  .product-card:hover .product-image { transform: none; }
+}
+
+@media (max-width: 480px) {
+  .product-info { padding: 0.75rem 0.875rem 1rem; }
+  .product-name { font-size: 0.88rem; }
+  .price { font-size: 1rem; }
+}
 </style>

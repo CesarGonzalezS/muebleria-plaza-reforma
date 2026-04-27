@@ -13,6 +13,26 @@
       </button>
     </template>
 
+    <!-- Stats -->
+    <div class="inv-stats" v-if="!loading">
+      <div class="inv-stat">
+        <span class="inv-stat__value">{{ products.length }}</span>
+        <span class="inv-stat__label">Total productos</span>
+      </div>
+      <div class="inv-stat inv-stat--ok">
+        <span class="inv-stat__value">{{ statsInStock }}</span>
+        <span class="inv-stat__label">En stock</span>
+      </div>
+      <div class="inv-stat inv-stat--warn">
+        <span class="inv-stat__value">{{ statsLowStock }}</span>
+        <span class="inv-stat__label">Stock bajo</span>
+      </div>
+      <div class="inv-stat inv-stat--danger">
+        <span class="inv-stat__value">{{ statsOutOfStock }}</span>
+        <span class="inv-stat__label">Agotados</span>
+      </div>
+    </div>
+
     <!-- Loading -->
     <div v-if="loading" class="admin-loading">
       <div class="admin-spinner"></div>
@@ -33,22 +53,22 @@
         </thead>
         <tbody>
           <tr v-for="product in filteredProducts" :key="product.id">
-            <td>
+            <td data-label="Producto">
               <div class="product-name">{{ product.name }}</div>
               <div class="product-sku" v-if="product.sku">SKU: {{ product.sku }}</div>
             </td>
-            <td>{{ product.categoryName || '—' }}</td>
-            <td>
+            <td data-label="Categoría">{{ product.categoryName || '—' }}</td>
+            <td data-label="Stock actual">
               <span class="stock-number" :class="stockClass(product)">
-                {{ product.stock ?? 0 }}
+                {{ product.stock ?? 0 }} uds.
               </span>
             </td>
-            <td>
+            <td data-label="Estado">
               <span :class="['badge', stockBadgeClass(product)]">
                 {{ stockLabel(product) }}
               </span>
             </td>
-            <td class="actions-cell">
+            <td data-label="Acciones" class="actions-cell">
               <button @click="openModal(product, 'add')" class="btn-icon btn-success" title="Agregar stock">
                 <i class="bi bi-plus-lg"></i>
               </button>
@@ -156,6 +176,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import Swal from 'sweetalert2';
 import AdminLayout from '@/components/AdminLayout.vue';
 import axiosConfig from '@/config/AxiosConfig.js';
 import { inventoryService } from '@/services/inventory.js';
@@ -180,6 +201,10 @@ const filteredProducts = computed(() => {
     p.sku?.toLowerCase().includes(q)
   );
 });
+
+const statsInStock  = computed(() => products.value.filter(p => (p.stock ?? 0) > (p.minStock ?? 5)).length);
+const statsLowStock = computed(() => products.value.filter(p => (p.stock ?? 0) > 0 && (p.stock ?? 0) <= (p.minStock ?? 5)).length);
+const statsOutOfStock = computed(() => products.value.filter(p => (p.stock ?? 0) === 0).length);
 
 const newStockPreview = computed(() => {
   const current = selectedProduct.value?.stock ?? 0;
@@ -252,11 +277,11 @@ function closeModal() {
 
 async function applyAdjust() {
   if (!adjustForm.value.quantity || adjustForm.value.quantity < 1) {
-    alert('La cantidad debe ser al menos 1');
+    Swal.fire({ icon: 'warning', title: 'Cantidad inválida', text: 'La cantidad debe ser al menos 1', confirmButtonColor: '#860734' });
     return;
   }
   if (modalType.value === 'remove' && adjustForm.value.quantity > (selectedProduct.value?.stock ?? 0)) {
-    alert('No puedes quitar más stock del disponible');
+    Swal.fire({ icon: 'warning', title: 'Stock insuficiente', text: 'No puedes quitar más stock del disponible', confirmButtonColor: '#860734' });
     return;
   }
 
@@ -267,16 +292,26 @@ async function applyAdjust() {
       : (adjustForm.value.reason || 'Ajuste manual');
 
     const productId = selectedProduct.value.id;
+    const productName = selectedProduct.value.name;
+    const qty = adjustForm.value.quantity;
+
     if (modalType.value === 'add') {
-      await inventoryService.addStock(productId, adjustForm.value.quantity, 'MANUAL', reason);
+      await inventoryService.addStock(productId, qty, 'MANUAL', reason);
     } else {
-      await inventoryService.removeStock(productId, adjustForm.value.quantity, reason);
+      await inventoryService.removeStock(productId, qty, reason);
     }
+    closeModal();
     await fetchProducts();
     await fetchMovements(productId);
-    closeModal();
+    Swal.fire({
+      icon: 'success',
+      title: modalType.value === 'add' ? 'Stock agregado' : 'Stock reducido',
+      text: `${productName}: ${modalType.value === 'add' ? '+' : '-'}${qty} unidades.`,
+      timer: 2000,
+      showConfirmButton: false
+    });
   } catch (e) {
-    alert('Error al ajustar el stock: ' + (e.response?.data?.message || e.message));
+    Swal.fire({ icon: 'error', title: 'Error', text: e.response?.data?.message || e.message || 'No se pudo ajustar el stock', confirmButtonColor: '#860734' });
   } finally {
     saving.value = false;
   }
@@ -563,5 +598,142 @@ onMounted(fetchProducts);
 .btn-icon:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ── Stats cards ── */
+.inv-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.inv-stat {
+  background: #fff;
+  border: 1px solid rgba(134,7,52,0.1);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.inv-stat__value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #141413;
+}
+
+.inv-stat__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.inv-stat--ok    { border-left: 3px solid #059669; }
+.inv-stat--ok .inv-stat__value    { color: #059669; }
+.inv-stat--warn  { border-left: 3px solid #d97706; }
+.inv-stat--warn .inv-stat__value  { color: #d97706; }
+.inv-stat--danger{ border-left: 3px solid #dc2626; }
+.inv-stat--danger .inv-stat__value{ color: #dc2626; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .inv-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .inv-stats { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+  .inv-stat { padding: 0.875rem 1rem; }
+  .inv-stat__value { font-size: 1.4rem; }
+
+  /* Table → card layout */
+  .admin-table thead { display: none; }
+
+  .admin-table tbody,
+  .admin-table tr { display: block; width: 100%; }
+
+  .admin-table tr {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(134,7,52,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    margin-bottom: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .admin-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border: none;
+    font-size: 0.875rem;
+    gap: 0.5rem;
+  }
+
+  .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    min-width: 85px;
+  }
+
+  .admin-table td.actions-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    border-top: 1px solid #f0e8f0;
+    padding-top: 0.6rem;
+    margin-top: 0.25rem;
+  }
+
+  .admin-table td.actions-cell::before { display: none; }
+
+  .actions-cell {
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .btn-icon.btn-success,
+  .btn-icon.btn-danger {
+    flex: 1;
+    padding: 0.6rem;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* Movements list */
+  .movement-item {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .movement-date { width: 100%; margin-left: 2.5rem; }
+
+  /* Modal → bottom sheet */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal-box, .modal-sm {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .inv-stats { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .inv-stat__value { font-size: 1.25rem; }
+  .modal-body, .modal-header, .modal-footer { padding-left: 1rem; padding-right: 1rem; }
 }
 </style>

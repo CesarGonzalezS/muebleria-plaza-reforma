@@ -94,7 +94,7 @@ import Testimonials from '../components/Testimonials.vue';
 import CtaSection from '../components/CtaSection.vue';
 import MapSection from '../components/MapSection.vue';
 import { ref, onMounted } from 'vue';
-import { getFurniture } from '../services/furniture.js';
+import axiosConfig from '../config/AxiosConfig';
 import { homeSettingsService } from '../services/homeSettings.js';
 import Gallery from "@/components/assets/Gallery.vue";
 
@@ -135,21 +135,21 @@ const loadingFeatured = ref(false);
 async function fetchFeaturedProducts() {
   loadingFeatured.value = true;
   try {
-    const res = await getFurniture();
-    const productsData = Array.isArray(res) ? res : (res.data || []);
-    featuredProducts.value = productsData.slice(0, 6).map(item => {
+    const res = await axiosConfig.doGet('/api/products');
+    const productsData = res.data?.data || res.data || [];
+    const list = Array.isArray(productsData) ? productsData : [];
+    featuredProducts.value = list.slice(0, 6).map(item => {
       let mainImage = '/assets/img/products/default.jpg';
-
-      // Usar imageUrl del backend (URL completa como: http://localhost:8080/uploads/images/...)
       if (item.imageUrl) {
         mainImage = item.imageUrl;
-      } else if (item.images && Array.isArray(item.images) && item.images.length > 0) {
-        const firstImage = item.images[0];
-        mainImage = typeof firstImage === 'string' ? firstImage : (firstImage.img_base64 || firstImage.url || mainImage);
+      } else if (Array.isArray(item.imageUrls) && item.imageUrls.length > 0) {
+        mainImage = item.imageUrls[0];
+      } else if (Array.isArray(item.images) && item.images.length > 0) {
+        const first = item.images[0];
+        mainImage = typeof first === 'string' ? first : (first.img_base64 || first.url || mainImage);
       } else if (item.img_base64) {
         mainImage = item.img_base64;
       }
-
       return {
         id: item.id,
         name: item.name,
@@ -159,6 +159,7 @@ async function fetchFeaturedProducts() {
       };
     });
   } catch (e) {
+    console.error('[HomeView] fetchFeaturedProducts error:', e?.response?.status, e?.message);
     featuredProducts.value = [];
   } finally {
     loadingFeatured.value = false;

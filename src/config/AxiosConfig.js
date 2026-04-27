@@ -253,7 +253,12 @@ instance.interceptors.response.use(
     console.error(`[API] Error ${status} en ${method} ${url}:`, data);
 
     if (status === 401) {
-      if (!url.includes('/api/auth/')) {
+      const isPublicCatalog = method === 'GET' && (
+        /\/api\/products(\/|$|\?)/.test(url) ||
+        url.includes('/api/settings/home')
+      );
+
+      if (!url.includes('/api/auth/') && !isPublicCatalog) {
         console.warn("[API] Token invalido o expirado - Limpiando sesion");
         await removeToken();
 

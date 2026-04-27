@@ -88,7 +88,15 @@
                       <i class="bi bi-award"></i>
                       Marca
                     </label>
-                    <input id="brand" v-model="formData.brand" placeholder="IKEA" />
+                    <div class="category-select-controls">
+                      <select id="brand" v-model="formData.brandId">
+                        <option :value="null">Sin marca</option>
+                        <option v-for="b in brands" :key="b.id" :value="b.id">{{ b.name }}</option>
+                      </select>
+                      <button type="button" class="btn-icon small" title="Crear marca" @click="quickCreateBrand">
+                        <i class="bi bi-plus-lg"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -214,7 +222,9 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import Swal from 'sweetalert2';
 import * as furnitureService from '../services/furniture';
+import { brandsService } from '../services/brands';
 import axiosConfig from '../config/AxiosConfig';
 import axios from 'axios';
 
@@ -222,10 +232,11 @@ const props = defineProps({
   isOpen: { type: Boolean, default: false },
   isEditing: { type: Boolean, default: false },
   furnitureData: { type: Object, default: () => ({}) },
-  categories: { type: Array, default: () => [] }
+  categories: { type: Array, default: () => [] },
+  brands: { type: Array, default: () => [] }
 });
 
-const emit = defineEmits(['close', 'success', 'open-category-form']);
+const emit = defineEmits(['close', 'success', 'open-category-form', 'brand-created']);
 
 const maxFileSizeMB = 5;
 const isSubmitting = ref(false);
@@ -243,7 +254,7 @@ const formData = ref({
   images: [],
   stock: 0,
   minStock: 0,
-  brand: '',
+  brandId: null,
   color: '',
   material: '',
   dimensions: ''
@@ -263,7 +274,7 @@ watch(() => props.isOpen, (newVal) => {
       normalizedData.costPrice = normalizedData.costPrice || normalizedData.cost_price || 0;
       normalizedData.minStock = normalizedData.minStock || normalizedData.min_stock || 0;
       normalizedData.imageUrl = normalizedData.imageUrl || '';
-      normalizedData.brand = normalizedData.brand || normalizedData.brandName || '';
+      normalizedData.brandId = normalizedData.brandId || normalizedData.brand_id || (typeof normalizedData.brand === 'object' ? normalizedData.brand?.id : null) || null;
       normalizedData.color = normalizedData.color || '';
       normalizedData.material = normalizedData.material || '';
       normalizedData.dimensions = normalizedData.dimensions || '';
@@ -302,7 +313,7 @@ function resetForm() {
   formData.value = {
     id: null, name: '', description: '', price: 0, costPrice: 0,
     category_id: null, imageUrl: '', imageUrls: [], images: [], stock: 0, minStock: 0,
-    brand: '', color: '', material: '', dimensions: ''
+    brandId: null, color: '', material: '', dimensions: ''
   };
 }
 
@@ -348,9 +359,9 @@ async function handleSubmit() {
     stock: parseInt(formData.value.stock) || 0,
     minStock: parseInt(formData.value.minStock) || 0,
     categoryId: formData.value.category_id ? parseInt(formData.value.category_id) : undefined,
+    brandId: formData.value.brandId ? parseInt(formData.value.brandId) : undefined,
     imageUrl: formData.value.imageUrl || (formData.value.imageUrls && formData.value.imageUrls[0]) || (formData.value.images && formData.value.images[0]) || undefined,
     imageUrls: formData.value.imageUrls?.length > 0 ? formData.value.imageUrls : undefined,
-    brand: formData.value.brand || undefined,
     color: formData.value.color || undefined,
     material: formData.value.material || undefined,
     dimensions: formData.value.dimensions || undefined,
@@ -375,6 +386,29 @@ async function handleSubmit() {
     }
   } finally {
     isSubmitting.value = false;
+  }
+}
+
+async function quickCreateBrand() {
+  const result = await Swal.fire({
+    title: 'Nueva Marca',
+    input: 'text',
+    inputPlaceholder: 'Nombre de la marca',
+    showCancelButton: true,
+    confirmButtonText: 'Crear',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#860734',
+    inputValidator: (v) => v.trim() ? null : 'El nombre es obligatorio'
+  });
+  if (!result.isConfirmed) return;
+  try {
+    const res = await brandsService.createBrand({ name: result.value.trim() });
+    const newBrand = res.data?.data || res.data;
+    emit('brand-created', newBrand);
+    formData.value.brandId = newBrand.id;
+    axiosConfig.ToastSuccess('Marca creada', newBrand.name);
+  } catch (e) {
+    axiosConfig.ToastError('Error', e.response?.data?.message || 'No se pudo crear la marca');
   }
 }
 

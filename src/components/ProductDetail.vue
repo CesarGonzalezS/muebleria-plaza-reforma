@@ -323,7 +323,7 @@ onMounted(fetchProduct);
   flex-direction: column;
   gap: 0.75rem;
   position: sticky;
-  top: 1.5rem;
+  top: calc(80px + 1.5rem);
 }
 
 .main-image-wrap {
