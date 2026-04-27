@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { getDB } from './db.js';
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 // ===== IN-MEMORY FALLBACK (Firefox Tracking Prevention) =====
 // If IndexedDB/localStorage blocked, token lives in memory for session duration
