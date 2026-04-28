@@ -377,7 +377,7 @@ async function handleSubmit() {
     emit('success');
     closeModal();
   } catch (err) {
-    console.error('Error al guardar mueble:', err);
+
     if (err.response && err.response.data) {
       const errorMsg = err.response.data.detail || JSON.stringify(err.response.data);
       axiosConfig.ToastError('Error', errorMsg);
@@ -449,7 +449,7 @@ async function uploadImageFiles(files) {
       imageErrors.value = ['El servidor no devolvió URLs válidas.'];
     }
   } catch (err) {
-    console.error('Error al subir imágenes:', err);
+
     imageErrors.value = ['No se pudieron subir las imágenes.'];
   } finally {
     isUploadingImage.value = false;

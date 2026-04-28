@@ -186,6 +186,7 @@ import { useRouter } from 'vue-router';
 import axiosConfig from '../config/AxiosConfig.js';
 import * as categoriesService from '../services/categories';
 import { brandsService } from '../services/brands';
+import { orderService } from '../services/orders';
 import FurnitureFormModal from '../components/FurnitureFormModal.vue';
 import CategoryFormModal from '../components/CategoryFormModal.vue';
 import AdminLayout from '../components/AdminLayout.vue';
@@ -215,8 +216,8 @@ const brands = ref([]);
 const activeProducts = computed(() => furnitureList.value.length);
 const criticalStock = computed(() => {
   return furnitureList.value.filter(item => {
-    const minStock = item.minStock || item.min_stock || 0;
-    return item.stock < minStock;
+    const minStock = item.minStock ?? item.min_stock ?? 5;
+    return (item.stock ?? 0) <= minStock;
   }).length;
 });
 const ordersToday = ref(0);
@@ -232,6 +233,20 @@ async function fetchCategories() {
     categories.value = Array.isArray(data) ? data : [];
   } catch (e) {
     categories.value = [];
+  }
+}
+
+async function fetchOrdersToday() {
+  try {
+    const res = await orderService.listOrders();
+    const list = res.data?.data || res.data || [];
+    const todayStr = new Date().toISOString().slice(0, 10);
+    ordersToday.value = list.filter(o => {
+      const d = o.createdAt || o.created_at || o.date || '';
+      return d.startsWith(todayStr);
+    }).length;
+  } catch {
+    ordersToday.value = 0;
   }
 }
 
@@ -327,7 +342,7 @@ async function deleteCategoryRequest(id) {
     axiosConfig.ToastSuccess('Eliminado', 'Categoría eliminada correctamente');
     fetchCategories();
   } catch (err) {
-    console.error(err);
+
     if (err.response && err.response.status === 400) {
       axiosConfig.ToastWarning('No se puede eliminar', 'La categoría tiene muebles asociados');
     } else {
@@ -359,7 +374,7 @@ async function deleteFurniture(id) {
     axiosConfig.ToastSuccess('Éxito', 'Mueble eliminado correctamente.');
     fetchFurniture();
   } catch (e) {
-    console.error('Error al eliminar:', e);
+
     axiosConfig.ToastError('Error', 'No se pudo eliminar el mueble.');
   }
 }
@@ -368,6 +383,7 @@ onMounted(() => {
   fetchFurniture();
   fetchCategories();
   fetchBrands();
+  fetchOrdersToday();
 });
 
 function getCategoryLabel(value) {

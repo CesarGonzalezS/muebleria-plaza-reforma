@@ -15,7 +15,6 @@ async function addFavorite(product) {
       req.onsuccess = () => resolve();
     });
   } catch (e) {
-    console.error('[FavoritesStorage] Error adding:', e);
     throw e;
   }
 }
@@ -31,7 +30,6 @@ async function removeFavorite(productId) {
       req.onsuccess = () => resolve();
     });
   } catch (e) {
-    console.error('[FavoritesStorage] Error removing:', e);
     throw e;
   }
 }
@@ -51,7 +49,6 @@ async function getAllFavorites() {
       };
     });
   } catch (e) {
-    console.error('[FavoritesStorage] Error reading all:', e);
     return [];
   }
 }
@@ -82,7 +79,6 @@ async function clearFavorites() {
       req.onsuccess = () => resolve();
     });
   } catch (e) {
-    console.error('[FavoritesStorage] Error clearing:', e);
     throw e;
   }
 }

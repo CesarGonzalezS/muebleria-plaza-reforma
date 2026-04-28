@@ -133,7 +133,7 @@ async function handleSubmit() {
     emit('success');
     closeModal();
   } catch (err) {
-    console.error('Error al guardar categoría:', err);
+
     if (err.response && err.response.status === 409) {
       axiosConfig.ToastWarning('Conflicto', 'Ya existe una categoría con ese nombre');
     } else if (err.response && err.response.data) {

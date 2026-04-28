@@ -21,12 +21,11 @@ async function setCartItem(productId, item) {
       const req = store.put(cartItem);
       req.onerror = () => reject(req.error);
       req.onsuccess = () => {
-        console.log(`[CartStorage] Guardado artículo: ${productId}`);
         resolve();
       };
     });
   } catch (e) {
-    console.error('[CartStorage] Error guardando:', e);
+    // Error silencioso
   }
 }
 
@@ -41,7 +40,6 @@ async function getCartItem(productId) {
       req.onsuccess = () => resolve(req.result);
     });
   } catch (e) {
-    console.error('[CartStorage] Error leyendo:', e);
     return null;
   }
 }
@@ -62,7 +60,6 @@ async function getAllCartItems() {
       };
     });
   } catch (e) {
-    console.error('[CartStorage] Error leyendo todos:', e);
     return [];
   }
 }
@@ -76,12 +73,11 @@ async function removeCartItem(productId) {
       const req = store.delete(productId);
       req.onerror = () => reject(req.error);
       req.onsuccess = () => {
-        console.log(`[CartStorage] Eliminado artículo: ${productId}`);
         resolve();
       };
     });
   } catch (e) {
-    console.error('[CartStorage] Error eliminando:', e);
+    // Error silencioso
   }
 }
 
@@ -94,12 +90,11 @@ async function clearCart() {
       const req = store.clear();
       req.onerror = () => reject(req.error);
       req.onsuccess = () => {
-        console.log('[CartStorage] Carrito limpiado');
         resolve();
       };
     });
   } catch (e) {
-    console.error('[CartStorage] Error limpiando:', e);
+    // Error silencioso
   }
 }
 

@@ -283,7 +283,7 @@ async function fetchCustomers() {
     const list = res.data.data || res.data || [];
     customersMap.value = Object.fromEntries(list.map(c => [c.id, c]));
   } catch (e) {
-    console.error('Error cargando clientes:', e);
+
   }
 }
 
@@ -292,7 +292,7 @@ async function fetchProducts() {
     const res = await axiosConfig.doGet('/api/products');
     products.value = res.data.data || res.data || [];
   } catch (e) {
-    console.error('Error cargando productos:', e);
+
   }
 }
 

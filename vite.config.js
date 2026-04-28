@@ -8,19 +8,31 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
-  ],
+    // Vue DevTools solo en desarrollo
+    process.env.NODE_ENV === 'development' && vueDevTools(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
   build: {
-    // Usar esbuild en lugar de terser (más rápido y sin problemas de permisos en Windows)
+    // Minificación más agresiva
     minify: 'esbuild',
-    // Configuración de esbuild para optimización
     target: 'es2015',
-    // Code splitting óptimo
+
+    // Opciones avanzadas de esbuild para ofuscación
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+      mangle: true,
+      output: {
+        comments: false,
+      },
+    },
+
     rollupOptions: {
       output: {
         manualChunks: {
@@ -43,18 +55,24 @@ export default defineConfig({
         },
       },
     },
+
     // Optimizar tamaño de chunks
     chunkSizeWarningLimit: 600,
+
     // Deshabilitar source maps en producción
     sourcemap: false,
+
+    // Reportar archivo minificado
+    reportCompressedSize: false,
   },
   // Optimizaciones para server de desarrollo
   server: {
     port: 5173,
     open: false,
     host: true,
+    // No mostrar la versión de Vite en los headers
+    middlewareMode: false,
     // Proxy evita que el navegador trate las peticiones como cross-origin
-    // (resuelve el bloqueo de localStorage por Tracking Prevention de Edge)
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

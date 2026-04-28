@@ -82,7 +82,7 @@ async function fetchCategories() {
     localItems.value = data;
     emit('loaded', data);
   } catch (err) {
-    console.error('Error al cargar las categorías:', err);
+
     error.value = 'No se pudieron cargar las categorías. Por favor, intente nuevamente.';
     emit('error', err);
   } finally {

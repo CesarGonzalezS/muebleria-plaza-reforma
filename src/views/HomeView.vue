@@ -159,7 +159,7 @@ async function fetchFeaturedProducts() {
       };
     });
   } catch (e) {
-    console.error('[HomeView] fetchFeaturedProducts error:', e?.response?.status, e?.message);
+
     featuredProducts.value = [];
   } finally {
     loadingFeatured.value = false;

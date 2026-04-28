@@ -247,7 +247,7 @@ async function fetchProducts() {
     const res = await axiosConfig.doGet('/api/products');
     products.value = res.data.data || res.data || [];
   } catch (e) {
-    console.error('Error cargando productos:', e);
+
   } finally {
     loading.value = false;
   }

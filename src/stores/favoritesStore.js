@@ -15,7 +15,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     try {
       items.value = await favoritesStorage.getAll();
     } catch (e) {
-      console.error('[FavoritesStore] Error loading:', e);
+
     }
   }
 

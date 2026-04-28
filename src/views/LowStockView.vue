@@ -193,7 +193,7 @@ async function fetchProducts() {
     const res = await axiosConfig.doGet('/api/products/low-stock');
     products.value = res.data.data || res.data || [];
   } catch (e) {
-    console.error('Error cargando stock bajo:', e);
+
     products.value = [];
   } finally {
     loading.value = false;

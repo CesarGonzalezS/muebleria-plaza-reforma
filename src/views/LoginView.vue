@@ -108,11 +108,8 @@ async function handleLogin() {
   loading.value = true;
 
   try {
-    console.log("? INICIANDO LOGIN CON:", email.value);
-
     // Consumir API de login
     const res = await authService.login(email.value, password.value);
-    console.log("? RESPUESTA LOGIN:", res.data);
 
     // Validar respuesta
     if (res.data.success && res.data.data?.accessToken) {
@@ -142,12 +139,10 @@ async function handleLogin() {
 
     } else {
       error.value = 'Respuesta invalida del servidor';
-      console.error("? RESPUESTA SIN SUCCESS O TOKEN");
     }
 
   } catch (e) {
-    console.error("? ERROR EN LOGIN:", e);
-    error.value = e.response?.data?.message || 'Email o contrase�a incorrectos';
+    error.value = e.response?.data?.message || 'Email o contrase­a incorrectos';
   } finally {
     loading.value = false;
   }

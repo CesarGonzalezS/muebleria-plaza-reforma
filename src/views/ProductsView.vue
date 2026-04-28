@@ -360,7 +360,7 @@ async function fetchProducts() {
       };
     });
   } catch (error) {
-    console.error('Error cargando productos:', error);
+
     products.value = [];
   } finally {
     loadingProducts.value = false;

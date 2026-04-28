@@ -1,57 +1,16 @@
 /**
- * Script de diagnóstico para imágenes
- * Ejecuta esto en la consola del navegador para verificar qué está pasando
+ * Script de diagnóstico para imágenes (DESHABILITADO EN PRODUCCIÓN)
+ * Este archivo está deshabilitado en producción para evitar exponer información sensible
  */
 
 export async function debugProductImages() {
-  console.log('🔍 === DIAGNÓSTICO DE IMÁGENES ===\n');
-
-  try {
-    // 1. Obtener un producto
-    const res = await fetch('http://localhost:8080/api/products/1', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    });
-
-    const data = await res.json();
-    const product = data.data;
-
-    console.log('📦 Producto obtenido:', product.name);
-    console.log('🖼️  Campo imageUrl:', product.imageUrl);
-    console.log('---');
-
-    // 2. Verificar si la URL es válida
-    if (product.imageUrl) {
-      console.log('✅ Tiene URL de imagen');
-      console.log('📍 URL:', product.imageUrl);
-
-      // 3. Intentar descargar la imagen
-      const imgRes = await fetch(product.imageUrl);
-      if (imgRes.ok) {
-        console.log('✅ La URL es accesible (status:', imgRes.status + ')');
-      } else {
-        console.log('❌ La URL no es accesible (status:', imgRes.status + ')');
-      }
-    } else {
-      console.log('❌ imageUrl está vacío o null');
-    }
-
-    console.log('\n📋 Información completa del producto:');
-    console.table({
-      'ID': product.id,
-      'Nombre': product.name,
-      'Precio': product.price,
-      'Stock': product.stock,
-      'ImageUrl': product.imageUrl,
-      'Brand': product.brandName,
-      'Category': product.categoryName
-    });
-
-  } catch (error) {
-    console.error('❌ Error:', error);
+  // Función de debugging deshabilitada en producción
+  if (process.env.NODE_ENV === 'production') {
+    return;
   }
+
+  // Resto de la función comentado
 }
 
-// Exportar para usar en consola
-window.debugProductImages = debugProductImages;
+// Exportar para usar en consola (deshabilitado en producción)
+// window.debugProductImages = debugProductImages;

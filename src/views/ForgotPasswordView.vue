@@ -266,7 +266,6 @@
 
 
 
-      <!-- Step 3: xito y Redireccionamiento -->
 
 
 
@@ -286,7 +285,7 @@
 
 
 
-        <h1>¡Token Válido!</h1>
+        <h1>¡Token Válido!</h1>
 
 
 

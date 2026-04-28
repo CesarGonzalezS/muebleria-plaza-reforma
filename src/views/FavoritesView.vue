@@ -54,7 +54,13 @@
 
             <!-- Image -->
             <router-link :to="{ name: 'ProductoDetalle', params: { id: item.id } }" class="fav-card__img-link">
-              <img :src="getImg(item)" :alt="item.name" class="fav-card__img" loading="lazy" />
+              <img
+                :src="item.displayImage"
+                :alt="item.name"
+                class="fav-card__img"
+                loading="lazy"
+                @error="handleImageError(item.id)"
+              />
             </router-link>
 
             <!-- Info -->
@@ -105,11 +111,15 @@ const favStore = useFavoritesStore();
 const mainStore = useMainStore();
 const loading = ref(false);
 const liveStockMap = ref({});
+const liveImagesMap = ref({});
+const failedImages = ref(new Set());
 
 const enrichedItems = computed(() =>
   favStore.items.map(item => ({
     ...item,
     soldOut: liveStockMap.value[item.id] === 0,
+    // Usar la imagen en vivo si está disponible, sino la del item guardado
+    displayImage: liveImagesMap.value[item.id] || getImg(item),
   }))
 );
 
@@ -129,6 +139,20 @@ async function fetchLiveStock() {
       if (result.status === 'fulfilled') {
         const p = result.value.data?.data || result.value.data || {};
         liveStockMap.value[id] = p.stock ?? 1;
+
+        // Guardar las imágenes en vivo
+        if (p.imageUrl) {
+          liveImagesMap.value[id] = p.imageUrl;
+        } else if (p.images && Array.isArray(p.images) && p.images.length) {
+          const first = p.images[0];
+          if (typeof first === 'string') {
+            liveImagesMap.value[id] = first;
+          } else if (first.url) {
+            liveImagesMap.value[id] = first.url;
+          } else if (first.img_base64) {
+            liveImagesMap.value[id] = first.img_base64;
+          }
+        }
       } else {
         liveStockMap.value[id] = 1;
       }
@@ -147,12 +171,42 @@ function removeAllSoldOut() {
   soldOutItems.value.forEach(item => favStore.remove(item.id));
 }
 
+function handleImageError(productId) {
+  // Marcar imagen como fallida
+  failedImages.value.add(productId);
+  // Force re-render
+  failedImages.value = new Set(failedImages.value);
+}
+
 function getImg(product) {
+  // Buscar en múltiples propiedades
+  if (product.imageUrl) return product.imageUrl;
+  if (product.img) return product.img;
+  if (product.img_base64) return product.img_base64;
+
+  // Buscar en arrays de imágenes
   if (product.images && Array.isArray(product.images) && product.images.length) {
     const first = product.images[0];
-    return typeof first === 'string' ? first : (first.img_base64 || first.url || '/assets/img/products/default.jpg');
+    if (typeof first === 'string') return first;
+    if (first.url) return first.url;
+    if (first.img_base64) return first.img_base64;
   }
-  return product.img || product.img_base64 || '/assets/img/products/default.jpg';
+
+  if (product.imageUrls && Array.isArray(product.imageUrls) && product.imageUrls.length) {
+    const first = product.imageUrls[0];
+    if (typeof first === 'string') return first;
+    if (first.url) return first.url;
+  }
+
+  if (product.product_images && Array.isArray(product.product_images) && product.product_images.length) {
+    const first = product.product_images[0];
+    if (typeof first === 'string') return first;
+    if (first.url) return first.url;
+    if (first.img_base64) return first.img_base64;
+  }
+
+  // Default fallback
+  return '/assets/img/products/default.jpg';
 }
 
 function formatPrice(val) {

@@ -250,7 +250,7 @@ async function fetchAll() {
       .slice(0, 10);
 
   } catch (e) {
-    console.error('Error cargando reportes:', e);
+    // Error silencioso
   } finally {
     loading.value = false;
   }

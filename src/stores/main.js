@@ -39,7 +39,6 @@ export const useMainStore = defineStore('main', () => {
     }
 
     isAuthenticated.value = true;
-    console.log('[Store] Auth set');
   }
 
   async function logout() {
@@ -49,7 +48,6 @@ export const useMainStore = defineStore('main', () => {
     userRole.value = null;
     await axiosConfig.removeToken();
     await clearCart();
-    console.log('[Store] Logout complete');
   }
 
   async function checkAuth() {
@@ -66,7 +64,7 @@ export const useMainStore = defineStore('main', () => {
             userRole.value = decoded.role;
           }
         } catch (e) {
-          console.error('[Store] Error decoding token:', e);
+          // Error silencioso
         }
       }
     }
@@ -79,9 +77,8 @@ export const useMainStore = defineStore('main', () => {
       const items = await cartStorage.getAllItems();
       cartItems.value = items;
       updateCartMeta();
-      console.log('[Store] Cart loaded:', items.length, 'items');
     } catch (e) {
-      console.error('[Store] Error loading cart:', e);
+      // Error silencioso
     }
   }
 
@@ -100,9 +97,8 @@ export const useMainStore = defineStore('main', () => {
 
       await cartStorage.setItem(product.id, cartItems.value.find(item => item.id === product.id));
       updateCartMeta();
-      console.log('[Store] Added to cart:', product.id);
     } catch (e) {
-      console.error('[Store] Error adding to cart:', e);
+      // Error silencioso
     }
   }
 
@@ -111,9 +107,8 @@ export const useMainStore = defineStore('main', () => {
       cartItems.value = cartItems.value.filter(item => item.id !== productId);
       await cartStorage.removeItem(productId);
       updateCartMeta();
-      console.log('[Store] Removed from cart:', productId);
     } catch (e) {
-      console.error('[Store] Error removing from cart:', e);
+      // Error silencioso
     }
   }
 
@@ -127,11 +122,10 @@ export const useMainStore = defineStore('main', () => {
           item.quantity = quantity;
           await cartStorage.setItem(productId, item);
           updateCartMeta();
-          console.log('[Store] Updated cart item:', productId, 'qty:', quantity);
         }
       }
     } catch (e) {
-      console.error('[Store] Error updating cart item:', e);
+      // Error silencioso
     }
   }
 
@@ -140,9 +134,8 @@ export const useMainStore = defineStore('main', () => {
       cartItems.value = [];
       await cartStorage.clear();
       updateCartMeta();
-      console.log('[Store] Cart cleared');
     } catch (e) {
-      console.error('[Store] Error clearing cart:', e);
+      // Error silencioso
     }
   }
 

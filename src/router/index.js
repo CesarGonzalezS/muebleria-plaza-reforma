@@ -110,7 +110,7 @@ router.beforeEach(async (to, from, next) => {
   if (authRequired && !isAuth) {
     next('/login');
   } else if (to.path.startsWith('/admin') && !hasRole('ADMIN')) {
-    console.warn('[Router] Acceso denegado: no tienes rol ADMIN');
+    // Acceso denegado
     next('/');
   } else {
     next();

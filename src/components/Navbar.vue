@@ -181,7 +181,7 @@ async function handleLogout() {
     const { accessToken, refreshToken } = authService.getTokens();
     await authService.logout(accessToken, refreshToken);
   } catch (err) {
-    console.error('Error en logout:', err);
+
   } finally {
     authService.clearTokens();
     router.push('/login');

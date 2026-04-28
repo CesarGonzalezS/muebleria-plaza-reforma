@@ -44,6 +44,8 @@
               <div v-else class="placeholder-image">
                 <i class="bi bi-image"></i>
               </div>
+              <!-- Botón de Favoritos -->
+              <FavoriteButton :product="product" class="favorite-btn-overlay" />
               <!-- Badges -->
               <span v-if="product.stock === 0" class="gallery-badge badge-out">
                 <i class="bi bi-x-circle"></i> Agotado
@@ -159,6 +161,7 @@ import axiosConfig from '../config/AxiosConfig.js';
 import Navbar from '@/components/Navbar.vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute();
 
@@ -224,7 +227,6 @@ async function fetchProduct() {
     currentImage.value = imgs[0] || '/assets/img/products/default.jpg';
   } catch (e) {
     error.value = 'No se pudo cargar el producto';
-    console.error('Error:', e);
   } finally {
     loading.value = false;
   }
@@ -386,6 +388,13 @@ onMounted(fetchProduct);
   border-radius: 20px;
   backdrop-filter: blur(4px);
   z-index: 2;
+}
+
+.favorite-btn-overlay {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 3;
 }
 
 .gallery-thumbs {

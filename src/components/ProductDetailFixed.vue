@@ -136,7 +136,7 @@ async function fetchProduct() {
     currentImage.value = item.imageUrl || '/assets/img/products/default.jpg';
   } catch (e) {
     error.value = 'No se pudo cargar el producto';
-    console.error('Error:', e);
+
   } finally {
     loading.value = false;
   }

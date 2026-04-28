@@ -40,7 +40,7 @@ async function setInDB(key, value) {
       req.onsuccess = () => resolve();
     });
   } catch (e) {
-    console.error('[IndexedDB] Error escribiendo:', e);
+    // Error silencioso
   }
 }
 
@@ -55,7 +55,6 @@ async function getFromDB(key) {
       req.onsuccess = () => resolve(req.result);
     });
   } catch (e) {
-    console.error('[IndexedDB] Error leyendo:', e);
     return null;
   }
 }
@@ -71,7 +70,7 @@ async function removeFromDB(key) {
       req.onsuccess = () => resolve();
     });
   } catch (e) {
-    console.error('[IndexedDB] Error borrando:', e);
+    // Error silencioso
   }
 }
 
@@ -97,7 +96,7 @@ export async function getToken() {
     const token = await getFromDB('accessToken');
     if (token) { memoryStore.accessToken = token; return token; }
   } catch (e) {
-    console.warn('[API] IndexedDB unavailable, using memory/localStorage');
+    // IndexedDB no disponible
   }
   return null;
 }
@@ -111,7 +110,7 @@ export async function saveToken(token) {
   try {
     await setInDB('accessToken', token);
   } catch (e) {
-    console.warn('[API] IndexedDB unavailable, token in localStorage/memory');
+    // IndexedDB no disponible
   }
 }
 
